@@ -1,6 +1,7 @@
 import {
   createContext,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useReducer,
@@ -110,9 +111,11 @@ export interface NeroPartyContextValue {
   currentTrack: QueueItemSnapshot | null;
   isHost: boolean;
 
-  // Phase A — hosting
-  createParty: (hostName: string, hostAvatarSeed: string, maxSongs: number) => void;
-  joinParty: (code: string, name: string, avatarSeed: string) => void;
+  // Phase A — hosting. createParty/joinParty resolve when the request settles
+  // (they never reject — failures surface on `state.error`), so callers can
+  // `await` them to drive a local submitting state.
+  createParty: (hostName: string, hostAvatarSeed: string, maxSongs: number) => Promise<void>;
+  joinParty: (code: string, name: string, avatarSeed: string) => Promise<void>;
   updateConfig: (config: Partial<PartyConfigSnapshot>) => void;
 
   // Phase B — submitting
@@ -243,8 +246,8 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
   /* ----- Phase A — hosting ------------------------------------------- */
 
   const createParty = useCallback(
-    (hostName: string, hostAvatarSeed: string, maxSongs: number) => {
-      void (async () => {
+    (hostName: string, hostAvatarSeed: string, maxSongs: number): Promise<void> => {
+      return (async () => {
         try {
           const res = await request<SessionResult>("party:create", {
             hostName,
@@ -267,8 +270,8 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
   );
 
   const joinParty = useCallback(
-    (code: string, name: string, avatarSeed: string) => {
-      void (async () => {
+    (code: string, name: string, avatarSeed: string): Promise<void> => {
+      return (async () => {
         try {
           const res = await request<SessionResult>("party:join", {
             code,
@@ -474,4 +477,12 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
       {children}
     </NeroPartyContext.Provider>
   );
+}
+
+export function useParty() {
+  const context = useContext(NeroPartyContext);
+  if (!context) {
+    throw new Error("useParty must be used within a NeroPartyProvider");
+  }
+  return context;
 }
