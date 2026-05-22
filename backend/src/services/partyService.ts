@@ -79,10 +79,10 @@ function requirePhase(party: Party, ...allowed: GamePhase[]): void {
   }
 }
 
-/** Generate a unique 4-digit numeric PIN, retrying on the rare collision. */
+/** Generate a unique 3-digit numeric PIN, retrying on the rare collision. */
 async function generateUniquePin(): Promise<string> {
   for (let attempt = 0; attempt < 25; attempt++) {
-    const code = String(Math.floor(Math.random() * 10000)).padStart(4, "0");
+    const code = String(Math.floor(Math.random() * 1000)).padStart(3, "0");
     const existing = await prisma.party.findUnique({ where: { code } });
     if (!existing) return code;
   }

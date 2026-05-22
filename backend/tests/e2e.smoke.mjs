@@ -82,7 +82,7 @@ async function runScenario() {
   const partyId = created.party.party.id;
   const code = created.party.party.code;
   const hostId = created.user.id;
-  assert(/^\d{4}$/.test(code), "4-digit numeric PIN generated (" + code + ")");
+  assert(/^\d{3}$/.test(code), "3-digit numeric PIN generated (" + code + ")");
 
   await emit(host.socket, "config:update", {
     partyId,

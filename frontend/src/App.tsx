@@ -29,7 +29,7 @@ export default function App() {
     e.preventDefault();
     const code = roomPin.trim();
     const name = playerName.trim();
-    if (code.length !== 4 || !name) return;
+    if (code.length !== 3 || !name) return;
     setIsSubmitting(true);
     await joinParty(code, name, name);
     setIsSubmitting(false);
@@ -141,19 +141,19 @@ export default function App() {
         <div className="p-6 bg-slate-800 rounded-xl shadow-xl border border-slate-700/60 transition hover:border-purple-500/40">
           <h2 className="text-xl font-bold text-slate-200 mb-1 text-center">Join Existing Party</h2>
           <p className="text-sm text-slate-400 mb-4 text-center">
-            Enter the 4-digit code shown on the host's monitor.
+            Enter the 3-digit code shown on the host's monitor.
           </p>
 
           <form onSubmit={handleJoin} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
-                4-Digit Room PIN
+                3-Digit Room PIN
               </label>
               <input
                 type="text"
                 inputMode="numeric"
-                maxLength={4}
-                placeholder="1234"
+                maxLength={3}
+                placeholder="123"
                 value={roomPin}
                 onChange={(e) => setRoomPin(e.target.value.replace(/\D/g, ""))}
                 className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-lg text-center tracking-widest text-lg font-bold text-purple-400 focus:outline-none focus:border-purple-500 transition"
@@ -178,7 +178,7 @@ export default function App() {
 
             <button
               type="submit"
-              disabled={isSubmitting || roomPin.length !== 4 || !playerName.trim()}
+              disabled={isSubmitting || roomPin.length !== 3 || !playerName.trim()}
               className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:from-slate-700 disabled:to-slate-700 text-white font-semibold rounded-lg shadow-md transition-all duration-200 transform active:scale-[0.98] mt-2"
             >
               {isSubmitting ? "Joining..." : "Enter Room"}
