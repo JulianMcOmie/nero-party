@@ -131,7 +131,7 @@ export default function RankingScreen() {
       <main className="flex-1 flex flex-col">
         {/* Three-column layout */}
         <div className="flex-1 flex flex-col">
-          <div className="mx-auto w-[75%] px-6 py-8 flex-1 flex gap-8">
+          <div className="mx-auto w-[75%] px-6 py-2 flex-1 flex gap-8">
             {/* Left sidebar: Room participants */}
             <aside className="flex-0 w-40 shrink-0">
             {isHost && (
@@ -144,9 +144,6 @@ export default function RankingScreen() {
               </button>
             )}
             <h3 className="mb-4 text-xs text-muted-foreground uppercase tracking-widest font-semibold">room</h3>
-            {isHost && (
-              <div className="mb-4 text-xs text-muted-foreground">song {queueIdx + 1} of {totalRounds}</div>
-            )}
             <div className="space-y-2">
               {state.participants.filter((p) => p.online).map((p) => {
                 const a = activityByUser.get(p.id);
@@ -169,9 +166,14 @@ export default function RankingScreen() {
             </aside>
 
             {/* Center: Song and rating */}
-            <div className="flex-1 flex flex-col items-center justify-center">
+            <div className="flex-1 flex flex-col items-center justify-start pt-8">
+            {/* Song count */}
+            {isHost && (
+              <div className="mb-6 text-xs text-muted-foreground">song {queueIdx + 1} of {totalRounds}</div>
+            )}
+
             {/* Song cover */}
-            <div className="mb-6 flex h-64 w-64 items-center justify-center rounded-lg bg-input/50">
+            <div className="mb-3 flex h-64 w-64 items-center justify-center rounded-lg bg-input/50">
               {showMetadata && currentTrack.albumArtUrl ? (
                 <img src={currentTrack.albumArtUrl} alt="" className="h-full w-full rounded-lg object-cover" />
               ) : (
@@ -183,7 +185,7 @@ export default function RankingScreen() {
 
             {/* Title and artist (if visible) */}
             {showMetadata && (
-              <div className="mb-8 text-center">
+              <div className="mb-4 text-center">
                 <h2 className="text-lg font-semibold mb-1">{currentTrack.title ?? "—"}</h2>
                 <p className="text-sm text-muted-foreground">{currentTrack.artist ?? "—"}</p>
               </div>
