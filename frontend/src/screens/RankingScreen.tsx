@@ -3,6 +3,7 @@ import { useParty } from "../party/NeroPartyContext";
 import { Header } from "../components/Header";
 import { StarRating } from "../components/StarRating";
 import { PlayIcon, PauseIcon, CheckIcon } from "../components/icons";
+import { BouncingCircle } from "../components/BouncingCircle";
 
 export default function RankingScreen() {
   const {
@@ -233,10 +234,13 @@ export default function RankingScreen() {
 
             {/* Waiting indicator for players */}
             {!isHost && (
-              <div className="mt-12 text-center text-sm text-muted-foreground">
-                {allOnlineHaveRated
-                  ? "waiting for the host to continue…"
-                  : "waiting for everyone to rate…"}
+              <div className="mt-12 text-center">
+                <div className="text-sm text-muted-foreground mb-2">
+                  {allOnlineHaveRated
+                    ? "waiting for the host to continue…"
+                    : "waiting for everyone to rate…"}
+                </div>
+                <BouncingCircle width={200} height={25} />
               </div>
             )}
 
