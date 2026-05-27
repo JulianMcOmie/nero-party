@@ -383,11 +383,14 @@ async function revealRound(
 }
 
 /**
- * Advance to the next track. Requires the current round to be revealed first
- * so no round is ever skipped without being scored. Returns `advanced: false`
- * when the revealed track was the last one — the caller then runs `finalReveal`.
+ * Advance to the next track. If the current track hasn't been scored yet,
+ * score it before advancing. Returns `advanced: false` when the last track
+ * has been scored — the caller then runs `finalReveal`.
  */
-async function nextSong(payload: ActorPayload): Promise<{ advanced: boolean }> {
+async function nextSong(
+  payload: ActorPayload,
+  connectedUserIds: string[],
+): Promise<{ advanced: boolean }> {
   const party = await requireParty(payload.partyId);
   await requireHost(payload.partyId, payload.userId);
   requirePhase(party, "RANKING");
@@ -396,14 +399,48 @@ async function nextSong(payload: ActorPayload): Promise<{ advanced: boolean }> {
 
   const current = await prisma.queueItem.findUnique({
     where: { id: party.currentTrackId },
+    include: { addedBy: true, submissions: { include: { voter: true } } },
   });
   if (!current) throw new GameError("Active track not found.");
 
-  // Mark current song as revealed
-  await prisma.queueItem.update({
-    where: { id: current.id },
-    data: { revealed: true },
-  });
+  // Score the current track if not already revealed
+  if (!current.revealed) {
+    const score = calculateRoundScore({
+      submitterId: current.addedByUserId,
+      guessingEnabled: false,
+      submissions: current.submissions.map((s) => ({
+        userId: s.userId,
+        rating: s.rating,
+        guessedUserId: null,
+      })),
+      connectedUserIds,
+    });
+
+    // Mark revealed, give the track its Sonic Signature bonus, and apply point awards
+    await prisma.$transaction([
+      prisma.queueItem.update({
+        where: { id: current.id },
+        data: {
+          revealed: true,
+          ...(score.songRankingBonus > 0
+            ? { totalRatingScore: { increment: score.songRankingBonus } }
+            : {}),
+        },
+      }),
+      ...score.pointAwards.map((award) =>
+        prisma.user.update({
+          where: { id: award.userId },
+          data: { score: { increment: award.points } },
+        }),
+      ),
+    ]);
+  } else {
+    // Already revealed, just mark it
+    await prisma.queueItem.update({
+      where: { id: current.id },
+      data: { revealed: true },
+    });
+  }
 
   const next = await prisma.queueItem.findFirst({
     where: { partyId: party.id, revealed: false },

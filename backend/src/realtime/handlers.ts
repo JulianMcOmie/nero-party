@@ -247,7 +247,8 @@ export function registerSocketHandlers(io: TypedServer): void {
 
     socket.on("round:next", (payload, ack) => {
       void handle(ack, async () => {
-        const { advanced } = await partyService.nextSong(payload);
+        const connectedUserIds = runtime.onlineUserIds(payload.partyId);
+        const { advanced } = await partyService.nextSong(payload, connectedUserIds);
         runtime.setPlaying(payload.partyId, false);
         io.to(payload.partyId).emit("playback:state", { isPlaying: false });
         if (!advanced) {

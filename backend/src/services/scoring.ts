@@ -80,51 +80,20 @@ export function calculateRoundScore(input: RoundScoreInput): RoundScoreResult {
     });
   }
 
-  let correctGuesserIds: string[] = [];
-  let sonicSignatureAwarded = false;
-  let correctRatio = 0;
-
   // The submitter can never be an eligible guesser of their own track.
   const eligibleGuesserCount = connectedUserIds.filter(
     (id) => id !== submitterId,
   ).length;
 
-  if (guessingEnabled) {
-    correctGuesserIds = scoredSubmissions
-      .filter((s) => s.guessedUserId === submitterId)
-      .map((s) => s.userId);
-
-    for (const userId of correctGuesserIds) {
-      pointAwards.push({ userId, points: 1, reason: "correct_guess" });
-    }
-
-    correctRatio =
-      eligibleGuesserCount > 0
-        ? correctGuesserIds.length / eligibleGuesserCount
-        : 0;
-
-    sonicSignatureAwarded =
-      correctGuesserIds.length > 0 &&
-      correctRatio >= SONIC_SIGNATURE_THRESHOLD;
-
-    if (sonicSignatureAwarded) {
-      pointAwards.push({
-        userId: submitterId,
-        points: 1,
-        reason: "sonic_signature",
-      });
-    }
-  }
-
   return {
-    correctGuesserIds,
+    correctGuesserIds: [],
     eligibleGuesserCount,
-    correctRatio,
-    sonicSignatureAwarded,
+    correctRatio: 0,
+    sonicSignatureAwarded: false,
     pointAwards,
     ratingsCount,
     totalRating,
     averageRating,
-    songRankingBonus: sonicSignatureAwarded ? 1 : 0,
+    songRankingBonus: 0,
   };
 }
