@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nero Party - Neon Minimalist All Screens</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, sans-serif; background: #000; color: #fff; }
+
+        .screen {
+            min-height: 100vh;
+            background: #000;
+            padding: 2em;
+            border-bottom: 4px solid #ff00ff;
+            page-break-after: always;
+        }
+
+        .screen-title {
+            text-align: center;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #ff00ff;
+            margin-bottom: 2em;
+            padding-bottom: 1em;
+            border-bottom: 1px solid #333;
+        }
+
+        /* ===== NEON SHARED STYLES ===== */
+        .neon-header {
+            padding: 1.5em;
+            background: #0a0a0a;
+            border-bottom: 2px solid #ff00ff;
+            margin-bottom: 2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .neon-brand { display: flex; align-items: center; gap: 1em; }
+        .neon-brand-icon { width: 30px; height: 30px; background: #ff00ff; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; }
+        .neon-brand-text { font-size: 16px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
+        .neon-code { font-family: 'Courier New', monospace; font-size: 11px; color: #00ffff; letter-spacing: 1px; }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        .section {
+            padding: 2em;
+            border: 1px solid #222;
+            margin-bottom: 2em;
+        }
+
+        .section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #ff00ff;
+            margin-bottom: 1.5em;
+            font-weight: bold;
+        }
+
+        .row { display: flex; gap: 2em; }
+        .col { flex: 1; }
+
+        .item {
+            display: flex;
+            align-items: center;
+            gap: 1em;
+            padding: 1em;
+            border: 1px solid #333;
+            margin-bottom: 1em;
+        }
+
+        .item-avatar { width: 35px; height: 35px; background: #ff00ff; flex-shrink: 0; }
+        .item-text { font-size: 13px; }
+        .item-stat { margin-left: auto; color: #00ffff; font-weight: bold; }
+
+        .card {
+            border: 2px solid #00ffff;
+            background: rgba(0,255,255,0.05);
+            padding: 1.5em;
+            margin-bottom: 1.5em;
+        }
+
+        .card-title { font-size: 12px; text-transform: uppercase; color: #ff00ff; margin-bottom: 1em; }
+        .card-content { font-size: 14px; }
+
+        .button {
+            background: transparent;
+            color: #ff00ff;
+            border: 2px solid #ff00ff;
+            padding: 0.8em 1.5em;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .button:hover { background: #ff00ff; color: #000; }
+
+        .button-large {
+            width: 100%;
+            padding: 1.2em;
+            font-size: 13px;
+            margin-top: 1em;
+        }
+
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1em; }
+
+        .grid-item {
+            border: 2px solid #333;
+            padding: 1em;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .grid-item:hover { border-color: #00ffff; }
+        .grid-item.selected { border-color: #ff00ff; background: rgba(255,0,255,0.1); }
+
+        .stars { display: flex; gap: 0.5em; }
+        .star { font-size: 20px; cursor: pointer; }
+
+        .input {
+            background: transparent;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 0.8em;
+            width: 100%;
+            font-size: 13px;
+            margin-bottom: 1em;
+        }
+
+        .input::placeholder { color: #666; }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 1em;
+            padding: 1em;
+            border: 1px solid #222;
+            margin-bottom: 1em;
+        }
+
+        .rank {
+            width: 30px;
+            height: 30px;
+            background: #ff00ff;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .leaderboard-name { flex: 1; }
+        .leaderboard-score { color: #00ffff; font-weight: bold; font-size: 14px; }
+
+        .song-item {
+            padding: 0.8em 1em;
+            border-left: 2px solid #00ffff;
+            margin: 0.5em 0 0.5em 1em;
+            font-size: 12px;
+        }
+
+        .song-score { color: #ff00ff; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <!-- SCREEN 1: SUBMITTING -->
+    <div class="screen">
+        <div class="screen-title">Screen 1: Submitting Songs</div>
+
+        <div class="neon-header">
+            <div class="neon-brand">
+                <div class="neon-brand-icon">→</div>
+                <div class="neon-brand-text">NERO</div>
+            </div>
+            <div class="neon-code">ROOM 487 · YOU</div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col" style="flex: 0 0 200px;">
+                    <div class="section-title">ROOM</div>
+                    <div class="item">
+                        <div class="item-avatar"></div>
+                        <div class="item-text">PLAYER 1</div>
+                        <div class="item-stat">2/5</div>
+                    </div>
+                    <div class="item">
+                        <div class="item-avatar"></div>
+                        <div class="item-text">PLAYER 2</div>
+                        <div class="item-stat">1/5</div>
+                    </div>
+                </div>
+
+                <!-- Main -->
+                <div class="col">
+                    <div class="section-title">YOUR SUBMISSIONS</div>
+
+                    <input type="text" class="input" placeholder="SEARCH FOR A SONG...">
+
+                    <div class="card">
+                        <div class="card-title">ADDED SONGS</div>
+                        <div style="font-size: 13px; line-height: 1.8;">
+                            • BLINDING LIGHTS - THE WEEKND<br>
+                            • LEVITATING - DULA LIPA<br>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <button class="button button-large">READY TO PLAY</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: RANKING -->
+    <div class="screen">
+        <div class="screen-title">Screen 2: Voting Round</div>
+
+        <div class="neon-header">
+            <div class="neon-brand">
+                <div class="neon-brand-icon">→</div>
+                <div class="neon-brand-text">NERO</div>
+            </div>
+            <div class="neon-code">ROUND 1 / 5</div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col" style="flex: 0 0 200px;">
+                    <div class="section-title">ROOM</div>
+                    <div class="item">
+                        <div class="item-avatar"></div>
+                        <div class="item-text">PLAYER 1</div>
+                        <div class="item-stat">✓</div>
+                    </div>
+                    <div class="item">
+                        <div class="item-avatar"></div>
+                        <div class="item-text">PLAYER 2</div>
+                        <div class="item-stat">✓</div>
+                    </div>
+                </div>
+
+                <!-- Main -->
+                <div class="col">
+                    <div class="card">
+                        <div class="card-title">NOW PLAYING</div>
+                        <div class="card-content">
+                            <div style="text-align: center; margin-bottom: 1.5em;">
+                                <div style="font-size: 16px; font-weight: bold; margin-bottom: 0.5em;">🎵</div>
+                                <div style="font-size: 14px;">HIDDEN SONG</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-title">RATE THIS SONG</div>
+                    <div style="margin-bottom: 2em;">
+                        <div class="stars">
+                            <span class="star" style="color: #ff00ff;">★</span>
+                            <span class="star" style="color: #ff00ff;">★</span>
+                            <span class="star" style="color: #ff00ff;">★</span>
+                            <span class="star" style="color: #666;">☆</span>
+                            <span class="star" style="color: #666;">☆</span>
+                        </div>
+                    </div>
+
+                    <div class="section-title">WHO SUBMITTED THIS?</div>
+                    <div class="grid">
+                        <div class="grid-item">
+                            <div style="font-size: 20px; margin-bottom: 0.5em;">👤</div>
+                            <div style="font-size: 11px;">PLAYER 1</div>
+                        </div>
+                        <div class="grid-item selected">
+                            <div style="font-size: 20px; margin-bottom: 0.5em;">👤</div>
+                            <div style="font-size: 11px;">PLAYER 2</div>
+                        </div>
+                        <div class="grid-item">
+                            <div style="font-size: 20px; margin-bottom: 0.5em;">👤</div>
+                            <div style="font-size: 11px;">PLAYER 3</div>
+                        </div>
+                        <div class="grid-item">
+                            <div style="font-size: 20px; margin-bottom: 0.5em;">👤</div>
+                            <div style="font-size: 11px;">PLAYER 4</div>
+                        </div>
+                    </div>
+
+                    <button class="button button-large">SUBMIT VOTES</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: REVEAL -->
+    <div class="screen">
+        <div class="screen-title">Screen 3: Final Leaderboard</div>
+
+        <div class="neon-header">
+            <div class="neon-brand">
+                <div class="neon-brand-icon">→</div>
+                <div class="neon-brand-text">NERO</div>
+            </div>
+            <div class="neon-code">FINAL RESULTS</div>
+        </div>
+
+        <div class="container">
+            <div class="section-title">FINAL STANDINGS</div>
+
+            <div class="leaderboard-item">
+                <div class="rank">1</div>
+                <div class="leaderboard-name">PLAYER 1</div>
+                <div class="leaderboard-score">145 PTS</div>
+            </div>
+
+            <div style="margin-left: 3em; margin-bottom: 1.5em;">
+                <div class="song-item">→ BLINDING LIGHTS <span class="song-score">+45 PTS</span></div>
+                <div class="song-item">→ LEVITATING <span class="song-score">+60 PTS</span></div>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="rank">2</div>
+                <div class="leaderboard-name">PLAYER 2</div>
+                <div class="leaderboard-score">128 PTS</div>
+            </div>
+
+            <div style="margin-left: 3em; margin-bottom: 1.5em;">
+                <div class="song-item">→ AS IT WAS <span class="song-score">+55 PTS</span></div>
+                <div class="song-item">→ GOOD 4 U <span class="song-score">+38 PTS</span></div>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="rank">3</div>
+                <div class="leaderboard-name">PLAYER 3</div>
+                <div class="leaderboard-score">112 PTS</div>
+            </div>
+
+            <div style="margin-left: 3em; margin-bottom: 2em;">
+                <div class="song-item">→ HEAT WAVES <span class="song-score">+42 PTS</span></div>
+                <div class="song-item">→ ANTI-HERO <span class="song-score">+35 PTS</span></div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3em;">
+                <button class="button">PLAY AGAIN</button>
+                <button class="button" style="margin-left: 1em;">BACK TO LOBBY</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -39,6 +39,8 @@ export interface QueueItemSnapshot {
   id: string;
   /** Always present — needed for playback even in blind-listening mode. */
   spotifyTrackId: string;
+  /** Always present — the 30-second preview clip URL, null if Spotify has none. */
+  previewUrl: string | null;
   /** null when `hideSong` is active and the track is unrevealed (and not yours). */
   title: string | null;
   artist: string | null;
@@ -117,6 +119,14 @@ export interface PointAward {
   reason: "correct_guess" | "sonic_signature" | "song_rating";
 }
 
+export interface GuessDistributionEntry {
+  voterId: string;
+  voterName: string;
+  voterAvatarSeed: string;
+  guessedUserId: string | null;
+  guessedName: string | null;
+}
+
 export interface RoundResult {
   queueItemId: string;
   title: string;
@@ -132,6 +142,8 @@ export interface RoundResult {
   /** True when >= 50% of eligible guessers identified the submitter. */
   sonicSignatureAwarded: boolean;
   pointAwards: PointAward[];
+  /** Who each voter guessed — empty when guessing is disabled. */
+  guessDistribution: GuessDistributionEntry[];
 }
 
 export interface SongRankingEntry {
@@ -197,7 +209,12 @@ export interface AddSongPayload extends ActorPayload {
     title: string;
     artist: string;
     albumArtUrl: string;
+    previewUrl: string | null;
   };
+}
+
+export interface RemoveSongPayload extends ActorPayload {
+  queueItemId: string;
 }
 
 export interface CastVotePayload extends ActorPayload {
@@ -228,6 +245,7 @@ export interface ClientToServerEvents {
 
   "phase:startSubmitting": (payload: ActorPayload, ack: Ack<null>) => void;
   "song:add": (payload: AddSongPayload, ack: Ack<null>) => void;
+  "song:remove": (payload: RemoveSongPayload, ack: Ack<null>) => void;
 
   "phase:startRounds": (payload: ActorPayload, ack: Ack<null>) => void;
   "round:castVote": (payload: CastVotePayload, ack: Ack<null>) => void;
@@ -238,16 +256,19 @@ export interface ClientToServerEvents {
   "round:reveal": (payload: ActorPayload, ack: Ack<null>) => void;
   "round:next": (payload: ActorPayload, ack: Ack<null>) => void;
 
+  "game:returnToLobby": (payload: ActorPayload, ack: Ack<null>) => void;
   "game:playAgain": (payload: ActorPayload, ack: Ack<null>) => void;
+  "room:terminate": (payload: ActorPayload) => void;
 }
 
 export interface ServerToClientEvents {
   "party:state": (state: PartyStateSnapshot) => void;
   "submission:progress": (progress: SubmissionProgress) => void;
-  "playback:state": (state: { isPlaying: boolean }) => void;
+  "playback:state": (state: { isPlaying: boolean; startedAt?: number }) => void;
   "round:result": (result: RoundResult) => void;
   "game:results": (results: FinalResults) => void;
   "error": (error: { message: string }) => void;
+  "room:closed": () => void;
 }
 
 export interface InterServerEvents {

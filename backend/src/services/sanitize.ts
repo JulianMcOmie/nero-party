@@ -54,6 +54,7 @@ export function sanitizePartyState(
     return {
       id: item.id,
       spotifyTrackId: item.spotifyTrackId,
+      previewUrl: item.previewUrl,
       title: hideMetadata ? null : item.title,
       artist: hideMetadata ? null : item.artist,
       albumArtUrl: hideMetadata ? null : item.albumArtUrl,

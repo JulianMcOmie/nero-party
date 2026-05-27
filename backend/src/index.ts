@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 import { env } from "./env.js";
 import { registerSocketHandlers } from "./realtime/handlers.js";
+import { searchTracks } from "./services/deezerService.js";
 import type {
   ClientToServerEvents,
   InterServerEvents,
@@ -32,6 +33,22 @@ app.use(express.json());
 // Health check
 app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
+});
+
+// Music search proxy (Deezer)
+app.get("/api/spotify/search", async (req, res) => {
+  const q = (req.query.q as string | undefined)?.trim();
+  if (!q) {
+    res.status(400).json({ error: "q is required" });
+    return;
+  }
+  try {
+    const tracks = await searchTracks(q);
+    res.json(tracks);
+  } catch (err) {
+    console.error("[deezer]", err);
+    res.status(502).json({ error: "Search failed" });
+  }
 });
 
 // Real-time party state machine

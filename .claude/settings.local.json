@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npx prisma *)",
+      "Bash(npx tsc *)",
+      "Bash(pkill -f \"tsx watch\")",
+      "Bash(npm run *)",
+      "Bash(pkill -f \"src/index.ts\")",
+      "Bash(lsof -ti:3000)",
+      "Bash(git commit -m ' *)",
+      "Bash(git commit *)",
+      "Bash(echo \"exit code: $?\")",
+      "Bash(echo \"tsc: $?\")",
+      "Bash(echo \"exit: $?\")",
+      "Bash(git -C /Users/julianmcomie/interviews/nero-party status)",
+      "Bash(git -C /Users/julianmcomie/interviews/nero-party diff)",
+      "Bash(git -C /Users/julianmcomie/interviews/nero-party add backend/src/realtime/handlers.ts backend/src/services/partyService.ts frontend/index.html frontend/src/App.tsx frontend/src/index.css frontend/src/party/types.ts frontend/tailwind.config.js frontend/src/components/ frontend/src/screens/ frontend/src/party/NeroPartyContext.tsx frontend/src/party/partyReducer.ts backend/src/types/events.ts frontend/src/screens/HomeScreen.tsx frontend/src/screens/LobbyScreen.tsx frontend/src/screens/SubmittingScreen.tsx)",
+      "Bash(git -C /Users/julianmcomie/interviews/nero-party commit -m \"Minimalist design working with backend\")",
+      "Bash(git -C /Users/julianmcomie/interviews/nero-party add frontend/src/lib/socket.ts)",
+      "Bash(git -C /Users/julianmcomie/interviews/nero-party commit -m \"Add websocket transport for faster initial load\")",
+      "Bash(git *)",
+      "Bash(xargs cat)",
+      "Bash(node *)",
+      "Bash(cat)",
+      "Bash(python3 /tmp/codebase_printer.py)",
+      "Bash(python3 /tmp/codebase_printer_v2.py)",
+      "Bash(python3 /tmp/codebase_printer_bw.py)"
+    ]
+  }
+}

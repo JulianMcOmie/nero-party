@@ -35,6 +35,7 @@ export interface ParticipantSnapshot {
 export interface QueueItemSnapshot {
   id: string;
   spotifyTrackId: string;
+  previewUrl: string | null;
   title: string | null;
   artist: string | null;
   albumArtUrl: string | null;
@@ -88,7 +89,7 @@ export interface PartyStateSnapshot {
   participants: ParticipantSnapshot[];
   queue: QueueItemSnapshot[];
   submissionProgress: SubmissionProgress;
-  playback: { isPlaying: boolean };
+  playback: { isPlaying: boolean; startedAt?: number };
   roundActivity: RoundActivityEntry[];
   myVotes: ViewerVoteSnapshot[];
 }
@@ -101,6 +102,14 @@ export interface PointAward {
   userId: string;
   points: number;
   reason: "correct_guess" | "sonic_signature" | "song_rating";
+}
+
+export interface GuessDistributionEntry {
+  voterId: string;
+  voterName: string;
+  voterAvatarSeed: string;
+  guessedUserId: string | null;
+  guessedName: string | null;
 }
 
 export interface RoundResult {
@@ -116,6 +125,7 @@ export interface RoundResult {
   correctGuesserIds: string[];
   sonicSignatureAwarded: boolean;
   pointAwards: PointAward[];
+  guessDistribution: GuessDistributionEntry[];
 }
 
 export interface SongRankingEntry {
@@ -179,10 +189,15 @@ export interface TrackInput {
   title: string;
   artist: string;
   albumArtUrl: string;
+  previewUrl: string | null;
 }
 
 export interface AddSongPayload extends ActorPayload {
   track: TrackInput;
+}
+
+export interface RemoveSongPayload extends ActorPayload {
+  queueItemId: string;
 }
 
 export interface CastVotePayload extends ActorPayload {
@@ -207,10 +222,11 @@ export interface SessionResult {
 export interface ServerToClientEvents {
   "party:state": (state: PartyStateSnapshot) => void;
   "submission:progress": (progress: SubmissionProgress) => void;
-  "playback:state": (state: { isPlaying: boolean }) => void;
+  "playback:state": (state: { isPlaying: boolean; startedAt?: number }) => void;
   "round:result": (result: RoundResult) => void;
   "game:results": (results: FinalResults) => void;
   "error": (error: { message: string }) => void;
+  "room:closed": () => void;
 }
 
 export interface ClientToServerEvents {
@@ -220,6 +236,7 @@ export interface ClientToServerEvents {
   "config:update": (payload: ConfigUpdatePayload, ack: (r: AckResult<null>) => void) => void;
   "phase:startSubmitting": (payload: ActorPayload, ack: (r: AckResult<null>) => void) => void;
   "song:add": (payload: AddSongPayload, ack: (r: AckResult<null>) => void) => void;
+  "song:remove": (payload: RemoveSongPayload, ack: (r: AckResult<null>) => void) => void;
   "phase:startRounds": (payload: ActorPayload, ack: (r: AckResult<null>) => void) => void;
   "round:castVote": (payload: CastVotePayload, ack: (r: AckResult<null>) => void) => void;
   "round:submitGuess": (payload: SubmitGuessPayload, ack: (r: AckResult<null>) => void) => void;
@@ -227,7 +244,9 @@ export interface ClientToServerEvents {
   "playback:pause": (payload: ActorPayload, ack: (r: AckResult<null>) => void) => void;
   "round:reveal": (payload: ActorPayload, ack: (r: AckResult<null>) => void) => void;
   "round:next": (payload: ActorPayload, ack: (r: AckResult<null>) => void) => void;
+  "game:returnToLobby": (payload: ActorPayload, ack: (r: AckResult<null>) => void) => void;
   "game:playAgain": (payload: ActorPayload, ack: (r: AckResult<null>) => void) => void;
+  "room:terminate": (payload: ActorPayload) => void;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -243,7 +262,7 @@ export type ConnectionStatus =
 /** Lifecycle of a single optimistic selection. */
 export type VoteStatus = "idle" | "pending" | "confirmed" | "error";
 
-/** The viewer's local rating + guess for one track, including in-flight status. */
+/** The viewer's local rating + guess for one song, including in-flight status. */
 export interface LocalVote {
   /** 0 = not yet rated. */
   rating: number;
@@ -268,7 +287,7 @@ export interface PartyState {
   participants: ParticipantSnapshot[];
   queue: QueueItemSnapshot[];
   submissionProgress: SubmissionProgress | null;
-  playback: { isPlaying: boolean };
+  playback: { isPlaying: boolean; startedAt?: number };
   /** Who has rated/guessed on the current track — presence only, no values. */
   roundActivity: RoundActivityEntry[];
   /** Keyed by queueItemId — the optimistic vote layer. */
@@ -276,6 +295,7 @@ export interface PartyState {
   lastRoundResult: RoundResult | null;
   finalResults: FinalResults | null;
   error: string | null;
+  notification: string | null;
 }
 
 export type PartyAction =
@@ -283,10 +303,11 @@ export type PartyAction =
   | { type: "SESSION_ESTABLISHED"; session: Session }
   | { type: "PARTY_STATE"; snapshot: PartyStateSnapshot }
   | { type: "SUBMISSION_PROGRESS"; progress: SubmissionProgress }
-  | { type: "PLAYBACK_STATE"; isPlaying: boolean }
+  | { type: "PLAYBACK_STATE"; isPlaying: boolean; startedAt?: number }
   | { type: "ROUND_RESULT"; result: RoundResult }
   | { type: "FINAL_RESULTS"; results: FinalResults }
   | { type: "ERROR"; message: string | null }
+  | { type: "NOTIFICATION"; message: string }
   | { type: "OPTIMISTIC_RATING"; queueItemId: string; rating: number }
   | { type: "RATING_SETTLED"; queueItemId: string }
   | { type: "RATING_ROLLBACK"; queueItemId: string; previous: LocalVote | undefined }

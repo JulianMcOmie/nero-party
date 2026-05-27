@@ -10,8 +10,10 @@ import type {
   ConfigUpdatePayload,
   CreatePartyPayload,
   FinalResults,
+  GuessDistributionEntry,
   JoinPartyPayload,
   LeaderboardEntry,
+  RemoveSongPayload,
   RoundResult,
   SongRankingEntry,
   SubmitGuessPayload,
@@ -140,30 +142,61 @@ async function joinParty(
 async function updateConfig(payload: ConfigUpdatePayload): Promise<void> {
   const party = await requireParty(payload.partyId);
   await requireHost(payload.partyId, payload.userId);
-  requirePhase(party, "HOSTING");
 
   const incoming = payload.config;
   const data: Prisma.PartyUpdateInput = {};
 
-  if (incoming.maxSongs !== undefined) data.maxSongs = clampMaxSongs(incoming.maxSongs);
-  if (incoming.hideSong !== undefined) data.hideSong = incoming.hideSong;
-  if (incoming.hideSubmitterIdentities !== undefined) {
-    data.hideSubmitterIdentities = incoming.hideSubmitterIdentities;
-  }
-  if (incoming.enableGuessingGame !== undefined) {
-    data.enableGuessingGame = incoming.enableGuessingGame;
-  }
-  if (incoming.hideLeaderboardUntilEnd !== undefined) {
-    data.hideLeaderboardUntilEnd = incoming.hideLeaderboardUntilEnd;
+  // maxSongs is the only field allowed during SUBMITTING (players may already have
+  // queued songs, so the host can adjust the limit mid-submission).
+  if (incoming.maxSongs !== undefined) {
+    requirePhase(party, "HOSTING", "SUBMITTING");
+    data.maxSongs = clampMaxSongs(incoming.maxSongs);
   }
 
-  // Linked toggle constraint: a guessing game is meaningless if submitters are
-  // visible, so enabling it forces `hideSubmitterIdentities` on — and keeps it
-  // on even if the host tries to toggle it off in the same update.
-  const guessingEnabled = incoming.enableGuessingGame ?? party.enableGuessingGame;
-  if (guessingEnabled) data.hideSubmitterIdentities = true;
+  const hasToggleChanges =
+    incoming.hideSong !== undefined ||
+    incoming.hideSubmitterIdentities !== undefined ||
+    incoming.enableGuessingGame !== undefined ||
+    incoming.hideLeaderboardUntilEnd !== undefined;
 
-  await prisma.party.update({ where: { id: party.id }, data });
+  if (hasToggleChanges) {
+    requirePhase(party, "HOSTING");
+
+    if (incoming.hideLeaderboardUntilEnd !== undefined) {
+      data.hideLeaderboardUntilEnd = incoming.hideLeaderboardUntilEnd;
+    }
+
+    // Linked constraint: the guessing game requires BOTH hideSong and
+    // hideSubmitterIdentities. Enabling guessing forces both prerequisites on;
+    // turning off either prerequisite automatically disables guessing.
+    if (incoming.enableGuessingGame === true) {
+      data.hideSong = true;
+      data.hideSubmitterIdentities = true;
+      data.enableGuessingGame = true;
+    } else {
+      if (incoming.hideSong !== undefined) data.hideSong = incoming.hideSong;
+      if (incoming.hideSubmitterIdentities !== undefined) {
+        data.hideSubmitterIdentities = incoming.hideSubmitterIdentities;
+      }
+      if (incoming.enableGuessingGame !== undefined) {
+        data.enableGuessingGame = incoming.enableGuessingGame;
+      }
+
+      // If either prerequisite ends up off, kill the guessing game.
+      const effectiveHideSong = incoming.hideSong !== undefined ? incoming.hideSong : party.hideSong;
+      const effectiveHideSubmitter =
+        incoming.hideSubmitterIdentities !== undefined
+          ? incoming.hideSubmitterIdentities
+          : party.hideSubmitterIdentities;
+      if (!effectiveHideSong || !effectiveHideSubmitter) {
+        data.enableGuessingGame = false;
+      }
+    }
+  }
+
+  if (Object.keys(data).length > 0) {
+    await prisma.party.update({ where: { id: party.id }, data });
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -178,6 +211,22 @@ async function startSubmitting(payload: ActorPayload): Promise<void> {
     where: { id: party.id },
     data: { gamePhase: "SUBMITTING" },
   });
+}
+
+async function removeSong(payload: RemoveSongPayload): Promise<void> {
+  const party = await requireParty(payload.partyId);
+  await requireUserInParty(payload.partyId, payload.userId);
+  requirePhase(party, "SUBMITTING");
+
+  const item = await prisma.queueItem.findFirst({
+    where: { id: payload.queueItemId, partyId: party.id },
+  });
+  if (!item) throw new GameError("Song not found.");
+  if (item.addedByUserId !== payload.userId) {
+    throw new GameError("You can only remove your own songs.");
+  }
+
+  await prisma.queueItem.delete({ where: { id: item.id } });
 }
 
 async function addSong(payload: AddSongPayload): Promise<void> {
@@ -203,6 +252,7 @@ async function addSong(payload: AddSongPayload): Promise<void> {
       title: payload.track.title,
       artist: payload.track.artist,
       albumArtUrl: payload.track.albumArtUrl,
+      previewUrl: payload.track.previewUrl ?? null,
     },
   });
 }
@@ -338,7 +388,7 @@ async function revealRound(
 
   const item = await prisma.queueItem.findUnique({
     where: { id: party.currentTrackId },
-    include: { addedBy: true, submissions: true },
+    include: { addedBy: true, submissions: { include: { voter: true, guessedUser: true } } },
   });
   if (!item) throw new GameError("Active track not found.");
   if (item.revealed) throw new GameError("This round has already been revealed.");
@@ -374,6 +424,18 @@ async function revealRound(
     ),
   ]);
 
+  const guessDistribution: GuessDistributionEntry[] = party.enableGuessingGame
+    ? item.submissions
+        .filter((s) => s.userId !== item.addedByUserId)
+        .map((s) => ({
+          voterId: s.userId,
+          voterName: s.voter.name,
+          voterAvatarSeed: s.voter.avatarSeed,
+          guessedUserId: s.guessedUserId,
+          guessedName: s.guessedUser?.name ?? null,
+        }))
+    : [];
+
   return {
     queueItemId: item.id,
     title: item.title,
@@ -388,6 +450,7 @@ async function revealRound(
     correctGuesserIds: score.correctGuesserIds,
     sonicSignatureAwarded: score.sonicSignatureAwarded,
     pointAwards: score.pointAwards,
+    guessDistribution,
   };
 }
 
@@ -407,9 +470,12 @@ async function nextSong(payload: ActorPayload): Promise<{ advanced: boolean }> {
     where: { id: party.currentTrackId },
   });
   if (!current) throw new GameError("Active track not found.");
-  if (!current.revealed) {
-    throw new GameError("Reveal the current round before moving on.");
-  }
+
+  // Mark current song as revealed
+  await prisma.queueItem.update({
+    where: { id: current.id },
+    data: { revealed: true },
+  });
 
   const next = await prisma.queueItem.findFirst({
     where: { partyId: party.id, revealed: false },
@@ -490,6 +556,43 @@ async function finalReveal(partyId: string): Promise<FinalResults> {
   return computeFinalResults(partyId);
 }
 
+/** Host permanently ends the game and deletes all party data. */
+async function terminateParty(payload: ActorPayload): Promise<void> {
+  const party = await requireParty(payload.partyId);
+  await requireHost(payload.partyId, payload.userId);
+
+  await prisma.$transaction([
+    prisma.roundSubmission.deleteMany({ where: { partyId: party.id } }),
+    prisma.queueItem.deleteMany({ where: { partyId: party.id } }),
+    prisma.user.deleteMany({ where: { partyId: party.id } }),
+    prisma.party.delete({ where: { id: party.id } }),
+  ]);
+}
+
+/**
+ * "Return to Lobby": keep all submitted songs but reset all votes, scores, and
+ * revealed flags so the game can be replayed from the lobby. New players can
+ * join because the party re-enters HOSTING.
+ */
+async function returnToLobby(payload: ActorPayload): Promise<void> {
+  const party = await requireParty(payload.partyId);
+  await requireHost(payload.partyId, payload.userId);
+  requirePhase(party, "SUBMITTING", "RANKING", "REVEAL");
+
+  await prisma.$transaction([
+    prisma.roundSubmission.deleteMany({ where: { partyId: party.id } }),
+    prisma.queueItem.updateMany({
+      where: { partyId: party.id },
+      data: { revealed: false, totalRatingScore: 0 },
+    }),
+    prisma.user.updateMany({ where: { partyId: party.id }, data: { score: 0 } }),
+    prisma.party.update({
+      where: { id: party.id },
+      data: { gamePhase: "HOSTING", currentTrackId: null },
+    }),
+  ]);
+}
+
 /**
  * "Play Again": wipe the round data, zero every score, and drop the party back
  * to HOSTING — without disturbing the connected players, so the same room
@@ -533,6 +636,7 @@ export const partyService = {
   updateConfig,
   startSubmitting,
   addSong,
+  removeSong,
   startRounds,
   castVote,
   submitGuess,
@@ -541,7 +645,9 @@ export const partyService = {
   nextSong,
   finalReveal,
   computeFinalResults,
+  returnToLobby,
   playAgain,
+  terminateParty,
   getRawPartyState,
   requireUserInParty,
 };

@@ -19,6 +19,7 @@ export const initialPartyState: PartyState = {
   lastRoundResult: null,
   finalResults: null,
   error: null,
+  notification: null,
 };
 
 /**
@@ -122,7 +123,7 @@ export function partyReducer(
       return { ...state, submissionProgress: action.progress };
 
     case "PLAYBACK_STATE":
-      return { ...state, playback: { isPlaying: action.isPlaying } };
+      return { ...state, playback: { isPlaying: action.isPlaying, startedAt: action.startedAt } };
 
     case "ROUND_RESULT":
       return { ...state, lastRoundResult: action.result };
@@ -132,6 +133,9 @@ export function partyReducer(
 
     case "ERROR":
       return { ...state, error: action.message };
+
+    case "NOTIFICATION":
+      return { ...state, notification: action.message };
 
     /* ----- Optimistic rating ----------------------------------------- */
 

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nero Party - 24 Distinct Design Explorations</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, sans-serif; background: #f5f5f5; }
+        .screen { min-height: 100vh; padding: 2em; page-break-after: always; }
+        .label { position: absolute; top: 1em; left: 1em; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; background: rgba(0,0,0,0.1); padding: 0.5em 1em; }
+
+        /* ===== 1. DARK VINYL: Sidebar + Main ===== */
+        .d1 { background: #1a1410; color: #f5e6d3; }
+        .d1 .header { border-bottom: 2px solid #c19a6b; padding: 2em 0; margin-bottom: 2em; }
+        .d1 .brand { font-size: 24px; font-weight: bold; color: #d4af37; }
+        .d1 .content { display: flex; gap: 3em; }
+        .d1 .sidebar { flex: 0 0 200px; }
+        .d1 .main { flex: 1; }
+        .d1 .section-title { color: #c19a6b; font-size: 10px; text-transform: uppercase; margin-bottom: 1.5em; font-weight: bold; }
+        .d1 .item { border-left: 3px solid #c19a6b; padding: 1em; background: rgba(193,154,107,0.08); margin-bottom: 1em; }
+        .d1 .card { border: 2px solid #c19a6b; padding: 1.5em; margin-bottom: 1.5em; }
+        .d1 button { background: #c19a6b; color: #1a1410; border: none; padding: 1em 2em; cursor: pointer; font-weight: bold; width: 100%; }
+
+        /* ===== 2. CARD GRID: All cards in grid ===== */
+        .d2 { background: #0f0f0f; color: #fff; }
+        .d2 .header { padding: 2em 0; margin-bottom: 2em; }
+        .d2 .brand { font-size: 28px; font-weight: 900; letter-spacing: 2px; }
+        .d2 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5em; }
+        .d2 .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); padding: 1.5em; text-align: center; }
+        .d2 .card-title { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1em; }
+        .d2 .avatar { width: 50px; height: 50px; background: rgba(255,255,255,0.2); margin: 0 auto 1em; border-radius: 50%; }
+
+        /* ===== 3. FULL WIDTH CARDS: Horizontal cards ===== */
+        .d3 { background: #fafafa; color: #2d2d2d; }
+        .d3 .header { text-align: center; padding: 3em 0 2em; }
+        .d3 .brand { font-size: 32px; font-weight: 900; color: #ff1493; }
+        .d3 .card { background: #fff; border-left: 6px solid #ff1493; padding: 1.5em; margin-bottom: 1em; display: flex; gap: 2em; align-items: center; }
+        .d3 .avatar { width: 60px; height: 60px; background: #ff1493; flex-shrink: 0; }
+        .d3 .card-content { flex: 1; }
+        .d3 button { background: #ff1493; color: #fff; border: none; padding: 1em 2em; width: 100%; font-weight: bold; margin-top: 2em; }
+
+        /* ===== 4. CENTERED MINIMALIST: Everything centered ===== */
+        .d4 { background: #fff; color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .d4 .brand { font-size: 48px; font-weight: 900; margin-bottom: 2em; }
+        .d4 .content { max-width: 400px; }
+        .d4 .card { border: 3px solid #000; padding: 2em; margin-bottom: 1.5em; }
+        .d4 button { background: #000; color: #fff; border: none; padding: 1.5em 3em; font-weight: 900; font-size: 14px; cursor: pointer; width: 100%; }
+
+        /* ===== 5. VERTICAL SPLIT: Left/Right distinct sections ===== */
+        .d5 { background: #000; color: #fff; }
+        .d5 .split { display: flex; min-height: 100vh; }
+        .d5 .left { flex: 1; background: #1a1a2e; padding: 3em; display: flex; flex-direction: column; justify-content: center; }
+        .d5 .right { flex: 1; padding: 3em; display: flex; flex-direction: column; justify-content: center; }
+        .d5 .brand { font-size: 32px; font-weight: bold; margin-bottom: 3em; color: #00ffff; }
+        .d5 .list { list-style: none; }
+        .d5 .list li { padding: 1em 0; border-bottom: 1px solid rgba(255,255,255,0.2); font-size: 14px; }
+
+        /* ===== 6. STACKED CARDS: Overlapping cards ===== */
+        .d6 { background: #f9f8f3; color: #3a3a3a; position: relative; }
+        .d6 .stack { position: relative; width: 500px; margin: 3em auto; }
+        .d6 .card { background: #fff; border: 1px solid #ddd; padding: 2em; margin-top: -20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .d6 .card:first-child { margin-top: 0; }
+        .d6 .brand { font-size: 28px; font-weight: bold; margin-bottom: 2em; }
+
+        /* ===== 7. BRUTALIST SANS: All typography, no decoration ===== */
+        .d7 { background: #fff; color: #000; padding: 4em; }
+        .d7 .brand { font-size: 64px; font-weight: 900; line-height: 1; margin-bottom: 3em; }
+        .d7 .section { margin-bottom: 3em; }
+        .d7 .section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 3px; font-weight: 900; margin-bottom: 1em; }
+        .d7 .item { font-size: 14px; line-height: 1.8; margin-bottom: 1em; }
+        .d7 button { border: 3px solid #000; background: transparent; padding: 1.5em 2em; font-weight: 900; font-size: 14px; cursor: pointer; width: 100%; margin-top: 2em; }
+
+        /* ===== 8. PASTEL WAVE: Curved sections with pastels ===== */
+        .d8 { background: linear-gradient(180deg, #fff5f8 0%, #fff0f5 100%); color: #5a4a6b; }
+        .d8 .wave { padding: 3em; background: #e8d4e8; margin-bottom: 2em; border-radius: 50px; }
+        .d8 .brand { font-size: 28px; font-weight: bold; color: #a67c9e; margin-bottom: 1.5em; }
+        .d8 .content { padding: 2em; }
+        .d8 button { background: #d97db9; color: #fff; border: none; padding: 1em 2em; border-radius: 50px; font-weight: bold; width: 100%; cursor: pointer; }
+
+        /* ===== 9. STRICT GRID: Everything in 12-column grid ===== */
+        .d9 { background: #1a1a1a; color: #fff; }
+        .d9-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1em; padding: 2em; }
+        .d9 .brand { grid-column: 1 / 13; font-size: 32px; font-weight: bold; margin-bottom: 1em; }
+        .d9 .section { grid-column: 1 / 7; border: 1px solid #ff6b6b; padding: 1.5em; }
+        .d9 .section:nth-child(3) { grid-column: 7 / 13; }
+        .d9 button { grid-column: 1 / 13; background: #ff6b6b; color: #000; border: none; padding: 1em; font-weight: bold; }
+
+        /* ===== 10. ASYMMETRICAL: Balanced but not symmetrical ===== */
+        .d10 { background: #2d1f1b; color: #f4e4d7; padding: 2em; }
+        .d10 .brand { font-size: 24px; font-weight: bold; margin-bottom: 2em; }
+        .d10 .content { display: grid; grid-template-columns: 1fr 1.5fr; gap: 3em; }
+        .d10 .left { }
+        .d10 .right { }
+        .d10 .item { padding: 1em; border-bottom: 1px solid rgba(244,228,215,0.2); }
+        .d10 button { background: #a0754f; color: #f4e4d7; border: none; padding: 1em 2em; width: 100%; margin-top: 2em; font-weight: bold; }
+
+        /* ===== 11. FLOATING: Minimal with floating cards ===== */
+        .d11 { background: #f8f8f8; color: #333; padding: 4em 2em; }
+        .d11 .card { background: #fff; padding: 2em; margin-bottom: 2em; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transform: rotate(-1deg); }
+        .d11 .card:nth-child(even) { transform: rotate(1deg); }
+        .d11 .brand { font-size: 32px; font-weight: bold; margin-bottom: 2em; }
+        .d11 button { background: #0ea5e9; color: #fff; border: none; padding: 1em 2em; width: 100%; font-weight: bold; }
+
+        /* ===== 12. LAYERED: Multiple background layers ===== */
+        .d12 { background: #0a0a2e; color: #fff; position: relative; overflow: hidden; }
+        .d12::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%; background: rgba(138, 43, 226, 0.1); }
+        .d12 .content { position: relative; z-index: 1; padding: 3em; }
+        .d12 .brand { font-size: 32px; font-weight: bold; margin-bottom: 2em; }
+        .d12 .card { background: rgba(138, 43, 226, 0.15); border: 2px solid #8a2be2; padding: 1.5em; margin-bottom: 1.5em; }
+        .d12 button { background: #8a2be2; color: #fff; border: none; padding: 1em 2em; width: 100%; font-weight: bold; }
+
+        /* ===== 13. RETRO FRAMES: Retro style borders/frames ===== */
+        .d13 { background: #fff; color: #000; padding: 3em; }
+        .d13 .frame { border: 8px solid #333; padding: 2em; margin-bottom: 2em; background: #f5f5f5; }
+        .d13 .brand { font-size: 28px; font-weight: 900; margin-bottom: 1em; }
+        .d13 .content { padding: 2em; }
+        .d13 button { border: 3px dashed #333; background: transparent; padding: 1em 2em; font-weight: bold; width: 100%; }
+
+        /* ===== 14. DIAGONAL: Diagonal text/sections ===== */
+        .d14 { background: #faf7f4; color: #4a4a4a; display: flex; align-items: center; justify-content: center; }
+        .d14 .content { transform: skewY(-3deg); max-width: 500px; text-align: center; }
+        .d14 .brand { font-size: 42px; font-weight: bold; margin-bottom: 2em; }
+        .d14 .card { background: #fff; padding: 2em; margin-bottom: 1em; border: 2px solid #000; }
+        .d14 button { background: #000; color: #fff; border: none; padding: 1.5em 2em; font-weight: bold; width: 100%; }
+
+        /* ===== 15. MODULAR: Perfect squares/rectangles ===== */
+        .d15 { background: #1a1a1a; color: #fff; padding: 2em; }
+        .d15 .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1em; }
+        .d15 .cell { aspect-ratio: 1; background: rgba(255,255,255,0.08); border: 1px solid #444; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .d15 .large { grid-column: span 2; grid-row: span 2; font-size: 28px; font-weight: bold; }
+        .d15 button { grid-column: 1 / -1; background: #fff; color: #000; border: none; padding: 1em; font-weight: bold; }
+
+        /* ===== 16. ORGANIC SHAPES: Rounded, soft ===== */
+        .d16 { background: #fef9f3; color: #5a4a52; padding: 3em; }
+        .d16 .blob { background: #f4e0e4; border-radius: 45% 55% 52% 48% / 48% 45% 55% 52%; padding: 2.5em; margin-bottom: 2em; }
+        .d16 .brand { font-size: 28px; font-weight: bold; margin-bottom: 1.5em; }
+        .d16 button { background: #c9a8a8; color: #fff; border: none; padding: 1em 2em; border-radius: 50px; width: 100%; font-weight: bold; }
+
+        /* ===== 17. MONOSPACE: Code-like aesthetic ===== */
+        .d17 { background: #000; color: #0f0; font-family: 'Courier New', monospace; padding: 2em; }
+        .d17 .brand { font-size: 18px; font-weight: bold; margin-bottom: 2em; }
+        .d17 .line { margin: 0.5em 0; }
+        .d17 .card { border-left: 2px solid #0f0; padding: 1em 0 1em 1em; margin-bottom: 1em; }
+        .d17 button { background: transparent; color: #0f0; border: 2px solid #0f0; padding: 1em; width: 100%; font-family: inherit; }
+
+        /* ===== 18. GRADIENT SECTIONS: Solid color blocks stacked ===== */
+        .d18 { background: #000; color: #fff; }
+        .d18 .section { padding: 3em; border-top: 4px solid #fff; }
+        .d18 .section:nth-child(1) { background: #1a1a1a; }
+        .d18 .section:nth-child(2) { background: #2d2d2d; }
+        .d18 .section:nth-child(3) { background: #3d3d3d; }
+        .d18 .brand { font-size: 24px; font-weight: bold; margin-bottom: 1em; }
+        .d18 button { background: #fff; color: #000; border: none; padding: 1em 2em; font-weight: bold; width: 100%; }
+
+        /* ===== 19. AVANT GARDE: Experimental layout ===== */
+        .d19 { background: #f0f0f0; color: #000; padding: 2em; }
+        .d19 .brand { font-size: 54px; font-weight: 900; transform: rotate(-5deg); margin-bottom: 2em; }
+        .d19 .content { display: flex; gap: 2em; flex-wrap: wrap; }
+        .d19 .item { width: 45%; transform: rotate(2deg); background: #fff; padding: 1.5em; }
+        .d19 .item:nth-child(even) { transform: rotate(-2deg); }
+        .d19 button { width: 100%; background: #000; color: #fff; border: none; padding: 1.5em; font-weight: bold; }
+
+        /* ===== 20. NEUMORPHIC: Soft UI ===== */
+        .d20 { background: #e0e5ec; color: #333; padding: 3em; }
+        .d20 .card { background: #e0e5ec; padding: 2em; margin-bottom: 1.5em; box-shadow: 9px 9px 16px #a3b1c6, -9px -9px 16px #fff; border-radius: 15px; }
+        .d20 .brand { font-size: 28px; font-weight: bold; margin-bottom: 2em; }
+        .d20 button { background: #e0e5ec; border: none; padding: 1em 2em; font-weight: bold; box-shadow: 4px 4px 10px #a3b1c6, -4px -4px 10px #fff; border-radius: 10px; width: 100%; }
+
+        /* ===== 21. SWISS GRID: Strict alignment, minimal ===== */
+        .d21 { background: #fff; color: #000; padding: 3rem; font-size: 13px; }
+        .d21 .brand { font-size: 24px; font-weight: 600; margin-bottom: 4rem; letter-spacing: 3px; }
+        .d21 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
+        .d21 .item { border-top: 1px solid #000; padding-top: 1rem; }
+        .d21 button { border: 1px solid #000; background: transparent; padding: 1rem 2rem; font-size: 12px; width: 100%; }
+
+        /* ===== 22. MAXIMALIST: Packed, dense information ===== */
+        .d22 { background: #2d1f1b; color: #d9c5a0; padding: 1.5em; font-size: 12px; }
+        .d22 .brand { font-size: 20px; font-weight: bold; margin-bottom: 1em; }
+        .d22 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8em; }
+        .d22 .item { background: rgba(139,111,71,0.2); padding: 0.8em; border: 1px solid #8b6f47; }
+        .d22 button { background: #8b6f47; color: #d9c5a0; border: none; padding: 0.8em; width: 100%; font-size: 12px; margin-top: 1em; }
+
+        /* ===== 23. LIGHT & AIR: Maximum whitespace ===== */
+        .d23 { background: #fafafa; color: #666; padding: 5em 3em; }
+        .d23 .brand { font-size: 32px; font-weight: 300; margin-bottom: 4em; letter-spacing: 2px; color: #333; }
+        .d23 .item { padding: 2em 0; border-bottom: 1px solid #eee; font-size: 15px; }
+        .d23 button { background: #333; color: #fff; border: none; padding: 1.5em 3em; font-weight: 300; width: 100%; margin-top: 3em; }
+
+        /* ===== 24. GLASSMORPHIC: Layers & transparency ===== */
+        .d24 { background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><defs><pattern id="p" width="40" height="40"><circle cx="20" cy="20" r="2" fill="%23333333"/></pattern></defs><rect width="100%" height="100%" fill="%23f0f0f0"/><rect width="100%" height="100%" fill="url(%23p)"/></svg>'); color: #000; padding: 3em; }
+        .d24 .card { background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.9); padding: 1.5em; margin-bottom: 1.5em; border-radius: 12px; }
+        .d24 .brand { font-size: 28px; font-weight: bold; margin-bottom: 2em; }
+        .d24 button { background: rgba(0,0,0,0.1); backdrop-filter: blur(5px); border: 1px solid rgba(0,0,0,0.2); padding: 1em 2em; width: 100%; font-weight: bold; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <!-- 1 -->
+    <div class="screen d1">
+        <div class="label">1. Dark Vinyl</div>
+        <div class="header"><div class="brand">NERO</div></div>
+        <div class="content">
+            <div class="sidebar">
+                <div class="section-title">Players</div>
+                <div class="item">Player 1</div>
+                <div class="item">Player 2</div>
+            </div>
+            <div class="main">
+                <div class="section-title">Submissions</div>
+                <div class="card">BLINDING LIGHTS</div>
+                <div class="card">LEVITATING</div>
+                <button>Ready</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="screen d2">
+        <div class="label">2. Card Grid</div>
+        <div class="header"><div class="brand">NERO</div></div>
+        <div class="grid">
+            <div class="card"><div class="avatar"></div><div class="card-title">P1</div></div>
+            <div class="card"><div class="avatar"></div><div class="card-title">P2</div></div>
+            <div class="card"><div class="avatar"></div><div class="card-title">P3</div></div>
+            <div class="card" style="grid-column: span 3;"><div class="card-title">SUBMISSIONS</div><div style="margin-top: 1em;">Blinding Lights · Levitating</div></div>
+        </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="screen d3">
+        <div class="label">3. Full Width Cards</div>
+        <div class="header"><div class="brand">NERO</div></div>
+        <div class="card">
+            <div class="avatar"></div>
+            <div class="card-content">
+                <div style="font-weight: bold;">Player 1</div>
+                <div style="font-size: 12px; margin-top: 0.5em;">2 / 5 submitted</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="avatar"></div>
+            <div class="card-content">
+                <div style="font-weight: bold;">Player 2</div>
+                <div style="font-size: 12px; margin-top: 0.5em;">1 / 5 submitted</div>
+            </div>
+        </div>
+        <button>Ready to Play</button>
+    </div>
+
+    <!-- 4 -->
+    <div class="screen d4">
+        <div class="label">4. Centered Minimalist</div>
+        <div class="brand">NERO</div>
+        <div class="content">
+            <div class="card">BLINDING LIGHTS</div>
+            <div class="card">LEVITATING</div>
+            <button>Ready</button>
+        </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="screen d5">
+        <div class="label">5. Vertical Split</div>
+        <div class="split">
+            <div class="left">
+                <div class="brand">NERO</div>
+                <ul class="list">
+                    <li>Player 1</li>
+                    <li>Player 2</li>
+                    <li>Player 3</li>
+                </ul>
+            </div>
+            <div class="right">
+                <h2 style="margin-bottom: 2em;">Submissions</h2>
+                <div style="line-height: 2;">
+                    • Blinding Lights<br>
+                    • Levitating<br>
+                    <button style="margin-top: 2em; padding: 1em 2em; background: #00ffff; color: #000; border: none; cursor: pointer; font-weight: bold;">Ready</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="screen d6">
+        <div class="label">6. Stacked Cards</div>
+        <div class="stack">
+            <div class="card"><div class="brand">NERO</div></div>
+            <div class="card"><strong>Room 487</strong><div style="margin-top: 1em;">Player 1 · Player 2</div></div>
+            <div class="card"><strong>Submissions</strong><div style="margin-top: 1em;">Blinding Lights<br>Levitating</div></div>
+            <div class="card"><button style="background: #000; color: #fff; padding: 1em; border: none; width: 100%; font-weight: bold;">Ready</button></div>
+        </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="screen d7">
+        <div class="label">7. Brutalist Sans</div>
+        <div class="brand">NERO</div>
+        <div class="section">
+            <div class="section-title">Players</div>
+            <div class="item">PLAYER 1 — 2/5</div>
+            <div class="item">PLAYER 2 — 1/5</div>
+        </div>
+        <div class="section">
+            <div class="section-title">Submissions</div>
+            <div class="item">BLINDING LIGHTS</div>
+            <div class="item">LEVITATING</div>
+        </div>
+        <button>READY</button>
+    </div>
+
+    <!-- 8 -->
+    <div class="screen d8">
+        <div class="label">8. Pastel Wave</div>
+        <div class="wave">
+            <div class="brand">NERO</div>
+            <div style="font-size: 12px;">Room 487</div>
+        </div>
+        <div class="content">
+            <div style="padding: 1.5em; background: #fff; border-radius: 30px; margin-bottom: 1em;">
+                <strong>Your Submissions</strong>
+                <div style="margin-top: 1em; color: #5a4a6b;">Blinding Lights · Levitating</div>
+            </div>
+            <button>Ready to Play</button>
+        </div>
+    </div>
+
+    <!-- 9 -->
+    <div class="screen d9">
+        <div class="d9-grid">
+            <div class="brand">NERO</div>
+            <div class="section"><strong>PLAYERS</strong><div style="margin-top: 1em;">P1 · P2 · P3</div></div>
+            <div class="section"><strong>SUBMISSIONS</strong><div style="margin-top: 1em;">Track 1 · Track 2</div></div>
+            <button>Ready</button>
+        </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="screen d10">
+        <div class="label">10. Asymmetrical</div>
+        <div class="brand">NERO</div>
+        <div class="content">
+            <div class="left">
+                <div class="item"><strong>P1</strong><br>2/5</div>
+                <div class="item"><strong>P2</strong><br>1/5</div>
+            </div>
+            <div class="right">
+                <h3 style="margin-bottom: 1em;">Your Submissions</h3>
+                <div style="line-height: 2; margin-bottom: 2em;">Blinding Lights<br>Levitating</div>
+                <button>Ready</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 11 -->
+    <div class="screen d11">
+        <div class="label">11. Floating Cards</div>
+        <div class="brand">NERO</div>
+        <div class="card">Room 487 — 2 players</div>
+        <div class="card">Blinding Lights</div>
+        <div class="card">Levitating</div>
+        <button>Ready to Play</button>
+    </div>
+
+    <!-- 12 -->
+    <div class="screen d12">
+        <div class="label">12. Layered</div>
+        <div class="content">
+            <div class="brand">NERO</div>
+            <div class="card">Player 1 — 2/5</div>
+            <div class="card">Player 2 — 1/5</div>
+            <div class="card">Blinding Lights · Levitating</div>
+            <button>Ready</button>
+        </div>
+    </div>
+
+    <!-- 13 -->
+    <div class="screen d13">
+        <div class="label">13. Retro Frames</div>
+        <div class="frame">
+            <div class="brand">NERO</div>
+            <div class="content">
+                <div style="margin: 1em 0;"><strong>PLAYERS</strong></div>
+                <div style="margin: 1em 0;">Player 1 — Player 2</div>
+                <div style="margin: 2em 0 0;"><strong>SUBMISSIONS</strong></div>
+                <div style="margin: 1em 0;">Blinding Lights<br>Levitating</div>
+            </div>
+            <button>Ready</button>
+        </div>
+    </div>
+
+    <!-- 14 -->
+    <div class="screen d14">
+        <div class="label">14. Diagonal</div>
+        <div class="content">
+            <div class="brand">NERO</div>
+            <div class="card">Players Online: 2</div>
+            <div class="card">Submitted: Blinding Lights, Levitating</div>
+            <button>Ready for Battle</button>
+        </div>
+    </div>
+
+    <!-- 15 -->
+    <div class="screen d15">
+        <div class="label">15. Modular Grid</div>
+        <div class="grid">
+            <div class="cell large">NERO</div>
+            <div class="cell">P1</div>
+            <div class="cell">P2</div>
+            <div class="cell">2</div>
+            <div class="cell">Tracks</div>
+            <div class="cell">Ready?</div>
+            <button>Ready</button>
+        </div>
+    </div>
+
+    <!-- 16 -->
+    <div class="screen d16">
+        <div class="label">16. Organic Shapes</div>
+        <div class="blob">
+            <div class="brand">NERO</div>
+            <div style="font-size: 12px; margin-top: 1em;">Room 487</div>
+        </div>
+        <div class="blob">
+            <strong>Your Picks</strong>
+            <div style="margin-top: 1em;">Blinding Lights<br>Levitating</div>
+        </div>
+        <button>Ready to Play</button>
+    </div>
+
+    <!-- 17 -->
+    <div class="screen d17">
+        <div class="label">17. Monospace Code</div>
+        <div class="brand">> NERO</div>
+        <div class="line">$ room_id: 487</div>
+        <div class="line">$ players: 2</div>
+        <div class="card">
+            <div class="line">$ submissions:</div>
+            <div class="line">&nbsp;&nbsp;- BLINDING LIGHTS</div>
+            <div class="line">&nbsp;&nbsp;- LEVITATING</div>
+        </div>
+        <button>$ ready</button>
+    </div>
+
+    <!-- 18 -->
+    <div class="screen d18">
+        <div class="label">18. Stacked Sections</div>
+        <div class="section"><div class="brand">NERO</div></div>
+        <div class="section"><strong>Players:</strong> P1, P2, P3</div>
+        <div class="section"><strong>Tracks:</strong> Blinding Lights, Levitating</div>
+        <button style="padding: 2em; font-size: 16px;">Ready</button>
+    </div>
+
+    <!-- 19 -->
+    <div class="screen d19">
+        <div class="label">19. Avant Garde</div>
+        <div class="brand">NERO</div>
+        <div class="content">
+            <div class="item">PLAYER 1<br>2/5</div>
+            <div class="item">PLAYER 2<br>1/5</div>
+            <div class="item">BLINDING<br>LIGHTS</div>
+            <div class="item">LEVITATING</div>
+        </div>
+        <button>Ready</button>
+    </div>
+
+    <!-- 20 -->
+    <div class="screen d20">
+        <div class="label">20. Neumorphic</div>
+        <div class="brand">NERO</div>
+        <div class="card">Players: 2 Online</div>
+        <div class="card">Blinding Lights<br>Levitating</div>
+        <button>Ready to Play</button>
+    </div>
+
+    <!-- 21 -->
+    <div class="screen d21">
+        <div class="label">21. Swiss Grid</div>
+        <div class="brand">NERO PARTY</div>
+        <div class="row">
+            <div><div class="item">PLAYER 1</div><div class="item">PLAYER 2</div></div>
+            <div><div class="item">BLINDING LIGHTS</div><div class="item">LEVITATING</div></div>
+        </div>
+        <button>READY</button>
+    </div>
+
+    <!-- 22 -->
+    <div class="screen d22">
+        <div class="label">22. Maximalist Dense</div>
+        <div class="brand">NERO</div>
+        <div class="grid">
+            <div class="item">P1<br>2/5</div>
+            <div class="item">P2<br>1/5</div>
+            <div class="item">P3<br>0/5</div>
+            <div class="item">BLINDING</div>
+            <div class="item">LEVITATING</div>
+            <div class="item">ROOM 487</div>
+        </div>
+        <button>Ready</button>
+    </div>
+
+    <!-- 23 -->
+    <div class="screen d23">
+        <div class="label">23. Light & Air</div>
+        <div class="brand">Nero</div>
+        <div class="item">Player 1 — 2 of 5 submitted</div>
+        <div class="item">Player 2 — 1 of 5 submitted</div>
+        <div class="item">Blinding Lights</div>
+        <div class="item">Levitating</div>
+        <button>Ready to Play</button>
+    </div>
+
+    <!-- 24 -->
+    <div class="screen d24">
+        <div class="label">24. Glassmorphic</div>
+        <div class="card"><div class="brand">NERO</div></div>
+        <div class="card"><strong>Room 487</strong><br><div style="margin-top: 0.5em; font-size: 12px;">2 Players Online</div></div>
+        <div class="card"><strong>Submissions</strong><br><div style="margin-top: 0.5em; font-size: 12px;">Blinding Lights<br>Levitating</div></div>
+        <button>Ready</button>
+    </div>
+</body>
+</html>

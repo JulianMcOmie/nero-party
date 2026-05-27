@@ -58,11 +58,12 @@ model Party {
 }
 
 model QueueItem {
-  id             String @id @default(uuid())
+  id             String  @id @default(uuid())
   spotifyTrackId String
   title          String
   artist         String
   albumArtUrl    String
+  previewUrl     String?
 
   // Running sum of all 1-5 star ratings cast for this track.
   totalRatingScore Int      @default(0)

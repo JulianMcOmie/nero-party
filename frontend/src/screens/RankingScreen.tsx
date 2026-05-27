@@ -1,0 +1,277 @@
+import { useEffect, useRef, useState } from "react";
+import { useParty } from "../party/NeroPartyContext";
+import { Header } from "../components/Header";
+import { StarRating } from "../components/StarRating";
+import { PlayIcon, PauseIcon, CheckIcon } from "../components/icons";
+
+export default function RankingScreen() {
+  const {
+    state, me, isHost, currentTrack,
+    castVote, play, pause, nextSong, returnToLobby,
+  } = useParty();
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Rating state
+  const [selectedRating, setSelectedRating] = useState(0);
+  const [ratingSubmitted, setRatingSubmitted] = useState(false);
+
+  // Reset audio when track changes
+  useEffect(() => {
+    const audio = (audioRef.current ??= new Audio());
+    audio.pause();
+    audio.src = "";
+    return () => { audio.pause(); audio.src = ""; };
+  }, [currentTrack?.id]);
+
+  // Reset rating state on track change
+  useEffect(() => {
+    const vote = currentTrack ? state.myVotes[currentTrack.id] : undefined;
+    const hasRating = (vote?.rating ?? 0) > 0;
+    setSelectedRating(vote?.rating ?? 0);
+    setRatingSubmitted(hasRating);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTrack?.id]);
+
+  // Play/pause in sync with host control
+  useEffect(() => {
+    const audio = (audioRef.current ??= new Audio());
+    const previewUrl = currentTrack?.previewUrl;
+    if (!previewUrl) return;
+    if (state.playback.isPlaying) {
+      audio.src = previewUrl;
+      const elapsed = state.playback.startedAt
+        ? (Date.now() - state.playback.startedAt) / 1000
+        : 0;
+      audio.currentTime = Math.min(Math.max(elapsed, 0), 29);
+      void audio.play().catch((err) => console.error("[playback] play failed:", err));
+    } else {
+      audio.pause();
+    }
+  }, [state.playback.isPlaying, state.playback.startedAt, currentTrack?.previewUrl]);
+
+  // Submit rating immediately when selected
+  const handleSubmitRating = (rating: number) => {
+    if (!currentTrack) return;
+    setSelectedRating(rating);
+    castVote(currentTrack.id, rating);
+    setRatingSubmitted(true);
+  };
+
+  // ── Loading guard ──────────────────────────────────────────────────────────
+  const party = state.party;
+  if (!party || !currentTrack) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background text-foreground">
+        <Header />
+        <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
+          loading round…
+        </div>
+      </div>
+    );
+  }
+
+  const config = party.config;
+  const isMine = currentTrack.isOwn;
+
+  const queueIdx = state.queue.findIndex((q) => q.id === currentTrack.id);
+  const isLast = queueIdx >= 0 && queueIdx === state.queue.length - 1;
+  const totalRounds = state.queue.length;
+
+  const activityByUser = new Map(state.roundActivity.map((a) => [a.userId, a]));
+
+  const showMetadata = !config.hideSong;
+
+  const onlineParticipants = state.participants.filter((p) => p.online);
+  const allOnlineHaveRated = onlineParticipants.every((p) => {
+    const a = activityByUser.get(p.id);
+    return a?.hasRated;
+  });
+
+  return (
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <Header />
+
+      <main className="flex-1 flex flex-col">
+        {/* Three-column layout */}
+        <div className="flex-1 flex flex-col">
+          <div className="mx-auto w-[75%] px-6 py-8 flex-1 flex gap-8">
+            {/* Left sidebar: Room participants */}
+            <aside className="flex-0 w-40 shrink-0">
+            {isHost && (
+              <button
+                type="button"
+                onClick={returnToLobby}
+                className="mb-4 block text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                ← return to lobby
+              </button>
+            )}
+            <h3 className="mb-4 text-xs text-muted-foreground uppercase tracking-widest font-semibold">room</h3>
+            {isHost && (
+              <div className="mb-4 text-xs text-muted-foreground">song {queueIdx + 1} of {totalRounds}</div>
+            )}
+            <div className="space-y-2">
+              {state.participants.filter((p) => p.online).map((p) => {
+                const a = activityByUser.get(p.id);
+                const hasRated = a?.hasRated;
+                return (
+                  <div key={p.id} className="text-xs py-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="truncate font-medium text-foreground">{p.name}</span>
+                      {hasRated && (
+                        <CheckIcon className="h-3 w-3 text-foreground flex-shrink-0" />
+                      )}
+                    </div>
+                    {isMine && p.id === me?.id && (
+                      <div className="text-muted-foreground italic">(your song)</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            </aside>
+
+            {/* Center: Song and rating */}
+            <div className="flex-1 flex flex-col items-center justify-center">
+            {/* Song cover */}
+            <div className="mb-6 flex h-64 w-64 items-center justify-center rounded-lg bg-input/50">
+              {showMetadata && currentTrack.albumArtUrl ? (
+                <img src={currentTrack.albumArtUrl} alt="" className="h-full w-full rounded-lg object-cover" />
+              ) : (
+                <div className="text-6xl text-muted-foreground/50">
+                  {showMetadata ? "♪" : "?"}
+                </div>
+              )}
+            </div>
+
+            {/* Title and artist (if visible) */}
+            {showMetadata && (
+              <div className="mb-8 text-center">
+                <h2 className="text-lg font-semibold mb-1">{currentTrack.title ?? "—"}</h2>
+                <p className="text-sm text-muted-foreground">{currentTrack.artist ?? "—"}</p>
+              </div>
+            )}
+
+            {/* Play button (host only) */}
+            {isHost && (
+              <div className="mb-8 group relative">
+                <button
+                  type="button"
+                  onClick={state.playback.isPlaying ? pause : play}
+                  aria-label={state.playback.isPlaying ? "Pause" : "Play"}
+                  className="flex h-14 w-14 items-center justify-center rounded-full border border-border bg-input hover:bg-input/80 transition-colors"
+                >
+                  {state.playback.isPlaying
+                    ? <PauseIcon className="h-6 w-6" />
+                    : <PlayIcon className="h-6 w-6" />}
+                </button>
+                {!state.playback.isPlaying && (
+                  <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 text-xs text-muted-foreground whitespace-nowrap">
+                    play
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Rating */}
+            <div className="flex flex-col items-center gap-4">
+              {ratingSubmitted ? (
+                <div className="flex items-center gap-2">
+                  <StarRating value={selectedRating} onChange={() => {}} disabled />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedRating(0);
+                      setRatingSubmitted(false);
+                    }}
+                    className="text-xs text-muted-foreground hover:text-foreground"
+                  >
+                    change
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <StarRating
+                    value={selectedRating}
+                    onChange={(rating) => handleSubmitRating(rating)}
+                  />
+                </div>
+              )}
+              {isMine && (
+                <p className="text-xs text-muted-foreground">your rating won't count — this is your song</p>
+              )}
+            </div>
+
+            {/* Waiting indicator for players */}
+            {!isHost && (
+              <div className="mt-8 text-center text-sm text-muted-foreground">
+                {allOnlineHaveRated
+                  ? "waiting for the host to continue…"
+                  : "waiting for everyone to rate…"}
+              </div>
+            )}
+
+            {/* Host reveal button */}
+            {isHost && (
+              <div className="mt-8">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    console.log("Next song button clicked");
+                    console.log("currentTrack:", currentTrack);
+                    console.log("isLast:", isLast);
+                    console.log("queueIdx:", queueIdx);
+                    try {
+                      const result = nextSong();
+                      console.log("nextSong returned:", result);
+                      if (result instanceof Promise) {
+                        result.catch(err => console.error("Promise rejected:", err));
+                      }
+                    } catch (error) {
+                      console.error("Error calling nextSong:", error);
+                    }
+                  }}
+                  className="px-6 py-2 bg-input hover:bg-input/80 border border-border rounded text-sm font-medium transition-colors"
+                >
+                  {isLast ? "reveal final results" : "next song →"}
+                </button>
+              </div>
+            )}
+            </div>
+
+            {/* Right sidebar: Queue */}
+            <aside className="flex-0 w-40 shrink-0">
+            <h3 className="mb-4 text-xs text-muted-foreground uppercase tracking-widest font-semibold">queue</h3>
+            <div className="space-y-2 text-xs max-h-96 overflow-y-auto">
+              {state.queue.map((item) => {
+                const isCurrent = item.id === currentTrack.id;
+                return (
+                  <div
+                    key={item.id}
+                    className={`py-2 px-2 rounded transition-colors ${
+                      isCurrent
+                        ? "bg-input/50 text-foreground font-medium"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {showMetadata || item.isOwn ? (
+                      <div>
+                        <div className="font-medium line-clamp-1">{item.title ?? "Untitled"}</div>
+                        <div className="text-muted-foreground line-clamp-1">{item.artist ?? "Unknown"}</div>
+                      </div>
+                    ) : (
+                      <div className="text-muted-foreground italic">hidden song</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            </aside>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
+

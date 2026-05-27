@@ -184,6 +184,15 @@ export function registerSocketHandlers(io: TypedServer): void {
       });
     });
 
+    socket.on("song:remove", (payload, ack) => {
+      void handle(ack, async () => {
+        await partyService.removeSong(payload);
+        await broadcastPartyState(io, payload.partyId);
+        await broadcastSubmissionProgress(io, payload.partyId);
+        return null;
+      });
+    });
+
     /* ---------------------------------------------------------------- */
     /* Phase C — Ranking / Guessing                                     */
     /* ---------------------------------------------------------------- */
@@ -216,7 +225,7 @@ export function registerSocketHandlers(io: TypedServer): void {
       void handle(ack, async () => {
         await partyService.authorizePlayback(payload);
         runtime.setPlaying(payload.partyId, true);
-        io.to(payload.partyId).emit("playback:state", { isPlaying: true });
+        io.to(payload.partyId).emit("playback:state", { isPlaying: true, startedAt: Date.now() });
         await broadcastPartyState(io, payload.partyId);
         return null;
       });
@@ -236,6 +245,8 @@ export function registerSocketHandlers(io: TypedServer): void {
       void handle(ack, async () => {
         const connectedUserIds = runtime.onlineUserIds(payload.partyId);
         const result = await partyService.revealRound(payload, connectedUserIds);
+        runtime.setPlaying(payload.partyId, false);
+        io.to(payload.partyId).emit("playback:state", { isPlaying: false });
         io.to(payload.partyId).emit("round:result", result);
         await broadcastPartyState(io, payload.partyId);
         return null;
@@ -245,6 +256,8 @@ export function registerSocketHandlers(io: TypedServer): void {
     socket.on("round:next", (payload, ack) => {
       void handle(ack, async () => {
         const { advanced } = await partyService.nextSong(payload);
+        runtime.setPlaying(payload.partyId, false);
+        io.to(payload.partyId).emit("playback:state", { isPlaying: false });
         if (!advanced) {
           // Final song was revealed — transition straight into Phase D.
           const results = await partyService.finalReveal(payload.partyId);
@@ -259,6 +272,15 @@ export function registerSocketHandlers(io: TypedServer): void {
     /* Phase D — Reveal: replay                                         */
     /* ---------------------------------------------------------------- */
 
+    socket.on("game:returnToLobby", (payload, ack) => {
+      void handle(ack, async () => {
+        await partyService.returnToLobby(payload);
+        runtime.setPlaying(payload.partyId, false);
+        await broadcastPartyState(io, payload.partyId);
+        return null;
+      });
+    });
+
     socket.on("game:playAgain", (payload, ack) => {
       void handle(ack, async () => {
         await partyService.playAgain(payload);
@@ -268,6 +290,20 @@ export function registerSocketHandlers(io: TypedServer): void {
       });
     });
 
+    socket.on("room:terminate", (payload) => {
+      void (async () => {
+        try {
+          await partyService.terminateParty(payload);
+          const room = io.sockets.adapter.rooms.get(payload.partyId);
+          console.log("Broadcasting room:closed to room:", payload.partyId);
+          console.log("Sockets in room:", room);
+          io.to(payload.partyId).emit("room:closed");
+        } catch {
+          // Party already gone or requester isn't host — nothing to broadcast.
+        }
+      })();
+    });
+
     /* ---------------------------------------------------------------- */
     /* Presence                                                         */
     /* ---------------------------------------------------------------- */
@@ -275,7 +311,6 @@ export function registerSocketHandlers(io: TypedServer): void {
     socket.on("disconnect", () => {
       const binding = runtime.unbind(socket.id);
       if (binding) {
-        // Let the rest of the room see this player drop offline.
         void broadcastPartyState(io, binding.partyId);
       }
     });

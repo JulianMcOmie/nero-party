@@ -1,3 +1,109 @@
+@font-face {
+  font-family: 'Aileron';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Aileron'), url(https://fonts.cdnfonts.com/s/16225/Aileron-Regular.woff) format('woff');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes eq-bar {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes note-float {
+  0%   { transform: translateY(0px)   rotate(0deg);   }
+  25%  { transform: translateY(-14px) rotate(5deg);   }
+  50%  { transform: translateY(-8px)  rotate(-3deg);  }
+  75%  { transform: translateY(-20px) rotate(7deg);   }
+  100% { transform: translateY(0px)   rotate(0deg);   }
+}
+
+@layer components {
+  /* Consistent hover effect for primary pill/rounded buttons */
+  .btn-interactive {
+    @apply transition-all duration-150 hover:scale-[1.025] hover:brightness-105;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --header: 0 0% 94.51%;
+    --card: 0 0% 96.86%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 27.84%;
+    --foreground: 0 0% 27.84%;
+    --muted: 0 0% 27.84%;
+    --muted-foreground: 0 0% 46%;
+    --destructive: 0 84.2% 60.2%;
+    --success: 142 71% 45%;
+    --extreme: 0 0% 100%;
+    --extreme-foreground: 0 0% 0%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 63.9%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    color-scheme: dark;
+    --background: 0 0% 9.41%;
+    --header: 0 0% 13.33%;
+    --card: 0 0% 13.33%;
+    --popover: 0 0% 15%;
+    --popover-foreground: 0 0% 100%;
+    --foreground: 0 0% 100%;
+    --muted: 0 0% 78.43%;
+    --muted-foreground: 0 0% 63.9%;
+    --destructive: 0 72% 50.6%;
+    --success: 142 71% 45%;
+    --extreme: 0 0% 0%;
+    --extreme-foreground: 0 0% 100%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 63.9%;
+  }
+
+  html,
+  :host {
+    font-family: 'Aileron', system-ui, sans-serif;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 50% at 15% 60%, hsl(142 71% 45% / 0.07) 0%, transparent 100%),
+      radial-gradient(ellipse 50% 60% at 85% 25%, hsl(220 70% 60% / 0.05) 0%, transparent 100%);
+    animation: bg-drift 30s ease-in-out infinite alternate;
+  }
+
+  @keyframes bg-drift {
+    from { transform: scale(1) translate(0%, 0%); }
+    to   { transform: scale(1.2) translate(-4%, 4%); }
+  }
+
+  * {
+    border-color: hsl(var(--border));
+    outline-color: hsl(var(--ring) / 0.5);
+  }
+
+  /* Form controls inherit token-driven foreground regardless of bg class. */
+  input,
+  textarea,
+  select {
+    color: hsl(var(--foreground));
+  }
+}

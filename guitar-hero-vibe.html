@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nero Party - Guitar Hero Vibe</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; background: #0a0a0a; }
+
+        .screen {
+            min-height: 100vh;
+            padding: 2em;
+            display: flex;
+            flex-direction: column;
+            page-break-after: always;
+        }
+
+        .screen-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #7dff00;
+            margin-bottom: 1em;
+            opacity: 0.7;
+        }
+
+        /* ===== GUITAR HERO VIBE ===== */
+        .gh {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0f2e 100%);
+            color: #fff;
+        }
+
+        .gh-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5em 0;
+            margin-bottom: 2em;
+            border-bottom: 2px solid #7dff00;
+        }
+
+        .gh-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.8em;
+        }
+
+        .gh-icon {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #7dff00 0%, #00ffff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #0a0a0a;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            font-size: 18px;
+        }
+
+        .gh-text {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #7dff00 0%, #00ffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gh-meta {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #7dff00;
+        }
+
+        .gh-section {
+            margin-bottom: 2em;
+        }
+
+        .gh-section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #7dff00;
+            margin-bottom: 1em;
+            padding-bottom: 0.5em;
+            border-bottom: 1px solid #333;
+            font-weight: bold;
+        }
+
+        .gh-item {
+            display: flex;
+            align-items: center;
+            gap: 1em;
+            padding: 1em;
+            background: rgba(125, 255, 0, 0.05);
+            border-left: 3px solid #7dff00;
+            margin-bottom: 0.8em;
+            transition: all 0.2s;
+        }
+
+        .gh-item:hover {
+            background: rgba(125, 255, 0, 0.12);
+            border-left-color: #00ffff;
+        }
+
+        .gh-avatar {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #7dff00 0%, #ff00ff 100%);
+            flex-shrink: 0;
+            border: 1px solid #7dff00;
+        }
+
+        .gh-text-content { flex: 1; }
+        .gh-text-name { font-size: 13px; font-weight: bold; }
+        .gh-text-sub { font-size: 11px; color: #7dff00; }
+        .gh-stat { color: #00ffff; font-weight: bold; font-size: 12px; }
+
+        .gh-card {
+            background: linear-gradient(135deg, rgba(125, 255, 0, 0.08) 0%, rgba(0, 255, 255, 0.08) 100%);
+            border: 2px solid #7dff00;
+            padding: 1.5em;
+            margin-bottom: 1.5em;
+        }
+
+        .gh-card-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #7dff00;
+            margin-bottom: 1em;
+            font-weight: bold;
+        }
+
+        .gh-card-content { font-size: 14px; line-height: 1.6; }
+
+        .gh-button {
+            background: linear-gradient(135deg, #7dff00 0%, #00ffff 100%);
+            color: #0a0a0a;
+            border: none;
+            padding: 1em 1.5em;
+            cursor: pointer;
+            font-weight: 900;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            width: 100%;
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+        }
+
+        .gh-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(125, 255, 0, 0.4);
+        }
+
+        .gh-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1em;
+            margin-bottom: 1.5em;
+        }
+
+        .gh-grid-item {
+            border: 2px solid #333;
+            padding: 1em;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(125, 255, 0, 0.02);
+        }
+
+        .gh-grid-item:hover {
+            border-color: #7dff00;
+            background: rgba(125, 255, 0, 0.08);
+        }
+
+        .gh-grid-item.selected {
+            border-color: #7dff00;
+            background: rgba(125, 255, 0, 0.15);
+            box-shadow: 0 0 15px rgba(125, 255, 0, 0.3);
+        }
+
+        .gh-grid-icon { font-size: 24px; margin-bottom: 0.5em; }
+        .gh-grid-name { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .gh-stars {
+            display: flex;
+            gap: 0.8em;
+            font-size: 20px;
+        }
+
+        .gh-star {
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+
+        .gh-star.active { color: #7dff00; text-shadow: 0 0 10px rgba(125, 255, 0, 0.5); }
+        .gh-star.inactive { color: #333; }
+
+        .gh-leaderboard {
+            margin-bottom: 2em;
+        }
+
+        .gh-leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 1em;
+            padding: 1em;
+            background: rgba(125, 255, 0, 0.05);
+            border-left: 4px solid #7dff00;
+            margin-bottom: 1em;
+            transition: all 0.2s;
+        }
+
+        .gh-leaderboard-item:hover {
+            background: rgba(125, 255, 0, 0.12);
+        }
+
+        .gh-rank {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #7dff00 0%, #00ffff 100%);
+            color: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .gh-leaderboard-name { flex: 1; font-weight: bold; }
+        .gh-leaderboard-score { color: #7dff00; font-weight: bold; font-size: 14px; }
+
+        .gh-song-item {
+            padding: 0.8em 1em;
+            border-left: 2px solid #00ffff;
+            margin: 0.5em 0 0.5em 1em;
+            font-size: 12px;
+        }
+
+        .gh-song-score { color: #7dff00; font-weight: bold; }
+
+        .container { max-width: 1200px; margin: 0 auto; flex: 1; display: flex; flex-direction: column; }
+        .row { display: flex; gap: 2em; flex: 1; }
+        .col { flex: 1; }
+        .col-sidebar { flex: 0 0 220px; }
+    </style>
+</head>
+<body>
+    <!-- SCREEN 1: SUBMITTING -->
+    <div class="screen gh">
+        <div class="screen-label">Screen 1: Submit Your Tracks</div>
+        <div class="container">
+            <div class="gh-header">
+                <div class="gh-brand">
+                    <div class="gh-icon">♪</div>
+                    <div class="gh-text">NERO</div>
+                </div>
+                <div class="gh-meta">Room 487</div>
+            </div>
+
+            <div class="row">
+                <div class="col-sidebar">
+                    <div class="gh-section-title">Players</div>
+                    <div class="gh-item">
+                        <div class="gh-avatar"></div>
+                        <div class="gh-text-content">
+                            <div class="gh-text-name">Player 1</div>
+                            <div class="gh-text-sub">2 / 5</div>
+                        </div>
+                    </div>
+                    <div class="gh-item">
+                        <div class="gh-avatar"></div>
+                        <div class="gh-text-content">
+                            <div class="gh-text-name">Player 2</div>
+                            <div class="gh-text-sub">1 / 5</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="gh-section-title">Your Submissions</div>
+
+                    <input type="text" placeholder="SEARCH TRACKS..." style="background: rgba(125,255,0,0.05); border: 1px solid #333; color: #fff; padding: 0.8em; width: 100%; margin-bottom: 1.5em; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
+
+                    <div class="gh-card">
+                        <div class="gh-card-title">Queued</div>
+                        <div class="gh-card-content">
+                            <div style="margin-bottom: 0.5em;">• BLINDING LIGHTS</div>
+                            <div>• LEVITATING</div>
+                        </div>
+                    </div>
+
+                    <button class="gh-button">Ready for Battle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: VOTING -->
+    <div class="screen gh">
+        <div class="screen-label">Screen 2: Rate & Guess</div>
+        <div class="container">
+            <div class="gh-header">
+                <div class="gh-brand">
+                    <div class="gh-icon">♪</div>
+                    <div class="gh-text">NERO</div>
+                </div>
+                <div class="gh-meta">Round 1 / 5</div>
+            </div>
+
+            <div class="gh-section">
+                <div class="gh-section-title">Now Performing</div>
+                <div class="gh-card">
+                    <div style="text-align: center; padding: 2em 0;">
+                        <div style="font-size: 36px; margin-bottom: 1em;">♫</div>
+                        <div style="font-size: 14px; font-weight: bold;">MYSTERY TRACK</div>
+                        <div style="font-size: 11px; color: #7dff00; margin-top: 0.5em;">listening...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gh-section">
+                <div class="gh-section-title">Rate This</div>
+                <div class="gh-stars">
+                    <span class="gh-star active">★</span>
+                    <span class="gh-star active">★</span>
+                    <span class="gh-star active">★</span>
+                    <span class="gh-star inactive">☆</span>
+                    <span class="gh-star inactive">☆</span>
+                </div>
+            </div>
+
+            <div class="gh-section">
+                <div class="gh-section-title">Who's Performing?</div>
+                <div class="gh-grid">
+                    <div class="gh-grid-item">
+                        <div class="gh-grid-icon">👤</div>
+                        <div class="gh-grid-name">P1</div>
+                    </div>
+                    <div class="gh-grid-item selected">
+                        <div class="gh-grid-icon">👤</div>
+                        <div class="gh-grid-name">P2</div>
+                    </div>
+                    <div class="gh-grid-item">
+                        <div class="gh-grid-icon">👤</div>
+                        <div class="gh-grid-name">P3</div>
+                    </div>
+                    <div class="gh-grid-item">
+                        <div class="gh-grid-icon">👤</div>
+                        <div class="gh-grid-name">P4</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="gh-button">Submit Votes</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: RESULTS -->
+    <div class="screen gh">
+        <div class="screen-label">Screen 3: Final Scores</div>
+        <div class="container">
+            <div class="gh-header">
+                <div class="gh-brand">
+                    <div class="gh-text">NERO</div>
+                </div>
+                <div class="gh-meta">Game Over</div>
+            </div>
+
+            <div class="gh-section">
+                <div class="gh-section-title">Leaderboard</div>
+
+                <div class="gh-leaderboard-item">
+                    <div class="gh-rank">1</div>
+                    <div class="gh-leaderboard-name">PLAYER 1</div>
+                    <div class="gh-leaderboard-score">145 PTS</div>
+                </div>
+                <div class="gh-song-item">
+                    → BLINDING LIGHTS <span class="gh-song-score">+45</span>
+                </div>
+                <div class="gh-song-item">
+                    → LEVITATING <span class="gh-song-score">+60</span>
+                </div>
+
+                <div class="gh-leaderboard-item" style="margin-top: 1em;">
+                    <div class="gh-rank">2</div>
+                    <div class="gh-leaderboard-name">PLAYER 2</div>
+                    <div class="gh-leaderboard-score">128 PTS</div>
+                </div>
+                <div class="gh-song-item">
+                    → AS IT WAS <span class="gh-song-score">+55</span>
+                </div>
+                <div class="gh-song-item">
+                    → GOOD 4 U <span class="gh-song-score">+38</span>
+                </div>
+
+                <div class="gh-leaderboard-item" style="margin-top: 1em;">
+                    <div class="gh-rank">3</div>
+                    <div class="gh-leaderboard-name">PLAYER 3</div>
+                    <div class="gh-leaderboard-score">112 PTS</div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1em; margin-top: auto;">
+                <button class="gh-button" style="flex: 1;">Play Again</button>
+                <button class="gh-button" style="flex: 1; background: rgba(125,255,0,0.2); color: #7dff00;">Back to Lobby</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

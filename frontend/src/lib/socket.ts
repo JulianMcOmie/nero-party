@@ -11,4 +11,5 @@ export type TypedSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
 export const socket: TypedSocket = io(SOCKET_URL, {
   autoConnect: false,
+  transports: ["websocket"],
 });

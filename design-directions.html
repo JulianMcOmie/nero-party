@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nero Party - Design Directions</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, sans-serif; background: #1a1a1a; padding: 2em; }
+        h1 { text-align: center; color: #fff; margin-bottom: 2em; }
+        .directions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2em; }
+        .direction { border: 1px solid #444; overflow: hidden; }
+        .direction-title { padding: 1em; background: #2a2a2a; color: #fff; font-weight: bold; text-align: center; border-bottom: 1px solid #444; }
+        .direction-content { height: 600px; overflow-y: auto; }
+
+        /* ========== DIRECTION 1: Dark Vinyl ========== */
+        .vinyl { background: linear-gradient(135deg, #1a1a1a 0%, #2a1a2a 100%); color: #e8dcc4; }
+        .vinyl-header { padding: 2em; border-bottom: 3px solid #b8860b; background: #0d0d0d; }
+        .vinyl-brand { display: flex; align-items: center; gap: 1em; margin-bottom: 1.5em; }
+        .vinyl-brand-icon { width: 40px; height: 40px; background: radial-gradient(circle, #b8860b 0%, #6b4d0a 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 20px; }
+        .vinyl-brand-text { font-size: 20px; font-weight: 300; letter-spacing: 2px; }
+        .vinyl-code { font-family: 'Courier New', monospace; font-size: 12px; color: #b8860b; letter-spacing: 1px; }
+        .vinyl-section { padding: 2em; border-bottom: 1px solid #444; }
+        .vinyl-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: #b8860b; margin-bottom: 1.5em; }
+        .vinyl-item { display: flex; align-items: center; gap: 1em; margin-bottom: 1em; }
+        .vinyl-circle { width: 30px; height: 30px; background: radial-gradient(circle, #b8860b 0%, #6b4d0a 100%); border-radius: 50%; flex-shrink: 0; }
+        .vinyl-text { font-size: 13px; }
+        .vinyl-toggle { width: 40px; height: 20px; background: #444; border: 1px solid #b8860b; border-radius: 10px; cursor: pointer; margin-left: auto; }
+        .vinyl-button { background: #b8860b; color: #0d0d0d; border: 2px solid #b8860b; padding: 1em 2em; width: 100%; margin-top: 1.5em; cursor: pointer; font-weight: bold; font-size: 13px; letter-spacing: 1px; transition: all 0.3s; }
+        .vinyl-button:hover { background: transparent; color: #b8860b; }
+
+        /* ========== DIRECTION 2: Neon Minimalist ========== */
+        .neon { background: #000; color: #fff; }
+        .neon-header { padding: 2em; background: #0a0a0a; border-bottom: 2px solid #ff00ff; }
+        .neon-brand { display: flex; align-items: center; gap: 1em; margin-bottom: 1.5em; }
+        .neon-brand-icon { width: 40px; height: 40px; background: #ff00ff; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; font-size: 20px; }
+        .neon-brand-text { font-size: 18px; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; }
+        .neon-code { font-family: 'Courier New', monospace; font-size: 12px; color: #00ffff; letter-spacing: 1px; text-transform: uppercase; }
+        .neon-section { padding: 2em; border-bottom: 1px solid #222; }
+        .neon-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #ff00ff; margin-bottom: 1.5em; }
+        .neon-item { display: flex; align-items: center; gap: 1em; margin-bottom: 1em; padding: 0.8em; border: 1px solid #333; }
+        .neon-square { width: 30px; height: 30px; background: #ff00ff; flex-shrink: 0; }
+        .neon-text { font-size: 13px; }
+        .neon-toggle { width: 40px; height: 20px; background: #222; border: 1px solid #00ffff; cursor: pointer; margin-left: auto; }
+        .neon-button { background: transparent; color: #ff00ff; border: 2px solid #ff00ff; padding: 1em 2em; width: 100%; margin-top: 1.5em; cursor: pointer; font-weight: bold; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s; }
+        .neon-button:hover { background: #ff00ff; color: #000; }
+
+        /* ========== DIRECTION 3: Playful Groovy ========== */
+        .groovy { background: linear-gradient(135deg, #2a2a2a 0%, #3a2a3a 100%); color: #2a2a2a; }
+        .groovy-header { padding: 2em; background: #f5f5dc; border-bottom: 3px dashed #d4a574; margin-bottom: 0; }
+        .groovy-brand { display: flex; align-items: center; gap: 1em; margin-bottom: 1.5em; }
+        .groovy-brand-icon { width: 40px; height: 40px; background: #ff6b9d; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 20px; }
+        .groovy-brand-text { font-size: 18px; font-weight: 600; }
+        .groovy-code { font-family: 'Courier New', monospace; font-size: 12px; color: #2a2a2a; }
+        .groovy-section { padding: 2em; background: rgba(255,255,255,0.9); margin: 1em; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .groovy-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #9b7a5a; margin-bottom: 1.5em; font-weight: 600; }
+        .groovy-item { display: flex; align-items: center; gap: 1em; margin-bottom: 1.2em; padding: 0.8em; background: #f9f9f9; border-radius: 8px; }
+        .groovy-avatar { width: 30px; height: 30px; background: linear-gradient(135deg, #ff6b9d 0%, #ffa630 100%); border-radius: 8px; flex-shrink: 0; }
+        .groovy-text { font-size: 13px; }
+        .groovy-toggle { width: 40px; height: 20px; background: #e8d5c4; border: 2px solid #ff6b9d; border-radius: 10px; cursor: pointer; margin-left: auto; }
+        .groovy-button { background: linear-gradient(135deg, #ff6b9d 0%, #ffa630 100%); color: #fff; border: none; padding: 1em 2em; width: 100%; margin-top: 1.5em; cursor: pointer; font-weight: 600; font-size: 13px; border-radius: 12px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(255,107,157,0.3); }
+        .groovy-button:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(255,107,157,0.4); }
+
+        /* ========== DIRECTION 4: Concert Poster ========== */
+        .poster { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 100%); color: #fff; }
+        .poster-header { padding: 2em; background: linear-gradient(90deg, #ff1493 0%, #00ffff 100%); color: #000; border-bottom: 4px solid #fff; }
+        .poster-brand { display: flex; align-items: center; gap: 1em; margin-bottom: 1.5em; }
+        .poster-brand-icon { width: 45px; height: 45px; background: #000; border: 3px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 22px; transform: rotate(-15deg); }
+        .poster-brand-text { font-size: 20px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+        .poster-code { font-family: 'Courier New', monospace; font-size: 12px; color: #000; font-weight: bold; letter-spacing: 2px; }
+        .poster-section { padding: 2em; border: 3px solid #ff1493; background: rgba(255,20,147,0.05); margin: 1em; }
+        .poster-section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: #ff1493; margin-bottom: 1.5em; font-weight: 900; }
+        .poster-item { display: flex; align-items: center; gap: 1em; margin-bottom: 1.2em; padding: 1em; background: rgba(0,255,255,0.1); border: 2px solid #00ffff; }
+        .poster-avatar { width: 35px; height: 35px; background: linear-gradient(45deg, #ff1493, #00ffff); flex-shrink: 0; }
+        .poster-text { font-size: 13px; font-weight: 600; }
+        .poster-toggle { width: 40px; height: 20px; background: #1a0a2a; border: 3px solid #00ffff; cursor: pointer; margin-left: auto; }
+        .poster-button { background: linear-gradient(90deg, #ff1493 0%, #00ffff 100%); color: #000; border: 3px solid #fff; padding: 1.2em 2em; width: 100%; margin-top: 1.5em; cursor: pointer; font-weight: 900; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; transition: all 0.3s; }
+        .poster-button:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,20,147,0.5); }
+    </style>
+</head>
+<body>
+    <h1>Nero Party - Design Directions</h1>
+    <div class="directions">
+        <!-- DIRECTION 1 -->
+        <div class="direction">
+            <div class="direction-title">Direction 1: Dark Vinyl</div>
+            <div class="direction-content vinyl">
+                <div class="vinyl-header">
+                    <div class="vinyl-brand">
+                        <div class="vinyl-brand-icon">♪</div>
+                        <div class="vinyl-brand-text">NERO PARTY</div>
+                    </div>
+                    <div class="vinyl-code">Room 487 · You</div>
+                </div>
+                <div class="vinyl-section">
+                    <div class="vinyl-section-title">Status</div>
+                    <div style="font-size: 13px; margin-bottom: 1.5em;">Waiting for players to join...</div>
+                </div>
+                <div class="vinyl-section">
+                    <div class="vinyl-section-title">Room</div>
+                    <div class="vinyl-item">
+                        <div class="vinyl-circle"></div>
+                        <div class="vinyl-text">Player 1</div>
+                    </div>
+                    <div class="vinyl-item">
+                        <div class="vinyl-circle"></div>
+                        <div class="vinyl-text">Player 2</div>
+                    </div>
+                </div>
+                <div class="vinyl-section">
+                    <div class="vinyl-section-title">Settings</div>
+                    <div class="vinyl-item">
+                        <div class="vinyl-text">Hide song</div>
+                        <div class="vinyl-toggle"></div>
+                    </div>
+                    <div class="vinyl-item">
+                        <div class="vinyl-text">Enable guessing</div>
+                        <div class="vinyl-toggle"></div>
+                    </div>
+                    <button class="vinyl-button">START GAME</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIRECTION 2 -->
+        <div class="direction">
+            <div class="direction-title">Direction 2: Neon Minimalist</div>
+            <div class="direction-content neon">
+                <div class="neon-header">
+                    <div class="neon-brand">
+                        <div class="neon-brand-icon">→</div>
+                        <div class="neon-brand-text">NERO</div>
+                    </div>
+                    <div class="neon-code">ROOM 487 · YOU</div>
+                </div>
+                <div class="neon-section">
+                    <div class="neon-section-title">STATUS</div>
+                    <div style="font-size: 13px; margin-bottom: 1.5em; text-transform: uppercase; letter-spacing: 1px;">WAITING FOR PLAYERS</div>
+                </div>
+                <div class="neon-section">
+                    <div class="neon-section-title">ROOM</div>
+                    <div class="neon-item">
+                        <div class="neon-square"></div>
+                        <div class="neon-text">PLAYER 1</div>
+                    </div>
+                    <div class="neon-item">
+                        <div class="neon-square"></div>
+                        <div class="neon-text">PLAYER 2</div>
+                    </div>
+                </div>
+                <div class="neon-section">
+                    <div class="neon-section-title">CONFIG</div>
+                    <div class="neon-item">
+                        <div class="neon-text">HIDE SONG</div>
+                        <div class="neon-toggle"></div>
+                    </div>
+                    <div class="neon-item">
+                        <div class="neon-text">ENABLE GUESSING</div>
+                        <div class="neon-toggle"></div>
+                    </div>
+                    <button class="neon-button">START GAME</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIRECTION 3 -->
+        <div class="direction">
+            <div class="direction-title">Direction 3: Playful Groovy</div>
+            <div class="direction-content groovy">
+                <div class="groovy-header">
+                    <div class="groovy-brand">
+                        <div class="groovy-brand-icon">♫</div>
+                        <div class="groovy-brand-text">Nero Party</div>
+                    </div>
+                    <div class="groovy-code">Room 487 · You</div>
+                </div>
+                <div class="groovy-section">
+                    <div class="groovy-section-title">Let's get started</div>
+                    <div style="font-size: 13px; margin-bottom: 1.5em;">Waiting for your friends to join...</div>
+                </div>
+                <div class="groovy-section">
+                    <div class="groovy-section-title">In the room</div>
+                    <div class="groovy-item">
+                        <div class="groovy-avatar"></div>
+                        <div class="groovy-text">Player 1</div>
+                    </div>
+                    <div class="groovy-item">
+                        <div class="groovy-avatar"></div>
+                        <div class="groovy-text">Player 2</div>
+                    </div>
+                </div>
+                <div class="groovy-section">
+                    <div class="groovy-section-title">Game settings</div>
+                    <div class="groovy-item">
+                        <div class="groovy-text">Hide song</div>
+                        <div class="groovy-toggle"></div>
+                    </div>
+                    <div class="groovy-item">
+                        <div class="groovy-text">Enable guessing game</div>
+                        <div class="groovy-toggle"></div>
+                    </div>
+                    <button class="groovy-button">Start Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIRECTION 4 -->
+        <div class="direction">
+            <div class="direction-title">Direction 4: Concert Poster</div>
+            <div class="direction-content poster">
+                <div class="poster-header">
+                    <div class="poster-brand">
+                        <div class="poster-brand-icon">🔥</div>
+                        <div class="poster-brand-text">NERO PARTY</div>
+                    </div>
+                    <div class="poster-code">ROOM 487</div>
+                </div>
+                <div class="poster-section">
+                    <div class="poster-section-title">MAIN EVENT</div>
+                    <div style="font-size: 14px; margin-bottom: 1.5em; font-weight: bold; text-transform: uppercase;">WAITING FOR PLAYERS</div>
+                </div>
+                <div class="poster-section">
+                    <div class="poster-section-title">LINEUP</div>
+                    <div class="poster-item">
+                        <div class="poster-avatar"></div>
+                        <div class="poster-text">PLAYER 1</div>
+                    </div>
+                    <div class="poster-item">
+                        <div class="poster-avatar"></div>
+                        <div class="poster-text">PLAYER 2</div>
+                    </div>
+                </div>
+                <div class="poster-section">
+                    <div class="poster-section-title">RULES</div>
+                    <div class="poster-item">
+                        <div class="poster-text">HIDE SONG</div>
+                        <div class="poster-toggle"></div>
+                    </div>
+                    <div class="poster-item">
+                        <div class="poster-text">GUESSING GAME</div>
+                        <div class="poster-toggle"></div>
+                    </div>
+                    <button class="poster-button">START THE SHOW</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

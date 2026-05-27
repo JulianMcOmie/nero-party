@@ -121,6 +121,7 @@ export interface NeroPartyContextValue {
   // Phase B — submitting
   startSubmitting: () => void;
   addSong: (track: TrackInput) => void;
+  removeSong: (queueItemId: string) => void;
 
   // Phase C — ranking / guessing
   startRounds: () => void;
@@ -132,11 +133,13 @@ export interface NeroPartyContextValue {
   nextSong: () => void;
 
   // Phase D — reveal
+  returnToLobby: () => void;
   playAgain: () => void;
 
   // Misc
   clearError: () => void;
   leaveParty: () => void;
+  terminateRoom: () => void;
 }
 
 export const NeroPartyContext = createContext<NeroPartyContextValue | null>(null);
@@ -157,10 +160,12 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     function handleConnect() {
+      console.log("Socket connected, ID:", socket.id);
       dispatch({ type: "CONNECTION_CHANGED", status: "connected" });
       // Reconnect / reload: silently re-attach to the existing party.
       const stored = loadSession();
       if (!stored) return;
+      console.log("Registering session for partyId:", stored.partyId);
       request<SessionResult>("session:register", stored)
         .then((res) => {
           dispatch({ type: "SESSION_ESTABLISHED", session: stored });
@@ -177,6 +182,7 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
     }
 
     function handlePartyState(snapshot: PartyStateSnapshot) {
+      console.log("[handlePartyState] received snapshot, currentTrackId:", snapshot.party.currentTrackId);
       dispatch({ type: "PARTY_STATE", snapshot });
     }
 
@@ -184,8 +190,8 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
       dispatch({ type: "SUBMISSION_PROGRESS", progress });
     }
 
-    function handlePlayback(payload: { isPlaying: boolean }) {
-      dispatch({ type: "PLAYBACK_STATE", isPlaying: payload.isPlaying });
+    function handlePlayback(payload: { isPlaying: boolean; startedAt?: number }) {
+      dispatch({ type: "PLAYBACK_STATE", isPlaying: payload.isPlaying, startedAt: payload.startedAt });
     }
 
     function handleRoundResult(result: RoundResult) {
@@ -200,6 +206,13 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
       dispatch({ type: "ERROR", message: payload.message });
     }
 
+    function handleRoomClosed() {
+      console.log("Received room:closed event");
+      clearSession();
+      dispatch({ type: "RESET" });
+      dispatch({ type: "NOTIFICATION", message: "The game has ended." });
+    }
+
     socket.on("connect", handleConnect);
     socket.on("disconnect", handleDisconnect);
     socket.on("party:state", handlePartyState);
@@ -208,6 +221,7 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
     socket.on("round:result", handleRoundResult);
     socket.on("game:results", handleResults);
     socket.on("error", handleServerError);
+    socket.on("room:closed", handleRoomClosed);
 
     dispatch({ type: "CONNECTION_CHANGED", status: "connecting" });
     socket.connect();
@@ -221,6 +235,7 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
       socket.off("round:result", handleRoundResult);
       socket.off("game:results", handleResults);
       socket.off("error", handleServerError);
+      socket.off("room:closed", handleRoomClosed);
       socket.disconnect();
     };
   }, []);
@@ -229,14 +244,20 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
 
   const runWithSession = useCallback(
     async (run: (session: Session) => Promise<void>) => {
+      console.log("[runWithSession] called");
       const session = stateRef.current.session;
+      console.log("[runWithSession] session:", session);
       if (!session) {
+        console.log("[runWithSession] no session, dispatching error");
         dispatch({ type: "ERROR", message: "You are not currently in a party." });
         return;
       }
       try {
+        console.log("[runWithSession] calling run with session");
         await run(session);
+        console.log("[runWithSession] run completed successfully");
       } catch (error) {
+        console.error("[runWithSession] error:", error);
         dispatch({ type: "ERROR", message: errorMessage(error) });
       }
     },
@@ -249,6 +270,7 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
     (hostName: string, hostAvatarSeed: string, maxSongs: number): Promise<void> => {
       return (async () => {
         try {
+          if (!socket.connected) socket.connect();
           const res = await request<SessionResult>("party:create", {
             hostName,
             hostAvatarSeed,
@@ -273,6 +295,7 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
     (code: string, name: string, avatarSeed: string): Promise<void> => {
       return (async () => {
         try {
+          if (!socket.connected) socket.connect();
           const res = await request<SessionResult>("party:join", {
             code,
             name,
@@ -312,6 +335,15 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
     (track: TrackInput) => {
       void runWithSession((session) =>
         request("song:add", { ...session, track }),
+      );
+    },
+    [runWithSession],
+  );
+
+  const removeSong = useCallback(
+    (queueItemId: string) => {
+      void runWithSession((session) =>
+        request("song:remove", { ...session, queueItemId }),
       );
     },
     [runWithSession],
@@ -393,10 +425,18 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
   }, [runWithSession]);
 
   const nextSong = useCallback(() => {
-    void runWithSession((session) => request("round:next", session));
+    console.log("[nextSong] button clicked");
+    void runWithSession((session) => {
+      console.log("[nextSong] sending round:next request");
+      return request("round:next", session);
+    });
   }, [runWithSession]);
 
   /* ----- Phase D — reveal -------------------------------------------- */
+
+  const returnToLobby = useCallback(() => {
+    void runWithSession((session) => request("game:returnToLobby", session));
+  }, [runWithSession]);
 
   const playAgain = useCallback(() => {
     void runWithSession((session) => request("game:playAgain", session));
@@ -409,6 +449,15 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const leaveParty = useCallback(() => {
+    clearSession();
+    dispatch({ type: "RESET" });
+    socket.disconnect();
+  }, []);
+
+  const terminateRoom = useCallback(() => {
+    const session = stateRef.current.session;
+    if (!session) return;
+    socket.emit("room:terminate", session);
     clearSession();
     dispatch({ type: "RESET" });
   }, []);
@@ -439,6 +488,7 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
       updateConfig,
       startSubmitting,
       addSong,
+      removeSong,
       startRounds,
       castVote,
       submitGuess,
@@ -446,9 +496,11 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
       pause,
       revealRound,
       nextSong,
+      returnToLobby,
       playAgain,
       clearError,
       leaveParty,
+      terminateRoom,
     }),
     [
       state,
@@ -459,6 +511,7 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
       updateConfig,
       startSubmitting,
       addSong,
+      removeSong,
       startRounds,
       castVote,
       submitGuess,
@@ -466,9 +519,11 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
       pause,
       revealRound,
       nextSong,
+      returnToLobby,
       playAgain,
       clearError,
       leaveParty,
+      terminateRoom,
     ],
   );
 
