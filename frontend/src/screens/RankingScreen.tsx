@@ -193,7 +193,7 @@ export default function RankingScreen() {
 
             {/* Play/Pause button (host only) */}
             {isHost && (
-              <div className="mb-8 relative">
+              <div className="mb-4 relative">
                 <button
                   type="button"
                   onClick={handlePlayPauseClick}
@@ -236,7 +236,7 @@ export default function RankingScreen() {
 
             {/* Waiting indicator for players */}
             {!isHost && (
-              <div className="mt-8 text-center text-sm text-muted-foreground">
+              <div className="mt-12 text-center text-sm text-muted-foreground">
                 {allOnlineHaveRated
                   ? "waiting for the host to continue…"
                   : "waiting for everyone to rate…"}
