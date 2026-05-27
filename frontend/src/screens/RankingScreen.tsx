@@ -133,7 +133,7 @@ export default function RankingScreen() {
         <div className="flex-1 flex flex-col">
           <div className="mx-auto w-[75%] px-6 py-2 flex-1 flex gap-8">
             {/* Left sidebar: Room participants */}
-            <aside className="flex-0 w-40 shrink-0">
+            <aside className="flex-0 w-40 shrink-0 pt-8">
             {isHost && (
               <button
                 type="button"
@@ -283,7 +283,13 @@ export default function RankingScreen() {
             </div>
 
             {/* Right sidebar: Queue */}
-            <aside className="flex-0 w-40 shrink-0">
+            <aside className="flex-0 w-40 shrink-0 pt-8">
+            <button
+              type="button"
+              className="mb-4 block text-sm text-muted-foreground hover:text-foreground transition-colors invisible"
+            >
+              ← return to lobby
+            </button>
             <h3 className="mb-4 text-xs text-muted-foreground uppercase tracking-widest font-semibold">queue</h3>
             <div className="space-y-2 text-xs max-h-96 overflow-y-auto">
               {state.queue.map((item) => {
