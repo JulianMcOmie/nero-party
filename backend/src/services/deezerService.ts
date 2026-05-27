@@ -9,10 +9,16 @@ interface DeezerTrack {
 
 export async function getTrackBpm(trackId: string): Promise<number | null> {
   const url = `https://api.deezer.com/track/${trackId}`;
+  console.log(`[Deezer] Fetching BPM from: ${url}`);
   try {
     const res = await fetch(url);
-    if (!res.ok) return null;
+    console.log(`[Deezer] Response status: ${res.status}`);
+    if (!res.ok) {
+      console.log(`[Deezer] Not OK response, returning null`);
+      return null;
+    }
     const data = (await res.json()) as { bpm?: number };
+    console.log(`[Deezer] Raw response data:`, data);
     const bpm = data.bpm || null;
     console.log(`[Deezer] Track ${trackId} BPM: ${bpm}`);
     return bpm;

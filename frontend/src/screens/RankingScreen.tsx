@@ -244,9 +244,9 @@ export default function RankingScreen() {
                 <div className="text-sm text-muted-foreground mb-2">
                   {allOnlineHaveRated
                     ? "waiting for the host to continue…"
-                    : "waiting for everyone to rate…"}
+                    : "waiting for votes..."}
                 </div>
-                <BouncingCircle width={200} height={25} />
+                <BouncingCircle width={200} height={15} />
               </div>
             )}
 

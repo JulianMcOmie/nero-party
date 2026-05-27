@@ -13,7 +13,7 @@ export function BouncingCircle({ width = 240, height = 50 }: { width?: number; h
     let ball = {
       x: width / 2,
       y: height / 2,
-      r: 12,
+      r: 6,
       spd: 13,
       show: function (alpha: number = 1) {
         ctx.globalAlpha = alpha;

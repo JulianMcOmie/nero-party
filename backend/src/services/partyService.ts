@@ -220,7 +220,9 @@ async function addSong(payload: AddSongPayload): Promise<void> {
     );
   }
 
+  console.log(`[addSong] Fetching BPM for track: ${payload.track.spotifyTrackId} (${payload.track.title})`);
   const bpm = await getTrackBpm(payload.track.spotifyTrackId);
+  console.log(`[addSong] Got BPM: ${bpm} for track: ${payload.track.spotifyTrackId}`);
 
   await prisma.queueItem.create({
     data: {
@@ -234,6 +236,7 @@ async function addSong(payload: AddSongPayload): Promise<void> {
       bpm,
     },
   });
+  console.log(`[addSong] Successfully created queue item with BPM: ${bpm}`);
 }
 
 /* -------------------------------------------------------------------------- */
