@@ -78,39 +78,14 @@ export default function LobbyScreen() {
                     label="Hide song"
                     hint="Players hear the song but can't see what it is until the reveal"
                     checked={config.hideSong}
-                    onChange={(v) => {
-                      if (!v && config.enableGuessingGame) {
-                        updateConfig({ hideSong: false, enableGuessingGame: false });
-                      } else {
-                        updateConfig({ hideSong: v });
-                      }
-                    }}
+                    onChange={(v) => updateConfig({ hideSong: v })}
                   />
 
                   <ToggleRow
                     label="Hide who submitted each song"
                     hint="Players won't know who submitted the song until the reveal"
                     checked={config.hideSubmitterIdentities}
-                    onChange={(v) => {
-                      if (!v && config.enableGuessingGame) {
-                        updateConfig({ hideSubmitterIdentities: false, enableGuessingGame: false });
-                      } else {
-                        updateConfig({ hideSubmitterIdentities: v });
-                      }
-                    }}
-                  />
-
-                  <ToggleRow
-                    label="Enable guessing game"
-                    hint="Each round, everyone guesses who submitted the song. Correct guessers and the submitter earn bonus points if the majority guesses right. Requires both hide settings to be on."
-                    checked={config.enableGuessingGame}
-                    onChange={(v) => {
-                      if (v) {
-                        updateConfig({ enableGuessingGame: true, hideSong: true, hideSubmitterIdentities: true });
-                      } else {
-                        updateConfig({ enableGuessingGame: false });
-                      }
-                    }}
+                    onChange={(v) => updateConfig({ hideSubmitterIdentities: v })}
                   />
 
                   <ToggleRow

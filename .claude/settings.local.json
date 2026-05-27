@@ -25,7 +25,10 @@
       "Bash(cat)",
       "Bash(python3 /tmp/codebase_printer.py)",
       "Bash(python3 /tmp/codebase_printer_v2.py)",
-      "Bash(python3 /tmp/codebase_printer_bw.py)"
+      "Bash(python3 /tmp/codebase_printer_bw.py)",
+      "Read(//tmp/**)",
+      "Bash(chmod +x /tmp/final_check.sh)",
+      "Bash(/tmp/final_check.sh)"
     ]
   }
 }

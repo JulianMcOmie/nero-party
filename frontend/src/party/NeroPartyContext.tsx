@@ -123,10 +123,9 @@ export interface NeroPartyContextValue {
   addSong: (track: TrackInput) => void;
   removeSong: (queueItemId: string) => void;
 
-  // Phase C — ranking / guessing
+  // Phase C — ranking
   startRounds: () => void;
   castVote: (queueItemId: string, rating: number) => void;
-  submitGuess: (queueItemId: string, guessedUserId: string) => void;
   play: () => void;
   pause: () => void;
   revealRound: () => void;
@@ -349,7 +348,7 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
     [runWithSession],
   );
 
-  /* ----- Phase C — ranking / guessing -------------------------------- */
+  /* ----- Phase C — ranking ----------------------------------------- */
 
   const startRounds = useCallback(() => {
     void runWithSession((session) => request("phase:startRounds", session));
@@ -382,35 +381,6 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
       }
     })();
   }, []);
-
-  /** Optimistic guess — same confirm/rollback contract as `castVote`. */
-  const submitGuess = useCallback(
-    (queueItemId: string, guessedUserId: string) => {
-      const session = stateRef.current.session;
-      if (!session) {
-        dispatch({ type: "ERROR", message: "You are not currently in a party." });
-        return;
-      }
-      const previous = stateRef.current.myVotes[queueItemId];
-
-      dispatch({ type: "OPTIMISTIC_GUESS", queueItemId, guessedUserId });
-
-      void (async () => {
-        try {
-          await request("round:submitGuess", {
-            ...session,
-            queueItemId,
-            guessedUserId,
-          });
-          dispatch({ type: "GUESS_SETTLED", queueItemId });
-        } catch (error) {
-          dispatch({ type: "GUESS_ROLLBACK", queueItemId, previous });
-          dispatch({ type: "ERROR", message: errorMessage(error) });
-        }
-      })();
-    },
-    [],
-  );
 
   const play = useCallback(() => {
     void runWithSession((session) => request("playback:play", session));
@@ -491,7 +461,6 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
       removeSong,
       startRounds,
       castVote,
-      submitGuess,
       play,
       pause,
       revealRound,
@@ -514,7 +483,6 @@ export function NeroPartyProvider({ children }: { children: ReactNode }) {
       removeSong,
       startRounds,
       castVote,
-      submitGuess,
       play,
       pause,
       revealRound,

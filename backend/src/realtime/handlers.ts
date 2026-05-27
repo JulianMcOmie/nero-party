@@ -194,7 +194,7 @@ export function registerSocketHandlers(io: TypedServer): void {
     });
 
     /* ---------------------------------------------------------------- */
-    /* Phase C — Ranking / Guessing                                     */
+    /* Phase C — Ranking                                                */
     /* ---------------------------------------------------------------- */
 
     socket.on("phase:startRounds", (payload, ack) => {
@@ -208,14 +208,6 @@ export function registerSocketHandlers(io: TypedServer): void {
     socket.on("round:castVote", (payload, ack) => {
       void handle(ack, async () => {
         await partyService.castVote(payload);
-        await broadcastPartyState(io, payload.partyId);
-        return null;
-      });
-    });
-
-    socket.on("round:submitGuess", (payload, ack) => {
-      void handle(ack, async () => {
-        await partyService.submitGuess(payload);
         await broadcastPartyState(io, payload.partyId);
         return null;
       });

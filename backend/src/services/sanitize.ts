@@ -70,7 +70,6 @@ export function sanitizePartyState(
     .map((s) => ({
       queueItemId: s.queueItemId,
       rating: s.rating,
-      guessedUserId: s.guessedUserId,
     }));
 
   return {
@@ -84,7 +83,6 @@ export function sanitizePartyState(
         maxSongs: raw.maxSongs,
         hideSong: raw.hideSong,
         hideSubmitterIdentities: raw.hideSubmitterIdentities,
-        enableGuessingGame: raw.enableGuessingGame,
         hideLeaderboardUntilEnd: raw.hideLeaderboardUntilEnd,
       },
     },
@@ -99,9 +97,9 @@ export function sanitizePartyState(
 
 /**
  * Per-participant interaction status for the active round. Carries only
- * "has acted" booleans — never the rating value or guess target — so it is
- * identical for every viewer and safe to broadcast. This is what lets a
- * submitter ghost-vote and appear just as active as everyone else.
+ * "has rated" boolean — so it is identical for every viewer and safe to
+ * broadcast. This is what lets a submitter ghost-vote and appear just as
+ * active as everyone else.
  */
 export function computeRoundActivity(raw: RawPartyState): RoundActivityEntry[] {
   const currentTrackId = raw.currentTrackId;
@@ -114,7 +112,6 @@ export function computeRoundActivity(raw: RawPartyState): RoundActivityEntry[] {
     return {
       userId: user.id,
       hasRated: !!submission && submission.rating > UNRATED,
-      hasGuessed: !!submission && submission.guessedUserId !== null,
     };
   });
 }

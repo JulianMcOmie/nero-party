@@ -10,13 +10,11 @@ import type {
   ConfigUpdatePayload,
   CreatePartyPayload,
   FinalResults,
-  GuessDistributionEntry,
   JoinPartyPayload,
   LeaderboardEntry,
   RemoveSongPayload,
   RoundResult,
   SongRankingEntry,
-  SubmitGuessPayload,
 } from "../types/events.js";
 import { calculateRoundScore } from "./scoring.js";
 
@@ -156,7 +154,6 @@ async function updateConfig(payload: ConfigUpdatePayload): Promise<void> {
   const hasToggleChanges =
     incoming.hideSong !== undefined ||
     incoming.hideSubmitterIdentities !== undefined ||
-    incoming.enableGuessingGame !== undefined ||
     incoming.hideLeaderboardUntilEnd !== undefined;
 
   if (hasToggleChanges) {
@@ -166,31 +163,9 @@ async function updateConfig(payload: ConfigUpdatePayload): Promise<void> {
       data.hideLeaderboardUntilEnd = incoming.hideLeaderboardUntilEnd;
     }
 
-    // Linked constraint: the guessing game requires BOTH hideSong and
-    // hideSubmitterIdentities. Enabling guessing forces both prerequisites on;
-    // turning off either prerequisite automatically disables guessing.
-    if (incoming.enableGuessingGame === true) {
-      data.hideSong = true;
-      data.hideSubmitterIdentities = true;
-      data.enableGuessingGame = true;
-    } else {
-      if (incoming.hideSong !== undefined) data.hideSong = incoming.hideSong;
-      if (incoming.hideSubmitterIdentities !== undefined) {
-        data.hideSubmitterIdentities = incoming.hideSubmitterIdentities;
-      }
-      if (incoming.enableGuessingGame !== undefined) {
-        data.enableGuessingGame = incoming.enableGuessingGame;
-      }
-
-      // If either prerequisite ends up off, kill the guessing game.
-      const effectiveHideSong = incoming.hideSong !== undefined ? incoming.hideSong : party.hideSong;
-      const effectiveHideSubmitter =
-        incoming.hideSubmitterIdentities !== undefined
-          ? incoming.hideSubmitterIdentities
-          : party.hideSubmitterIdentities;
-      if (!effectiveHideSong || !effectiveHideSubmitter) {
-        data.enableGuessingGame = false;
-      }
+    if (incoming.hideSong !== undefined) data.hideSong = incoming.hideSong;
+    if (incoming.hideSubmitterIdentities !== undefined) {
+      data.hideSubmitterIdentities = incoming.hideSubmitterIdentities;
     }
   }
 
@@ -342,39 +317,6 @@ async function castVote(payload: CastVotePayload): Promise<void> {
   });
 }
 
-async function submitGuess(payload: SubmitGuessPayload): Promise<void> {
-  const party = await requireParty(payload.partyId);
-  const user = await requireUserInParty(payload.partyId, payload.userId);
-  requirePhase(party, "RANKING");
-
-  if (!party.enableGuessingGame) {
-    throw new GameError("The guessing game isn't enabled for this party.");
-  }
-
-  // Ghost guessing: a submitter MAY guess on their own track to blend in —
-  // `calculateRoundScore` discards the submitter's own guess from scoring.
-  const item = await loadActiveTrack(party, payload.queueItemId);
-  if (payload.guessedUserId === user.id) {
-    throw new GameError("You can't guess yourself.");
-  }
-
-  const target = await prisma.user.findUnique({ where: { id: payload.guessedUserId } });
-  if (!target || target.partyId !== party.id) {
-    throw new GameError("That player isn't in this party.");
-  }
-
-  await prisma.roundSubmission.upsert({
-    where: { queueItemId_userId: { queueItemId: item.id, userId: user.id } },
-    create: {
-      partyId: party.id,
-      queueItemId: item.id,
-      userId: user.id,
-      rating: UNRATED,
-      guessedUserId: payload.guessedUserId,
-    },
-    update: { guessedUserId: payload.guessedUserId },
-  });
-}
 
 async function revealRound(
   payload: ActorPayload,
@@ -388,18 +330,18 @@ async function revealRound(
 
   const item = await prisma.queueItem.findUnique({
     where: { id: party.currentTrackId },
-    include: { addedBy: true, submissions: { include: { voter: true, guessedUser: true } } },
+    include: { addedBy: true, submissions: { include: { voter: true } } },
   });
   if (!item) throw new GameError("Active track not found.");
   if (item.revealed) throw new GameError("This round has already been revealed.");
 
   const score = calculateRoundScore({
     submitterId: item.addedByUserId,
-    guessingEnabled: party.enableGuessingGame,
+    guessingEnabled: false,
     submissions: item.submissions.map((s) => ({
       userId: s.userId,
       rating: s.rating,
-      guessedUserId: s.guessedUserId,
+      guessedUserId: null,
     })),
     connectedUserIds,
   });
@@ -424,18 +366,6 @@ async function revealRound(
     ),
   ]);
 
-  const guessDistribution: GuessDistributionEntry[] = party.enableGuessingGame
-    ? item.submissions
-        .filter((s) => s.userId !== item.addedByUserId)
-        .map((s) => ({
-          voterId: s.userId,
-          voterName: s.voter.name,
-          voterAvatarSeed: s.voter.avatarSeed,
-          guessedUserId: s.guessedUserId,
-          guessedName: s.guessedUser?.name ?? null,
-        }))
-    : [];
-
   return {
     queueItemId: item.id,
     title: item.title,
@@ -447,10 +377,8 @@ async function revealRound(
     totalRatingScore: item.totalRatingScore + score.songRankingBonus,
     ratingsCount: score.ratingsCount,
     averageRating: score.averageRating,
-    correctGuesserIds: score.correctGuesserIds,
     sonicSignatureAwarded: score.sonicSignatureAwarded,
     pointAwards: score.pointAwards,
-    guessDistribution,
   };
 }
 
@@ -639,7 +567,6 @@ export const partyService = {
   removeSong,
   startRounds,
   castVote,
-  submitGuess,
   authorizePlayback,
   revealRound,
   nextSong,

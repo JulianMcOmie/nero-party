@@ -26,7 +26,6 @@ model User {
 
   submittedTracks QueueItem[]       @relation("TrackSubmitter")
   castVotes       RoundSubmission[] @relation("Voter")
-  receivedGuesses RoundSubmission[] @relation("GuessTarget")
 
   @@index([partyId])
 }
@@ -46,7 +45,6 @@ model Party {
   // Host configuration toggles
   hideSong                Boolean @default(false)
   hideSubmitterIdentities Boolean @default(false)
-  enableGuessingGame      Boolean @default(false)
   hideLeaderboardUntilEnd Boolean @default(false)
 
   createdAt DateTime @default(now())
@@ -86,10 +84,8 @@ model QueueItem {
 model RoundSubmission {
   id String @id @default(uuid())
 
-  // 1-5 star rating. Defaults to 0 ("not yet rated") so a row can be created
-  // by a guess landing before the rating, or vice versa.
-  rating        Int     @default(0)
-  guessedUserId String?
+  // 1-5 star rating. Defaults to 0 ("not yet rated").
+  rating Int     @default(0)
   createdAt     DateTime @default(now())
 
   // Relations
@@ -99,12 +95,9 @@ model RoundSubmission {
   queueItemId String
   queueItem   QueueItem @relation(fields: [queueItemId], references: [id], onDelete: Cascade)
 
-  // The voter casting this rating/guess.
+  // The voter casting this rating.
   userId String
   voter  User   @relation("Voter", fields: [userId], references: [id], onDelete: Cascade)
-
-  // The peer this voter guessed submitted the track (guessing game only).
-  guessedUser User? @relation("GuessTarget", fields: [guessedUserId], references: [id], onDelete: SetNull)
 
   // One submission row per voter per track — enables atomic upserts.
   @@unique([queueItemId, userId])

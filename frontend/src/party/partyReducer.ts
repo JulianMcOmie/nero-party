@@ -41,29 +41,20 @@ function reconcileVotes(
   for (const vote of serverVotes) {
     next[vote.queueItemId] = {
       rating: vote.rating,
-      guessedUserId: vote.guessedUserId,
       ratingStatus: vote.rating > 0 ? "confirmed" : "idle",
-      guessStatus: vote.guessedUserId ? "confirmed" : "idle",
     };
   }
 
   for (const [queueItemId, localVote] of Object.entries(local)) {
     const ratingPending = localVote.ratingStatus === "pending";
-    const guessPending = localVote.guessStatus === "pending";
-    if (!ratingPending && !guessPending) continue;
+    if (!ratingPending) continue;
 
     const server = next[queueItemId];
     next[queueItemId] = {
       rating: ratingPending ? localVote.rating : server?.rating ?? localVote.rating,
-      guessedUserId: guessPending
-        ? localVote.guessedUserId
-        : server?.guessedUserId ?? localVote.guessedUserId,
       ratingStatus: ratingPending
         ? "pending"
         : server?.ratingStatus ?? localVote.ratingStatus,
-      guessStatus: guessPending
-        ? "pending"
-        : server?.guessStatus ?? localVote.guessStatus,
     };
   }
 
@@ -95,9 +86,7 @@ function applySnapshot(
 function emptyVote(): LocalVote {
   return {
     rating: 0,
-    guessedUserId: null,
     ratingStatus: "idle",
-    guessStatus: "idle",
   };
 }
 
@@ -176,44 +165,6 @@ export function partyReducer(
       return { ...state, myVotes: next };
     }
 
-    /* ----- Optimistic guess ------------------------------------------ */
-
-    case "OPTIMISTIC_GUESS": {
-      const current = state.myVotes[action.queueItemId] ?? emptyVote();
-      return {
-        ...state,
-        myVotes: {
-          ...state.myVotes,
-          [action.queueItemId]: {
-            ...current,
-            guessedUserId: action.guessedUserId,
-            guessStatus: "pending",
-          },
-        },
-      };
-    }
-
-    case "GUESS_SETTLED": {
-      const current = state.myVotes[action.queueItemId];
-      if (!current) return state;
-      return {
-        ...state,
-        myVotes: {
-          ...state.myVotes,
-          [action.queueItemId]: { ...current, guessStatus: "confirmed" },
-        },
-      };
-    }
-
-    case "GUESS_ROLLBACK": {
-      const next = { ...state.myVotes };
-      if (action.previous) {
-        next[action.queueItemId] = { ...action.previous };
-      } else {
-        delete next[action.queueItemId];
-      }
-      return { ...state, myVotes: next };
-    }
 
     case "RESET":
       return { ...initialPartyState, connection: state.connection };

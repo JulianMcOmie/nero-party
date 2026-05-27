@@ -57,7 +57,6 @@ export interface PartyConfigSnapshot {
   maxSongs: number;
   hideSong: boolean;
   hideSubmitterIdentities: boolean;
-  enableGuessingGame: boolean;
   hideLeaderboardUntilEnd: boolean;
 }
 
@@ -70,23 +69,20 @@ export interface SubmissionProgress {
   perUser: { userId: string; count: number }[];
 }
 
-/** The viewer's own rating/guess for a track — echoed back for reconnection. */
+/** The viewer's own rating for a track — echoed back for reconnection. */
 export interface ViewerVoteSnapshot {
   queueItemId: string;
   rating: number;
-  guessedUserId: string | null;
 }
 
 /**
  * Per-participant interaction status for the active round. This is presence
- * only — it never carries the rating value or the guess target. It lets a
- * submitter "ghost vote" and blend in rather than exposing their identity by
- * conspicuously sitting idle.
+ * only — it never carries the rating value. It lets a submitter "ghost vote"
+ * and blend in rather than exposing their identity by conspicuously sitting idle.
  */
 export interface RoundActivityEntry {
   userId: string;
   hasRated: boolean;
-  hasGuessed: boolean;
 }
 
 /** The single unified state object pushed on every `party:state` event. */
@@ -103,7 +99,7 @@ export interface PartyStateSnapshot {
   queue: QueueItemSnapshot[];
   submissionProgress: SubmissionProgress;
   playback: { isPlaying: boolean };
-  /** Who has rated/guessed on the current track — empty outside the RANKING phase. */
+  /** Who has rated on the current track — empty outside the RANKING phase. */
   roundActivity: RoundActivityEntry[];
   /** The viewer's own votes — lets the optimistic layer reconcile after reconnect. */
   myVotes: ViewerVoteSnapshot[];
@@ -116,15 +112,7 @@ export interface PartyStateSnapshot {
 export interface PointAward {
   userId: string;
   points: number;
-  reason: "correct_guess" | "sonic_signature" | "song_rating";
-}
-
-export interface GuessDistributionEntry {
-  voterId: string;
-  voterName: string;
-  voterAvatarSeed: string;
-  guessedUserId: string | null;
-  guessedName: string | null;
+  reason: "sonic_signature" | "song_rating";
 }
 
 export interface RoundResult {
@@ -137,13 +125,8 @@ export interface RoundResult {
   totalRatingScore: number;
   ratingsCount: number;
   averageRating: number;
-  /** Voters who correctly identified the submitter (guessing game only). */
-  correctGuesserIds: string[];
-  /** True when >= 50% of eligible guessers identified the submitter. */
   sonicSignatureAwarded: boolean;
   pointAwards: PointAward[];
-  /** Who each voter guessed — empty when guessing is disabled. */
-  guessDistribution: GuessDistributionEntry[];
 }
 
 export interface SongRankingEntry {
@@ -222,10 +205,6 @@ export interface CastVotePayload extends ActorPayload {
   rating: number;
 }
 
-export interface SubmitGuessPayload extends ActorPayload {
-  queueItemId: string;
-  guessedUserId: string;
-}
 
 export interface SessionResult {
   party: PartyStateSnapshot;
@@ -249,7 +228,6 @@ export interface ClientToServerEvents {
 
   "phase:startRounds": (payload: ActorPayload, ack: Ack<null>) => void;
   "round:castVote": (payload: CastVotePayload, ack: Ack<null>) => void;
-  "round:submitGuess": (payload: SubmitGuessPayload, ack: Ack<null>) => void;
 
   "playback:play": (payload: ActorPayload, ack: Ack<null>) => void;
   "playback:pause": (payload: ActorPayload, ack: Ack<null>) => void;
