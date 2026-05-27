@@ -134,15 +134,17 @@ export default function RankingScreen() {
           <div className="mx-auto w-[75%] px-6 py-2 flex-1 flex gap-8">
             {/* Left sidebar: Room participants */}
             <aside className="flex-0 w-40 shrink-0 pt-8">
-            {isHost && (
-              <button
-                type="button"
-                onClick={returnToLobby}
-                className="mb-4 block text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                ← return to lobby
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={returnToLobby}
+              className={`mb-4 block text-sm transition-colors ${
+                isHost
+                  ? "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground hover:text-foreground invisible"
+              }`}
+            >
+              ← return to lobby
+            </button>
             <h3 className="mb-4 text-xs text-muted-foreground uppercase tracking-widest font-semibold">room</h3>
             <div className="space-y-2">
               {state.participants.filter((p) => p.online).map((p) => {
@@ -168,9 +170,7 @@ export default function RankingScreen() {
             {/* Center: Song and rating */}
             <div className="flex-1 flex flex-col items-center justify-start pt-8">
             {/* Song count */}
-            {isHost && (
-              <div className="mb-6 text-xs text-muted-foreground">song {queueIdx + 1} of {totalRounds}</div>
-            )}
+            <div className="mb-6 text-xs text-muted-foreground">song {queueIdx + 1} of {totalRounds}</div>
 
             {/* Song cover */}
             <div className="mb-3 flex h-64 w-64 items-center justify-center rounded-lg bg-input/50">
