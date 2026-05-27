@@ -16,6 +16,31 @@ export default function RankingScreen() {
   const [selectedRating, setSelectedRating] = useState(0);
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
 
+  // Shared tooltip settings
+  const TOOLTIP_DELAY_MS = 350;
+  const TOOLTIP_FADE_DURATION = 'duration-[5000ms]';
+  const BUTTON_SCALE = 'scale-105';
+
+  // Unified button hover state
+  const [buttonHovered, setButtonHovered] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const tooltipTimeoutRef = useRef<NodeJS.Timeout>();
+
+  const handleButtonMouseEnter = () => {
+    setButtonHovered(true);
+    tooltipTimeoutRef.current = setTimeout(() => {
+      setShowTooltip(true);
+    }, TOOLTIP_DELAY_MS);
+  };
+
+  const handleButtonMouseLeave = () => {
+    setButtonHovered(false);
+    setShowTooltip(false);
+    if (tooltipTimeoutRef.current) {
+      clearTimeout(tooltipTimeoutRef.current);
+    }
+  };
+
   // Reset audio when track changes
   useEffect(() => {
     const audio = (audioRef.current ??= new Audio());
@@ -56,6 +81,17 @@ export default function RankingScreen() {
     setSelectedRating(rating);
     castVote(currentTrack.id, rating);
     setRatingSubmitted(true);
+  };
+
+  // Reset tooltip on click
+  const handlePlayPauseClick = () => {
+    setShowTooltip(false);
+    if (tooltipTimeoutRef.current) clearTimeout(tooltipTimeoutRef.current);
+    if (state.playback.isPlaying) {
+      pause();
+    } else {
+      play();
+    }
   };
 
   // ── Loading guard ──────────────────────────────────────────────────────────
@@ -153,22 +189,26 @@ export default function RankingScreen() {
               </div>
             )}
 
-            {/* Play button (host only) */}
+            {/* Play/Pause button (host only) */}
             {isHost && (
-              <div className="mb-8 group relative">
+              <div className="mb-8 relative">
                 <button
                   type="button"
-                  onClick={state.playback.isPlaying ? pause : play}
+                  onClick={handlePlayPauseClick}
+                  onMouseEnter={handleButtonMouseEnter}
+                  onMouseLeave={handleButtonMouseLeave}
                   aria-label={state.playback.isPlaying ? "Pause" : "Play"}
-                  className="flex h-14 w-14 items-center justify-center rounded-full border border-border bg-input hover:bg-input/80 transition-colors"
+                  className={`flex h-14 w-14 items-center justify-center rounded-full border border-border bg-input hover:bg-input/80 transition-all duration-75 ${
+                    buttonHovered ? BUTTON_SCALE : 'scale-100'
+                  }`}
                 >
                   {state.playback.isPlaying
                     ? <PauseIcon className="h-6 w-6" />
                     : <PlayIcon className="h-6 w-6" />}
                 </button>
-                {!state.playback.isPlaying && (
-                  <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 text-xs text-muted-foreground whitespace-nowrap">
-                    play
+                {showTooltip && (
+                  <div className={`absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-[#3a3a3a] rounded px-2 py-1 whitespace-nowrap opacity-0 animate-pulse`} style={{ animation: 'fadeIn 100ms ease-in forwards' }}>
+                    <span className="text-base font-medium text-white">{state.playback.isPlaying ? 'pause' : 'play'}</span>
                   </div>
                 )}
               </div>
