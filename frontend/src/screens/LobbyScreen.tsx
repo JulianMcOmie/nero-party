@@ -59,7 +59,7 @@ export default function LobbyScreen() {
                       <button
                         type="button"
                         onClick={() => updateConfig({ maxSongs: Math.max(1, config.maxSongs - 1) })}
-                        className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-input text-sm hover:bg-input/80 transition-colors"
+                        className="flex h-7 w-7 items-center justify-center rounded-md border border-border btn-hover-fade text-sm"
                       >
                         −
                       </button>
@@ -67,7 +67,7 @@ export default function LobbyScreen() {
                       <button
                         type="button"
                         onClick={() => updateConfig({ maxSongs: Math.min(20, config.maxSongs + 1) })}
-                        className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-input text-sm hover:bg-input/80 transition-colors"
+                        className="flex h-7 w-7 items-center justify-center rounded-md border border-border btn-hover-fade text-sm"
                       >
                         +
                       </button>
@@ -103,7 +103,7 @@ export default function LobbyScreen() {
                 <button
                   type="button"
                   onClick={startSubmitting}
-                  className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm"
+                  className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm hover:bg-card/70 transition-colors duration-300"
                 >
                   start game
                 </button>

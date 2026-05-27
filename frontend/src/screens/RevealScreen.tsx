@@ -215,7 +215,7 @@ export default function RevealScreen() {
                 <button
                   type="button"
                   onClick={playAgain}
-                  className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm"
+                  className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm hover:bg-card/70 transition-colors duration-300"
                 >
                   play again
                 </button>

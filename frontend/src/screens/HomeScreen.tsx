@@ -109,7 +109,7 @@ export default function HomeScreen() {
               <button
                 type="submit"
                 disabled={submitting || !hostName.trim()}
-                className="btn-interactive w-full rounded-full border border-border bg-card px-6 py-2.5 text-sm disabled:opacity-50"
+                className="btn-interactive w-full rounded-full border border-border bg-card px-6 py-2.5 text-sm disabled:opacity-50 hover:bg-card/70 transition-colors duration-300"
               >
                 {submitting ? "creating…" : "create party"}
               </button>
@@ -146,7 +146,7 @@ export default function HomeScreen() {
               <button
                 type="submit"
                 disabled={submitting || roomPin.length !== 3 || !playerName.trim()}
-                className="btn-interactive w-full rounded-full border border-border bg-card px-6 py-2.5 text-sm disabled:opacity-50"
+                className="btn-interactive w-full rounded-full border border-border bg-card px-6 py-2.5 text-sm disabled:opacity-50 hover:bg-card/70 transition-colors duration-300"
               >
                 {submitting ? "joining…" : "join party"}
               </button>

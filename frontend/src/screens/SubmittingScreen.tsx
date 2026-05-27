@@ -36,7 +36,7 @@ function SearchPanel({ onAdd }: { onAdd: (track: TrackInput) => void }) {
                   onAdd(track);
                   setQuery("");
                 }}
-                className="flex w-full items-center gap-3 rounded-md border border-border bg-input/40 px-3 py-2 text-left hover:bg-input"
+                className="flex w-full items-center gap-3 rounded-md border border-border bg-input/40 px-3 py-2 text-left hover:bg-input/60 transition-all duration-300"
               >
                 {track.albumArtUrl ? (
                   <img
@@ -109,7 +109,7 @@ export default function SubmittingScreen() {
                 <button
                   type="button"
                   onClick={returnToLobby}
-                  className="mb-4 block text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="mb-4 block text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
                 >
                   ← return to lobby
                 </button>
@@ -184,7 +184,7 @@ export default function SubmittingScreen() {
                         type="button"
                         onClick={() => removeSong(q.id)}
                         aria-label="Remove song"
-                        className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+                        className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors duration-300"
                       >
                         ✕
                       </button>
@@ -208,7 +208,7 @@ export default function SubmittingScreen() {
                   type="button"
                   onClick={startRounds}
                   disabled={!everyoneHasOne}
-                  className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm disabled:opacity-50"
+                  className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm disabled:opacity-50 hover:bg-card/70 transition-colors duration-300"
                 >
                   {everyoneHasOne
                     ? "start rounds"

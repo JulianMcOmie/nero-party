@@ -19,6 +19,20 @@
   to { opacity: 1; }
 }
 
+@keyframes checkmark-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @keyframes note-float {
   0%   { transform: translateY(0px)   rotate(0deg);   }
   25%  { transform: translateY(-14px) rotate(5deg);   }
@@ -28,6 +42,11 @@
 }
 
 @layer components {
+  /* Spotify-style hover effect: fade to lighter grey */
+  .btn-hover-fade {
+    @apply bg-input transition-all duration-300 hover:bg-input/60;
+  }
+
   /* Consistent hover effect for primary pill/rounded buttons */
   .btn-interactive {
     @apply transition-all duration-150 hover:scale-[1.025] hover:brightness-105;
@@ -36,21 +55,21 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --header: 0 0% 94.51%;
-    --card: 0 0% 96.86%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 27.84%;
-    --foreground: 0 0% 27.84%;
-    --muted: 0 0% 27.84%;
-    --muted-foreground: 0 0% 46%;
+    --background: 0 0% 5%;
+    --header: 0 0% 10%;
+    --card: 0 0% 12%;
+    --popover: 0 0% 14%;
+    --popover-foreground: 0 0% 95%;
+    --foreground: 0 0% 93%;
+    --muted: 0 0% 75%;
+    --muted-foreground: 0 0% 55%;
     --destructive: 0 84.2% 60.2%;
     --success: 142 71% 45%;
-    --extreme: 0 0% 100%;
-    --extreme-foreground: 0 0% 0%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 63.9%;
+    --extreme: 0 0% 0%;
+    --extreme-foreground: 0 0% 100%;
+    --border: 0 0% 20%;
+    --input: 0 0% 16%;
+    --ring: 0 0% 50%;
     --radius: 0.5rem;
   }
 

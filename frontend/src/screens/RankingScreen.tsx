@@ -200,7 +200,7 @@ export default function RankingScreen() {
                   onMouseEnter={handleButtonMouseEnter}
                   onMouseLeave={handleButtonMouseLeave}
                   aria-label={state.playback.isPlaying ? "Pause" : "Play"}
-                  className={`flex h-14 w-14 items-center justify-center rounded-full border border-border bg-input hover:bg-input/80 transition-all duration-75 ${
+                  className={`flex h-14 w-14 items-center justify-center rounded-full border border-border btn-hover-fade transition-all duration-300 ${
                     buttonHovered ? BUTTON_SCALE : 'scale-100'
                   }`}
                 >
@@ -219,29 +219,18 @@ export default function RankingScreen() {
             {/* Rating */}
             <div className="flex flex-col items-center gap-4">
               {ratingSubmitted ? (
-                <div className="flex items-center gap-2">
-                  <StarRating value={selectedRating} onChange={() => {}} disabled />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedRating(0);
-                      setRatingSubmitted(false);
-                    }}
-                    className="text-xs text-muted-foreground hover:text-foreground"
-                  >
-                    change
-                  </button>
-                </div>
+                <StarRating value={selectedRating} onChange={() => {}} disabled />
               ) : (
-                <div className="flex items-center gap-3">
-                  <StarRating
-                    value={selectedRating}
-                    onChange={(rating) => handleSubmitRating(rating)}
-                  />
-                </div>
-              )}
-              {isMine && (
-                <p className="text-xs text-muted-foreground">your rating won't count — this is your song</p>
+                <StarRating
+                  value={selectedRating}
+                  onChange={(rating) => setSelectedRating(rating)}
+                  onConfirm={() => {
+                    if (currentTrack) {
+                      castVote(currentTrack.id, selectedRating);
+                      setRatingSubmitted(true);
+                    }
+                  }}
+                />
               )}
             </div>
 
@@ -274,7 +263,7 @@ export default function RankingScreen() {
                       console.error("Error calling nextSong:", error);
                     }
                   }}
-                  className="px-6 py-2 bg-input hover:bg-input/80 border border-border rounded text-sm font-medium transition-colors"
+                  className="px-6 py-2 btn-hover-fade border border-border rounded text-sm font-medium"
                 >
                   {isLast ? "reveal final results" : "next song →"}
                 </button>

@@ -53,7 +53,7 @@ export function Header() {
             type="button"
             onClick={copyCode}
             aria-label={`Copy room code ${code}`}
-            className="text-foreground"
+            className="text-foreground hover:opacity-70 transition-opacity duration-300"
           >
             Room {code}
           </button>
@@ -67,14 +67,14 @@ export function Header() {
             <button
               type="button"
               onClick={handleConfirm}
-              className="font-medium text-muted-foreground transition-all hover:scale-110 hover:text-foreground"
+              className="font-medium text-muted-foreground transition-all duration-300 hover:scale-110 hover:text-foreground"
             >
               Yes
             </button>
             <button
               type="button"
               onClick={handleCancel}
-              className="text-muted-foreground transition-all hover:scale-110 hover:text-foreground"
+              className="text-muted-foreground transition-all duration-300 hover:scale-110 hover:text-foreground"
             >
               No
             </button>
@@ -83,7 +83,7 @@ export function Header() {
           <button
             type="button"
             onClick={handleHostAction}
-            className="text-sm text-muted-foreground hover:text-destructive transition-colors"
+            className="text-sm text-muted-foreground hover:text-destructive transition-colors duration-300"
           >
             {hostLabel}
           </button>
@@ -91,7 +91,7 @@ export function Header() {
           <button
             type="button"
             onClick={() => setConfirming(true)}
-            className="text-sm text-muted-foreground hover:text-destructive transition-colors"
+            className="text-sm text-muted-foreground hover:text-destructive transition-colors duration-300"
           >
             Leave Room
           </button>
