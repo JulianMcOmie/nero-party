@@ -43,6 +43,7 @@ export interface QueueItemSnapshot {
   totalRatingScore: number;
   revealed: boolean;
   isOwn: boolean;
+  bpm: number | null;
 }
 
 export interface PartyConfigSnapshot {
@@ -177,6 +178,7 @@ export interface TrackInput {
   artist: string;
   albumArtUrl: string;
   previewUrl: string | null;
+  bpm: number | null;
 }
 
 export interface AddSongPayload extends ActorPayload {

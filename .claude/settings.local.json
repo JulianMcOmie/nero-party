@@ -28,7 +28,9 @@
       "Bash(python3 /tmp/codebase_printer_bw.py)",
       "Read(//tmp/**)",
       "Bash(chmod +x /tmp/final_check.sh)",
-      "Bash(/tmp/final_check.sh)"
+      "Bash(/tmp/final_check.sh)",
+      "WebFetch(domain:developers.deezer.com)",
+      "Bash(curl http://localhost:3000/health)"
     ]
   }
 }

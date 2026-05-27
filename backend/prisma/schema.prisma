@@ -62,6 +62,7 @@ model QueueItem {
   artist         String
   albumArtUrl    String
   previewUrl     String?
+  bpm            Int?
 
   // Running sum of all 1-5 star ratings cast for this track.
   totalRatingScore Int      @default(0)

@@ -51,6 +51,8 @@ export interface QueueItemSnapshot {
   revealed: boolean;
   /** True when the viewer submitted this track — owners always see their own data. */
   isOwn: boolean;
+  /** BPM of the track for pulsing animations, null if not available. */
+  bpm: number | null;
 }
 
 export interface PartyConfigSnapshot {
@@ -193,6 +195,7 @@ export interface AddSongPayload extends ActorPayload {
     artist: string;
     albumArtUrl: string;
     previewUrl: string | null;
+    bpm: number | null;
   };
 }
 

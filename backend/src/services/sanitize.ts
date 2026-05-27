@@ -62,6 +62,7 @@ export function sanitizePartyState(
       totalRatingScore: item.totalRatingScore,
       revealed: item.revealed,
       isOwn,
+      bpm: item.bpm ?? null,
     };
   });
 

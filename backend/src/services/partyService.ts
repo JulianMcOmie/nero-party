@@ -17,6 +17,7 @@ import type {
   SongRankingEntry,
 } from "../types/events.js";
 import { calculateRoundScore } from "./scoring.js";
+import { getTrackBpm } from "./deezerService.js";
 
 /**
  * The Prisma-shaped raw party aggregate. `sanitize.ts` turns this into the
@@ -219,6 +220,8 @@ async function addSong(payload: AddSongPayload): Promise<void> {
     );
   }
 
+  const bpm = await getTrackBpm(payload.track.spotifyTrackId);
+
   await prisma.queueItem.create({
     data: {
       partyId: party.id,
@@ -228,6 +231,7 @@ async function addSong(payload: AddSongPayload): Promise<void> {
       artist: payload.track.artist,
       albumArtUrl: payload.track.albumArtUrl,
       previewUrl: payload.track.previewUrl ?? null,
+      bpm,
     },
   });
 }

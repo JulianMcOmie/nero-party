@@ -4,6 +4,7 @@ import { Header } from "../components/Header";
 import { StarRating } from "../components/StarRating";
 import { PlayIcon, PauseIcon, CheckIcon } from "../components/icons";
 import { BouncingCircle } from "../components/BouncingCircle";
+import { BpmPulse } from "../components/BpmPulse";
 
 export default function RankingScreen() {
   const {
@@ -119,6 +120,8 @@ export default function RankingScreen() {
 
   const showMetadata = !config.hideSong;
 
+  console.log("[RankingScreen] currentTrack:", currentTrack?.title, "bpm:", currentTrack?.bpm);
+
   const onlineParticipants = state.participants.filter((p) => p.online);
   const allOnlineHaveRated = onlineParticipants.every((p) => {
     const a = activityByUser.get(p.id);
@@ -170,15 +173,18 @@ export default function RankingScreen() {
             {/* Song count */}
             <div className="mb-6 text-xs text-muted-foreground">song {queueIdx + 1} of {totalRounds}</div>
 
-            {/* Song cover */}
-            <div className="mb-3 flex h-64 w-64 items-center justify-center rounded-lg bg-input/50">
-              {showMetadata && currentTrack.albumArtUrl ? (
-                <img src={currentTrack.albumArtUrl} alt="" className="h-full w-full rounded-lg object-cover" />
-              ) : (
-                <div className="text-6xl text-muted-foreground/50">
-                  {showMetadata ? "♪" : "?"}
-                </div>
-              )}
+            {/* Song cover with BPM pulse */}
+            <div className="mb-3 relative h-64 w-64">
+              <BpmPulse bpm={currentTrack?.bpm ?? null} isPlaying={state.playback.isPlaying} />
+              <div className="relative h-full w-full flex items-center justify-center rounded-lg bg-input/50" style={{ zIndex: 1 }}>
+                {showMetadata && currentTrack.albumArtUrl ? (
+                  <img src={currentTrack.albumArtUrl} alt="" className="h-full w-full rounded-lg object-cover" />
+                ) : (
+                  <div className="text-6xl text-muted-foreground/50">
+                    {showMetadata ? "♪" : "?"}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Title and artist (if visible) */}
