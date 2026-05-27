@@ -47,8 +47,7 @@ export default function LobbyScreen() {
             </section>
 
             {isHost && (
-              <section className="rounded-2xl border border-border bg-card p-6">
-                <h2 className="mb-4 text-sm text-muted-foreground">Party Settings</h2>
+              <section className="rounded-2xl border border-border bg-card p-6 max-w-sm mx-auto">
                 <div className="space-y-5">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-1.5">
@@ -133,7 +132,7 @@ function InfoTip({ text }: { text: string }) {
       <span className="flex h-4 w-4 cursor-default items-center justify-center rounded-full border border-muted-foreground/40 text-[10px] leading-none text-muted-foreground select-none transition-colors hover:border-foreground/50 hover:text-foreground/70 hover:bg-input/50">
         ?
       </span>
-      <span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 w-56 -translate-x-1/2 rounded-lg border border-border bg-card px-3 py-2 text-xs text-muted-foreground opacity-0 shadow-md transition-opacity group-hover:opacity-100">
+      <span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 w-max max-w-xs -translate-x-1/2 rounded-lg border border-border bg-card px-3 py-2 text-xs text-muted-foreground opacity-0 shadow-md transition-opacity group-hover:opacity-100">
         {text}
       </span>
     </span>

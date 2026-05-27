@@ -15,7 +15,7 @@ function SearchPanel({ onAdd }: { onAdd: (track: TrackInput) => void }) {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="search for a song…"
-        className="w-full rounded-md bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+        className="w-full rounded-md bg-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
       />
 
       {loading && (
@@ -143,10 +143,16 @@ export default function SubmittingScreen() {
 
             {/* Center: Main content */}
             <div className="flex-1 min-w-0 space-y-8">
+            <button
+              type="button"
+              className="mb-4 block text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 invisible"
+            >
+              ← return to lobby
+            </button>
             <section className="rounded-2xl border border-border bg-card p-6">
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-base">your song submissions</h2>
-                <div className="group relative cursor-default rounded px-2 py-0.5 transition-colors hover:bg-input/50">
+                <h2 className="text-base">submit your songs here</h2>
+                <div className="group relative cursor-default rounded px-2 py-0.5 transition-colors hover:bg-border">
                   <span className={`text-sm ${countColor}`}>
                     {mySubmittedCount} / {maxSongs}
                   </span>

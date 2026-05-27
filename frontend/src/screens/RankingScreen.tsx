@@ -158,9 +158,6 @@ export default function RankingScreen() {
                         <CheckIcon className="h-3 w-3 text-foreground flex-shrink-0" />
                       )}
                     </div>
-                    {isMine && p.id === me?.id && (
-                      <div className="text-muted-foreground italic">(your song)</div>
-                    )}
                   </div>
                 );
               })}
