@@ -44,7 +44,7 @@ export function StarRating({
             aria-label={`${n} star${n === 1 ? "" : "s"}`}
             className="text-foreground disabled:opacity-50"
           >
-            <StarIcon className="h-7 w-7" filled={n <= display} />
+            <StarIcon className="h-12 w-12" filled={n <= display} />
           </button>
         ))}
       </div>
@@ -55,14 +55,14 @@ export function StarRating({
           className="absolute flex items-center justify-center cursor-pointer group"
           style={{
             left: 'calc(100% + 20px)',
-            top: '4px',
+            top: '8px',
             animation: 'checkmark-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
           }}
           aria-label="Confirm rating"
         >
           <div className="relative flex items-center justify-center">
-            <div className="absolute w-8 h-8 rounded-full bg-white/20 group-hover:bg-white/40 transition-colors duration-200" />
-            <CheckIcon className="h-5 w-5 text-white relative z-10 group-hover:brightness-125 transition-all duration-200" />
+            <div className="absolute w-12 h-12 rounded-full border border-white bg-white/15 group-hover:bg-white/40 transition-colors duration-200" />
+            <CheckIcon className="h-8 w-8 text-white relative z-10 group-hover:brightness-125 transition-all duration-200" />
           </div>
         </button>
       )}
