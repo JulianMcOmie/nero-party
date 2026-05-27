@@ -90,10 +90,10 @@ export default function SubmittingScreen() {
   const isOver = mySubmittedCount > maxSongs;
   const countColor = isUnder || isOver ? "text-destructive" : "text-success";
   const countTip = isUnder
-    ? "Submit at least one song to play."
+    ? "submit at least one song to play"
     : isOver
-      ? `Remove ${mySubmittedCount - maxSongs} song${mySubmittedCount - maxSongs === 1 ? "" : "s"} — you're over the limit.`
-      : null;
+      ? `remove ${mySubmittedCount - maxSongs} song${mySubmittedCount - maxSongs === 1 ? "" : "s"} — you're over the limit`
+      : `submit up to ${maxSongs} song${maxSongs === 1 ? "" : "s"}`;
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -151,7 +151,7 @@ export default function SubmittingScreen() {
                     {mySubmittedCount} / {maxSongs}
                   </span>
                   {countTip && (
-                    <span className="pointer-events-none absolute right-0 top-full z-10 mt-1 w-52 rounded-md border border-border bg-card px-3 py-1.5 text-xs text-foreground opacity-0 shadow-md transition-opacity group-hover:opacity-100">
+                    <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-full z-10 mb-1 whitespace-nowrap rounded-md border border-border bg-card px-3 py-1.5 text-xs text-foreground opacity-0 shadow-md transition-opacity group-hover:opacity-100">
                       {countTip}
                     </span>
                   )}
