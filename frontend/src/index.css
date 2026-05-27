@@ -55,7 +55,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 5%;
+    --background: 0 0% 8%;
     --header: 0 0% 10%;
     --card: 0 0% 12%;
     --popover: 0 0% 14%;
@@ -67,18 +67,18 @@
     --success: 142 71% 45%;
     --extreme: 0 0% 0%;
     --extreme-foreground: 0 0% 100%;
-    --border: 0 0% 20%;
-    --input: 0 0% 16%;
+    --border: 0 0% 17%;
+    --input: 0 0% 12%;
     --ring: 0 0% 50%;
     --radius: 0.5rem;
   }
 
   .dark {
     color-scheme: dark;
-    --background: 0 0% 9.41%;
-    --header: 0 0% 13.33%;
-    --card: 0 0% 13.33%;
-    --popover: 0 0% 15%;
+    --background: 0 0% 8%;
+    --header: 0 0% 10%;
+    --card: 0 0% 12%;
+    --popover: 0 0% 14%;
     --popover-foreground: 0 0% 100%;
     --foreground: 0 0% 100%;
     --muted: 0 0% 78.43%;
@@ -87,8 +87,8 @@
     --success: 142 71% 45%;
     --extreme: 0 0% 0%;
     --extreme-foreground: 0 0% 100%;
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
+    --border: 0 0% 17%;
+    --input: 0 0% 12%;
     --ring: 0 0% 63.9%;
   }
 
