@@ -130,7 +130,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 8%;
+    --background: 0 0% 5%;
     --header: 0 0% 10%;
     --card: 0 0% 12%;
     --popover: 0 0% 14%;
@@ -150,7 +150,7 @@
 
   .dark {
     color-scheme: dark;
-    --background: 0 0% 8%;
+    --background: 0 0% 5%;
     --header: 0 0% 10%;
     --card: 0 0% 12%;
     --popover: 0 0% 14%;
