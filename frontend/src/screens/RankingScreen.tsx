@@ -257,7 +257,7 @@ export default function RankingScreen() {
 
             {/* Title, artist, and play button */}
             {isHost ? (
-              <div className="mb-4 flex items-start gap-4">
+              <div className="mb-4 flex items-start">
                 {/* Play/Pause button (host only) */}
                 <div className="relative mt-0 flex-shrink-0">
                   <button
@@ -283,7 +283,7 @@ export default function RankingScreen() {
 
                 {/* Title and artist — slides in from nothing when song reveals */}
                 <div className={`text-center overflow-hidden transition-all duration-700 ${
-                  showMetadata ? 'max-w-xs opacity-100 flex-1' : 'max-w-0 opacity-0'
+                  showMetadata ? 'max-w-xs opacity-100 flex-1 ml-4' : 'max-w-0 opacity-0 ml-0'
                 }`}>
                   <h2 className="text-lg font-semibold mb-1 whitespace-nowrap">{currentTrack.title ?? "—"}</h2>
                   <p className="text-sm text-muted-foreground whitespace-nowrap">{currentTrack.artist ?? "—"}</p>
@@ -325,15 +325,13 @@ export default function RankingScreen() {
 
             {/* Waiting indicator for players */}
             {!isHost && (
-              <div className="mt-12 text-center">
-                <div className="text-sm text-muted-foreground">
-                  {allOnlineHaveRated
-                    ? "Waiting for the host to continue"
-                    : "Waiting for votes"}
-                  <span style={{ display: 'inline-block', width: '3.5ch', textAlign: 'left' }}>
-                    {'.'.repeat(dots)}
-                  </span>
-                </div>
+              <div className="mt-12 w-full text-center text-sm text-muted-foreground relative">
+                {allOnlineHaveRated
+                  ? "Waiting for the host to continue"
+                  : "Waiting for votes"}
+                <span className="absolute" style={{ width: '3.5ch', textAlign: 'left' }}>
+                  {'.'.repeat(dots)}
+                </span>
               </div>
             )}
 
