@@ -89,7 +89,7 @@ export default function SubmittingScreen() {
 
   const isUnder = mySubmittedCount < 1;
   const isOver = mySubmittedCount > maxSongs;
-  const countColor = isUnder || isOver ? "text-destructive" : "text-success";
+  const countColor = isUnder || isOver ? "text-muted-foreground" : "text-foreground";
   const countTip = isUnder
     ? "Submit at least one song to play"
     : isOver

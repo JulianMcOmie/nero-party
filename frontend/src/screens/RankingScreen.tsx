@@ -281,25 +281,11 @@ export default function RankingScreen() {
 
             {/* Host reveal button */}
             {isHost && (
-              <div className="mt-12">
+              <div className="mt-12 flex justify-center">
                 <button
                   type="button"
-                  onClick={async () => {
-                    console.log("Next song button clicked");
-                    console.log("currentTrack:", currentTrack);
-                    console.log("isLast:", isLast);
-                    console.log("queueIdx:", queueIdx);
-                    try {
-                      const result = nextSong();
-                      console.log("nextSong returned:", result);
-                      if (result instanceof Promise) {
-                        result.catch(err => console.error("Promise rejected:", err));
-                      }
-                    } catch (error) {
-                      console.error("Error calling nextSong:", error);
-                    }
-                  }}
-                  className="px-6 py-2 btn-hover-fade border border-border rounded text-sm font-medium"
+                  onClick={nextSong}
+                  className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm hover:bg-card/70 transition-colors duration-300"
                 >
                   {isLast ? "Reveal final results" : "Next song →"}
                 </button>
