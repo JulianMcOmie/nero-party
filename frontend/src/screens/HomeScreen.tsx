@@ -95,7 +95,7 @@ export default function HomeScreen() {
           {mode === "host" && (
             <form onSubmit={handleCreate} className="space-y-4">
               <label className="block">
-                <span className="mb-1 block text-xs text-muted-foreground">your name</span>
+                <span className="mb-1 block text-xs text-muted-foreground">Your name</span>
                 <input
                   type="text"
                   maxLength={32}
@@ -111,7 +111,7 @@ export default function HomeScreen() {
                 disabled={submitting || !hostName.trim()}
                 className="btn-interactive w-full rounded-full border border-border bg-card px-6 py-2.5 text-sm disabled:opacity-50 hover:bg-card/70 transition-colors duration-300"
               >
-                {submitting ? "creating…" : "create party"}
+                {submitting ? "Creating…" : "Create party"}
               </button>
             </form>
           )}
@@ -119,7 +119,7 @@ export default function HomeScreen() {
           {mode === "join" && (
             <form onSubmit={handleJoin} className="space-y-4">
               <label className="block">
-                <span className="mb-1 block text-xs text-muted-foreground">room code</span>
+                <span className="mb-1 block text-xs text-muted-foreground">Room code</span>
                 <input
                   type="text"
                   inputMode="numeric"
@@ -133,7 +133,7 @@ export default function HomeScreen() {
                 />
               </label>
               <label className="block">
-                <span className="mb-1 block text-xs text-muted-foreground">your name</span>
+                <span className="mb-1 block text-xs text-muted-foreground">Your name</span>
                 <input
                   type="text"
                   maxLength={16}
@@ -148,7 +148,7 @@ export default function HomeScreen() {
                 disabled={submitting || roomPin.length !== 3 || !playerName.trim()}
                 className="btn-interactive w-full rounded-full border border-border bg-card px-6 py-2.5 text-sm disabled:opacity-50 hover:bg-card/70 transition-colors duration-300"
               >
-                {submitting ? "joining…" : "join party"}
+                {submitting ? "Joining…" : "Join party"}
               </button>
             </form>
           )}

@@ -10,7 +10,7 @@ export default function RevealScreen() {
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         <Header />
         <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
-          loading final results…
+          Loading final results…
         </div>
       </div>
     );
@@ -97,7 +97,7 @@ export default function RevealScreen() {
               onClick={playAgain}
               className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm hover:bg-card/70 transition-colors duration-300"
             >
-              play again
+              Play again
             </button>
           </div>
         )}

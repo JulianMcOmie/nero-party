@@ -104,7 +104,7 @@ export default function RankingScreen() {
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         <Header />
         <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
-          loading round…
+          Loading round…
         </div>
       </div>
     );
@@ -149,7 +149,7 @@ export default function RankingScreen() {
                   : "text-muted-foreground hover:text-foreground invisible"
               }`}
             >
-              ← return to lobby
+              ← Return to lobby
             </button>
             <h3 className="mb-4 text-xs text-muted-foreground uppercase tracking-widest font-semibold">room</h3>
             <div className="space-y-2">
@@ -173,7 +173,7 @@ export default function RankingScreen() {
             {/* Center: Song and rating */}
             <div className="flex-1 flex flex-col items-center justify-start pt-8">
             {/* Song count */}
-            <div className="mb-6 text-xs text-muted-foreground">song {queueIdx + 1} of {totalRounds}</div>
+            <div className="mb-6 text-xs text-muted-foreground">Song {queueIdx + 1} of {totalRounds}</div>
 
             {/* Song cover with wave particles */}
             <div
@@ -272,8 +272,8 @@ export default function RankingScreen() {
               <div className="mt-12 text-center">
                 <div className="text-sm text-muted-foreground mb-2">
                   {allOnlineHaveRated
-                    ? "waiting for the host to continue…"
-                    : "waiting for votes..."}
+                    ? "Waiting for the host to continue…"
+                    : "Waiting for votes…"}
                 </div>
                 <BouncingCircle width={200} height={15} />
               </div>
@@ -301,7 +301,7 @@ export default function RankingScreen() {
                   }}
                   className="px-6 py-2 btn-hover-fade border border-border rounded text-sm font-medium"
                 >
-                  {isLast ? "reveal final results" : "next song →"}
+                  {isLast ? "Reveal final results" : "Next song →"}
                 </button>
               </div>
             )}
@@ -334,7 +334,7 @@ export default function RankingScreen() {
                         <div className="text-muted-foreground line-clamp-1">{item.artist ?? "Unknown"}</div>
                       </div>
                     ) : (
-                      <div className="text-muted-foreground italic">hidden song</div>
+                      <div className="text-muted-foreground italic">Hidden song</div>
                     )}
                   </div>
                 );

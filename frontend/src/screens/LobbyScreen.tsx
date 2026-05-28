@@ -41,9 +41,9 @@ export default function LobbyScreen() {
             {/* Center: Main content */}
             <div className="flex-1 min-w-0 space-y-8">
             <section className="rounded-2xl border-2 border-dashed border-border bg-card/40 px-8 py-10 text-center">
-              <h1 className="mb-1 text-2xl animate-breathe">waiting for players</h1>
+              <h1 className="mb-1 text-2xl animate-breathe">Waiting for players</h1>
               <p className="text-sm text-muted-foreground">
-                share the room code{" "}
+                Share the room code{" "}
                 <span className="text-foreground tracking-widest">{party.code}</span>{" "}
                 to invite friends.
               </p>
@@ -122,12 +122,12 @@ export default function LobbyScreen() {
                   onClick={startSubmitting}
                   className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm hover:bg-card/70 transition-colors duration-300"
                 >
-                  start game
+                  Start game
                 </button>
               ) : (
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground mb-2">
-                    waiting for the host to start...
+                    Waiting for the host to start...
                   </p>
                   <BouncingCircle width={280} height={15} />
                 </div>

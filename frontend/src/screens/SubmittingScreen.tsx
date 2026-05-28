@@ -14,16 +14,16 @@ function SearchPanel({ onAdd }: { onAdd: (track: TrackInput) => void }) {
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="search for a song…"
+        placeholder="Search for a song…"
         className="w-full rounded-md bg-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
       />
 
       {loading && (
-        <p className="text-xs text-muted-foreground">searching…</p>
+        <p className="text-xs text-muted-foreground">Searching…</p>
       )}
 
       {!loading && query.trim() && results.length === 0 && (
-        <p className="text-xs text-muted-foreground">no results</p>
+        <p className="text-xs text-muted-foreground">No results</p>
       )}
 
       {results.length > 0 && (
@@ -55,7 +55,7 @@ function SearchPanel({ onAdd }: { onAdd: (track: TrackInput) => void }) {
                 </div>
                 {!track.previewUrl && (
                   <span className="ml-auto shrink-0 text-[10px] text-muted-foreground">
-                    no preview
+                    No preview
                   </span>
                 )}
               </button>
@@ -91,10 +91,10 @@ export default function SubmittingScreen() {
   const isOver = mySubmittedCount > maxSongs;
   const countColor = isUnder || isOver ? "text-destructive" : "text-success";
   const countTip = isUnder
-    ? "submit at least one song to play"
+    ? "Submit at least one song to play"
     : isOver
-      ? `remove ${mySubmittedCount - maxSongs} song${mySubmittedCount - maxSongs === 1 ? "" : "s"} — you're over the limit`
-      : `submit up to ${maxSongs} song${maxSongs === 1 ? "" : "s"}`;
+      ? `Remove ${mySubmittedCount - maxSongs} song${mySubmittedCount - maxSongs === 1 ? "" : "s"} — you're over the limit`
+      : `Submit up to ${maxSongs} song${maxSongs === 1 ? "" : "s"}`;
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -112,7 +112,7 @@ export default function SubmittingScreen() {
                   onClick={returnToLobby}
                   className="mb-4 block text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
                 >
-                  ← return to lobby
+                  ← Return to lobby
                 </button>
               )}
               <h3 className="mb-4 text-xs text-muted-foreground uppercase tracking-widest font-semibold">room</h3>
@@ -161,7 +161,7 @@ export default function SubmittingScreen() {
               onMouseLeave={() => setCardHovered(false)}
             >
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-base">submit your songs here</h2>
+                <h2 className="text-base">Submit your songs here</h2>
                 <div className="group relative cursor-default rounded px-2 py-0.5 transition-colors hover:bg-border">
                   <span className={`text-sm ${countColor}`}>
                     {mySubmittedCount} / {maxSongs}
@@ -214,28 +214,33 @@ export default function SubmittingScreen() {
                 <SearchPanel onAdd={addSong} />
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  you've added the maximum {maxSongs} songs.
+                  You've added the maximum {maxSongs} songs.
                 </p>
               )}
             </section>
 
             <div className="flex justify-center">
               {isHost ? (
-                <button
-                  type="button"
-                  onClick={startRounds}
-                  disabled={!everyoneHasOne}
-                  className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm disabled:opacity-50 hover:bg-card/70 transition-colors duration-300"
-                >
-                  {everyoneHasOne
-                    ? "start rounds"
-                    : "waiting for everyone to submit at least one…"}
-                </button>
+                <div className="relative group">
+                  <button
+                    type="button"
+                    onClick={startRounds}
+                    disabled={!everyoneHasOne}
+                    className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm disabled:opacity-50 hover:bg-card/70 transition-colors duration-300"
+                  >
+                    Start rounds
+                  </button>
+                  {!everyoneHasOne && (
+                    <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 z-10 mb-2 w-max rounded-lg border border-border bg-card px-3 py-2 text-xs text-muted-foreground opacity-0 shadow-md transition-opacity group-hover:opacity-100">
+                      Waiting for everyone to submit at least one song
+                    </span>
+                  )}
+                </div>
               ) : (
                 <p className={`text-sm text-muted-foreground ${mySubmittedCount > 0 ? "animate-breathe" : ""}`}>
                   {mySubmittedCount > 0
-                    ? "waiting for the host to start the rounds…"
-                    : "submit at least one song to get started."}
+                    ? "Waiting for the host to start the rounds…"
+                    : "Submit at least one song to get started."}
                 </p>
               )}
             </div>
