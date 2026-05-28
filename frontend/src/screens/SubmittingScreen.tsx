@@ -36,7 +36,7 @@ function SearchPanel({ onAdd }: { onAdd: (track: TrackInput) => void }) {
                   onAdd(track);
                   setQuery("");
                 }}
-                className="flex w-full items-center gap-3 rounded-md border border-border bg-input/40 px-3 py-2 text-left hover:bg-input/60 transition-all duration-300"
+                className="flex w-full items-center gap-3 rounded-md border border-border bg-input/40 px-3 py-2 text-left hover:bg-white/10 transition-all duration-200"
               >
                 {track.albumArtUrl ? (
                   <img
