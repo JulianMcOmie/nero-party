@@ -71,12 +71,20 @@ const DOT_SEQ = [0, 1, 2, 3, 3, 3, 3, 3, 3];
 
 export default function SubmittingScreen() {
   const [dotIdx, setDotIdx] = useState(0);
+  const [countdown, setCountdown] = useState<number | null>(null);
   const dots = DOT_SEQ[dotIdx]!;
   useEffect(() => {
     const id = setInterval(() => setDotIdx((i) => (i + 1) % DOT_SEQ.length), 120);
     return () => clearInterval(id);
   }, []);
   const { state, isHost, addSong, removeSong, startRounds, returnToLobby } = useParty();
+
+  useEffect(() => {
+    if (countdown === null) return;
+    if (countdown === 0) { startRounds(); return; }
+    const id = setTimeout(() => setCountdown((c) => (c ?? 1) - 1), 1000);
+    return () => clearTimeout(id);
+  }, [countdown, startRounds]);
   const party = state.party;
   if (!party) return null;
   const maxSongs = party.config.maxSongs;
@@ -157,6 +165,7 @@ export default function SubmittingScreen() {
             >
               ← return to lobby
             </button>
+            <h1 className="text-3xl font-semibold text-center -mt-4">Song Selection</h1>
             <section
               className="rounded-2xl border border-border bg-card p-6 max-w-lg mx-auto"
               style={{
@@ -230,7 +239,7 @@ export default function SubmittingScreen() {
                 <div className="relative group">
                   <button
                     type="button"
-                    onClick={startRounds}
+                    onClick={() => setCountdown(3)}
                     disabled={!everyoneHasOne}
                     className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm disabled:opacity-50 hover:bg-card/70 transition-colors duration-300"
                   >
@@ -260,6 +269,23 @@ export default function SubmittingScreen() {
           </div>
         </div>
       </main>
+
+      {countdown !== null && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm">
+          <p className="text-muted-foreground text-lg mb-4 tracking-wide">Game Starts in</p>
+          <div className="h-36 flex items-center justify-center">
+            {countdown > 0 && (
+              <div
+                key={countdown}
+                className="text-9xl font-bold"
+                style={{ animation: 'countdown-pop 1s ease-out forwards' }}
+              >
+                {countdown}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
