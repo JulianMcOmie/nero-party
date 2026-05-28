@@ -207,7 +207,7 @@ export default function RankingScreen() {
                       : <PlayIcon className="h-6 w-6" />}
                   </button>
                   {showTooltip && (
-                    <div className={`absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-[#3a3a3a] rounded px-2 py-1 whitespace-nowrap opacity-0 animate-pulse`} style={{ animation: 'fadeIn 100ms ease-in forwards' }}>
+                    <div className={`absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-[#3a3a3a] rounded px-2 py-1 whitespace-nowrap opacity-0 animate-pulse`} style={{ animation: 'fadeIn 100ms ease-in forwards', zIndex: 50 }}>
                       <span className="text-base font-medium text-white">{state.playback.isPlaying ? 'pause' : 'play'}</span>
                     </div>
                   )}
@@ -257,7 +257,7 @@ export default function RankingScreen() {
 
             {/* Host reveal button */}
             {isHost && (
-              <div className="mt-8">
+              <div className="mt-12">
                 <button
                   type="button"
                   onClick={async () => {
