@@ -61,8 +61,8 @@ export function StarRating({
           aria-label="Confirm rating"
         >
           <div className="relative flex items-center justify-center">
-            <div className="absolute w-12 h-12 rounded-full border border-white bg-white/15 group-hover:bg-white/40 transition-colors duration-200" />
-            <CheckIcon className="h-8 w-8 text-white relative z-10 group-hover:brightness-125 transition-all duration-200" />
+            <div className="absolute w-12 h-12 rounded-full border border-white bg-white/15 group-hover:bg-white/25 transition-colors duration-200" />
+            <CheckIcon className="h-8 w-8 text-white relative z-10 group-hover:brightness-90 transition-all duration-200" />
           </div>
         </button>
       )}
