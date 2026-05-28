@@ -260,40 +260,42 @@ export default function RankingScreen() {
 
             {/* Title, artist, and play button */}
             {isHost ? (
-              <div className="mb-4 flex items-start">
-                {/* Play/Pause button (host only) */}
-                <div className="relative mt-0 flex-shrink-0">
-                  <button
-                    type="button"
-                    onClick={handlePlayPauseClick}
-                    onMouseEnter={handleButtonMouseEnter}
-                    onMouseLeave={handleButtonMouseLeave}
-                    aria-label={state.playback.isPlaying ? "Pause" : "Play"}
-                    className={`flex h-14 w-14 items-center justify-center rounded-full border border-border btn-hover-fade transition-all duration-300 ${
-                      buttonHovered ? BUTTON_SCALE : 'scale-100'
-                    }`}
-                  >
-                    {state.playback.isPlaying
-                      ? <PauseIcon className="h-6 w-6" />
-                      : <PlayIcon className="h-6 w-6" />}
-                  </button>
-                  {showTooltip && (
-                    <div className={`absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-[#3a3a3a] rounded px-2 py-1 whitespace-nowrap opacity-0 animate-pulse`} style={{ animation: 'fadeIn 100ms ease-in forwards', zIndex: 50 }}>
-                      <span className="text-base font-medium text-white">{state.playback.isPlaying ? 'pause' : 'play'}</span>
+              <div className="mb-4 flex justify-center">
+                <div className="relative">
+                  {/* Play/Pause button (host only) — absolutely positioned so it doesn't affect title centering */}
+                  <div className="absolute right-full top-0 mr-3">
+                    <button
+                      type="button"
+                      onClick={handlePlayPauseClick}
+                      onMouseEnter={handleButtonMouseEnter}
+                      onMouseLeave={handleButtonMouseLeave}
+                      aria-label={state.playback.isPlaying ? "Pause" : "Play"}
+                      className={`flex h-14 w-14 items-center justify-center rounded-full border border-border btn-hover-fade transition-all duration-300 ${
+                        buttonHovered ? BUTTON_SCALE : 'scale-100'
+                      }`}
+                    >
+                      {state.playback.isPlaying
+                        ? <PauseIcon className="h-6 w-6" />
+                        : <PlayIcon className="h-6 w-6" />}
+                    </button>
+                    {showTooltip && (
+                      <div className={`absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-[#3a3a3a] rounded px-2 py-1 whitespace-nowrap opacity-0 animate-pulse`} style={{ animation: 'fadeIn 100ms ease-in forwards', zIndex: 50 }}>
+                        <span className="text-base font-medium text-white">{state.playback.isPlaying ? 'pause' : 'play'}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Title and artist — fades in when song reveals */}
+                  {showMetadata && (
+                    <div
+                      className="text-center"
+                      style={{ animation: 'fadeIn 0.7s ease-out forwards' }}
+                    >
+                      <h2 className="text-lg font-semibold mb-1 whitespace-nowrap">{currentTrack.title ?? "—"}</h2>
+                      <p className="text-sm text-muted-foreground whitespace-nowrap">{currentTrack.artist ?? "—"}</p>
                     </div>
                   )}
                 </div>
-
-                {/* Title and artist — fades in when song reveals */}
-                {showMetadata && (
-                  <div
-                    className="text-center flex-1 ml-4"
-                    style={{ animation: 'fadeIn 0.7s ease-out forwards' }}
-                  >
-                    <h2 className="text-lg font-semibold mb-1 whitespace-nowrap">{currentTrack.title ?? "—"}</h2>
-                    <p className="text-sm text-muted-foreground whitespace-nowrap">{currentTrack.artist ?? "—"}</p>
-                  </div>
-                )}
               </div>
             ) : (
               <div className="mb-4">
