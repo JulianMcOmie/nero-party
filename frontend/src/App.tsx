@@ -15,7 +15,15 @@ import { AnimatedCharacterBackground } from "./components/AnimatedCharacterBackg
 export default function App() {
   const { state } = useParty();
 
-  if (!state.session) return <><FloatingNotes isPlaying={false} /><AnimatedCharacterBackground isPlaying={false} /><HomeScreen /></>;
+  const curtain = (key: string) => (
+    <div
+      key={key}
+      className="fixed inset-0 bg-background pointer-events-none"
+      style={{ animation: 'fadeOut 0.5s ease-out forwards', zIndex: 100 }}
+    />
+  );
+
+  if (!state.session) return <><FloatingNotes isPlaying={false} /><AnimatedCharacterBackground isPlaying={false} /><HomeScreen />{curtain('home')}</>;
 
   // Brief flash during reconnect / session:register before party state lands.
   if (!state.party) {
@@ -26,12 +34,14 @@ export default function App() {
     );
   }
 
+  const phase = state.party.gamePhase;
+
   return (
     <>
       <FloatingNotes isPlaying={state.playback.isPlaying} />
       <AnimatedCharacterBackground isPlaying={state.playback.isPlaying} />
       {(() => {
-        switch (state.party.gamePhase) {
+        switch (phase) {
           case "HOSTING":    return <LobbyScreen />;
           case "SUBMITTING": return <SubmittingScreen />;
           case "RANKING":    return <RankingScreen />;
@@ -39,6 +49,7 @@ export default function App() {
           default:           return null;
         }
       })()}
+      {curtain(phase)}
     </>
   );
 }
