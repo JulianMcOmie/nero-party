@@ -159,7 +159,7 @@ export default function RankingScreen() {
                     <div className="flex items-center justify-between mb-1">
                       <span className="truncate font-medium text-foreground">{p.name}</span>
                       {hasRated && (
-                        <CheckIcon className="h-3 w-3 text-foreground flex-shrink-0" />
+                        <CheckIcon className="h-3 w-3 text-foreground flex-shrink-0 !scale-100 !opacity-100" style={{ animation: 'none', transition: 'none' }} />
                       )}
                     </div>
                   </div>
@@ -188,9 +188,9 @@ export default function RankingScreen() {
             </div>
 
             {/* Title, artist, and play button */}
-            <div className="mb-4 flex items-start gap-4">
-              {/* Play/Pause button (host only) */}
-              {isHost ? (
+            {isHost ? (
+              <div className="mb-4 flex items-start gap-4">
+                {/* Play/Pause button (host only) */}
                 <div className="relative mt-0 flex-shrink-0">
                   <button
                     type="button"
@@ -212,23 +212,31 @@ export default function RankingScreen() {
                     </div>
                   )}
                 </div>
-              ) : (
-                <div className="w-14 flex-shrink-0" />
-              )}
 
-              {/* Title and artist (if visible) - centered */}
-              {showMetadata && (
-                <div className="text-center flex-1">
-                  <h2 className="text-lg font-semibold mb-1">{currentTrack.title ?? "—"}</h2>
-                  <p className="text-sm text-muted-foreground">{currentTrack.artist ?? "—"}</p>
-                </div>
-              )}
-            </div>
+                {/* Title and artist (if visible) - centered */}
+                {showMetadata && (
+                  <div className="text-center flex-1">
+                    <h2 className="text-lg font-semibold mb-1">{currentTrack.title ?? "—"}</h2>
+                    <p className="text-sm text-muted-foreground">{currentTrack.artist ?? "—"}</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="mb-4">
+                {/* Title and artist (if visible) - centered for non-hosts */}
+                {showMetadata && (
+                  <div className="text-center">
+                    <h2 className="text-lg font-semibold mb-1">{currentTrack.title ?? "—"}</h2>
+                    <p className="text-sm text-muted-foreground">{currentTrack.artist ?? "—"}</p>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Rating */}
             <div className="relative flex flex-col items-center gap-4">
               <span className="absolute right-full mr-4 top-1/2 -translate-y-1/2 text-2xl text-white whitespace-nowrap" style={{ opacity: 0.7, letterSpacing: '0.04em' }}>
-                Your Rating :
+                Your Rating:
               </span>
               {ratingSubmitted ? (
                 <StarRating value={selectedRating} onChange={() => {}} disabled />

@@ -56,7 +56,7 @@ export function StarRating({
           style={{
             left: 'calc(100% + 20px)',
             top: '8px',
-            animation: 'checkmark-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+            animation: 'fadeIn 0.15s ease-in forwards',
           }}
           aria-label="Confirm rating"
         >
