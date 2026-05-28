@@ -70,7 +70,10 @@ export default function LobbyScreen() {
                       <button
                         type="button"
                         onClick={() => updateConfig({ maxSongs: Math.max(1, config.maxSongs - 1) })}
-                        className="flex h-7 w-7 items-center justify-center rounded-md border border-border btn-hover-fade text-sm"
+                        className="flex h-7 w-7 items-center justify-center rounded-md border border-border text-sm transition-colors duration-300 cursor-default"
+                        style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.35)'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.15)'}
                       >
                         −
                       </button>
@@ -78,7 +81,10 @@ export default function LobbyScreen() {
                       <button
                         type="button"
                         onClick={() => updateConfig({ maxSongs: Math.min(20, config.maxSongs + 1) })}
-                        className="flex h-7 w-7 items-center justify-center rounded-md border border-border btn-hover-fade text-sm"
+                        className="flex h-7 w-7 items-center justify-center rounded-md border border-border text-sm transition-colors duration-300 cursor-default"
+                        style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.35)'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.15)'}
                       >
                         +
                       </button>
@@ -176,7 +182,8 @@ function ToggleRow({
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className="relative h-7 w-12 shrink-0 rounded-full border border-border bg-input transition-colors"
+        className="relative h-7 w-12 shrink-0 rounded-full border border-border transition-colors"
+        style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}
       >
         <span
           className={`absolute top-[3px] block h-5 w-5 rounded-full transition-all ${
