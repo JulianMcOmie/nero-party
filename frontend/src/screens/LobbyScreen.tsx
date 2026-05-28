@@ -41,7 +41,7 @@ export default function LobbyScreen() {
             {/* Center: Main content */}
             <div className="flex-1 min-w-0 space-y-8">
             <section className="rounded-2xl border-2 border-dashed border-border bg-card/40 px-8 py-10 text-center">
-              <h1 className="mb-1 text-2xl animate-breathe">Invite players to join</h1>
+              <h1 className="mb-1 text-2xl">Invite players to join</h1>
               <p className="text-sm text-muted-foreground">
                 Share the room code{" "}
                 <span className="text-foreground tracking-widest">{party.code}</span>{" "}
