@@ -11,7 +11,7 @@ const NOTES = [
   { char: "♫", x: "67%", y: "91%", size: 14, opacity: 0.05, duration: 14, delay: 2   },
 ];
 
-export function FloatingNotes() {
+export function FloatingNotes({ isPlaying = false }: { isPlaying?: boolean }) {
   return (
     <div className="pointer-events-none fixed inset-0 overflow-hidden" style={{ zIndex: 10 }}>
       {NOTES.map((n, i) => (
@@ -23,7 +23,9 @@ export function FloatingNotes() {
             top: n.y,
             fontSize: n.size,
             opacity: n.opacity,
-            animation: `note-float ${n.duration}s ease-in-out ${n.delay}s infinite`,
+            animation: `note-float ${n.duration}s ease-in-out ${n.delay}s infinite, note-wiggle 0.8s ease-in-out infinite`,
+            animationPlayState: isPlaying ? 'running' : 'paused',
+            transformOrigin: 'center center',
           }}
         >
           {n.char}
