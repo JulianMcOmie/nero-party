@@ -1,5 +1,6 @@
 import { useParty } from "../party/NeroPartyContext";
 import { Header } from "../components/Header";
+import { BouncingCircle } from "../components/BouncingCircle";
 
 export default function LobbyScreen() {
   const { state, isHost, updateConfig, startSubmitting } = useParty();
@@ -107,9 +108,12 @@ export default function LobbyScreen() {
                   start game
                 </button>
               ) : (
-                <p className="text-sm text-muted-foreground animate-breathe">
-                  waiting for the host to start the game…
-                </p>
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    waiting for the host to start...
+                  </p>
+                  <BouncingCircle width={280} height={15} />
+                </div>
               )}
             </div>
             </div>
