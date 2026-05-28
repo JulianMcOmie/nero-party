@@ -98,19 +98,6 @@ export default function LobbyScreen() {
                     onChange={(v) => updateConfig({ hideSong: v })}
                   />
 
-                  <ToggleRow
-                    label="Hide who submitted each song"
-                    hint="Players won't know who submitted the song until the reveal"
-                    checked={config.hideSubmitterIdentities}
-                    onChange={(v) => updateConfig({ hideSubmitterIdentities: v })}
-                  />
-
-                  <ToggleRow
-                    label="Hide leaderboard until the final reveal"
-                    hint="Scores stay secret during play"
-                    checked={config.hideLeaderboardUntilEnd}
-                    onChange={(v) => updateConfig({ hideLeaderboardUntilEnd: v })}
-                  />
                 </div>
               </section>
             )}
