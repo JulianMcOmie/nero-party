@@ -71,7 +71,6 @@ const DOT_SEQ = [0, 1, 2, 3, 3, 3, 3, 3, 3];
 
 export default function SubmittingScreen() {
   const [dotIdx, setDotIdx] = useState(0);
-  const [countdown, setCountdown] = useState<number | null>(null);
   const [showPhaseIntro, setShowPhaseIntro] = useState(true);
   useEffect(() => {
     const id = setTimeout(() => setShowPhaseIntro(false), 2300);
@@ -83,13 +82,6 @@ export default function SubmittingScreen() {
     return () => clearInterval(id);
   }, []);
   const { state, isHost, addSong, removeSong, startRounds, returnToLobby } = useParty();
-
-  useEffect(() => {
-    if (countdown === null) return;
-    if (countdown === 0) { startRounds(); return; }
-    const id = setTimeout(() => setCountdown((c) => (c ?? 1) - 1), 1000);
-    return () => clearTimeout(id);
-  }, [countdown, startRounds]);
   const party = state.party;
   if (!party) return null;
   const maxSongs = party.config.maxSongs;
@@ -246,7 +238,7 @@ export default function SubmittingScreen() {
                 <div className="relative group">
                   <button
                     type="button"
-                    onClick={() => setCountdown(3)}
+                    onClick={startRounds}
                     disabled={!everyoneHasOne}
                     className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm disabled:opacity-50 hover:bg-card/70 transition-colors duration-300"
                   >
@@ -293,22 +285,6 @@ export default function SubmittingScreen() {
       </div>
     )}
 
-    {countdown !== null && (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm">
-        <p className="text-muted-foreground text-lg mb-4 tracking-wide">Game Starts in</p>
-        <div className="h-36 flex items-center justify-center">
-          {countdown > 0 && (
-            <div
-              key={countdown}
-              className="text-9xl font-bold"
-              style={{ animation: 'countdown-pop 1s ease-out forwards' }}
-            >
-              {countdown}
-            </div>
-          )}
-        </div>
-      </div>
-    )}
-    </>
+</>
   );
 }

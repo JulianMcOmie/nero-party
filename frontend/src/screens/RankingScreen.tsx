@@ -23,6 +23,20 @@ export default function RankingScreen() {
     return () => clearInterval(id);
   }, []);
 
+  // Game start countdown intro overlay
+  const [introCountdown, setIntroCountdown] = useState<number>(3);
+  const [introFading, setIntroFading] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
+  useEffect(() => {
+    if (introCountdown > 0) {
+      const id = setTimeout(() => setIntroCountdown((c) => c - 1), 1000);
+      return () => clearTimeout(id);
+    }
+    setIntroFading(true);
+    const id = setTimeout(() => setShowIntro(false), 500);
+    return () => clearTimeout(id);
+  }, [introCountdown]);
+
   // Rating state
   const [selectedRating, setSelectedRating] = useState(0);
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
@@ -161,6 +175,7 @@ export default function RankingScreen() {
   });
 
   return (
+    <>
     <div className="flex min-h-screen flex-col bg-background text-foreground relative">
       <AnimatedCharacterBackground isPlaying={state.playback.isPlaying} />
       <Header />
@@ -378,6 +393,27 @@ export default function RankingScreen() {
         </div>
       </main>
     </div>
+
+    {showIntro && (
+      <div
+        className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm"
+        style={introFading ? { animation: 'fadeOut 0.5s ease-out forwards' } : undefined}
+      >
+        <p className="text-muted-foreground text-lg mb-4 tracking-wide">Game Starts in</p>
+        <div className="h-36 flex items-center justify-center">
+          {introCountdown > 0 && (
+            <div
+              key={introCountdown}
+              className="text-9xl font-bold"
+              style={{ animation: 'countdown-pop 1s ease-out forwards' }}
+            >
+              {introCountdown}
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+    </>
   );
 }
 
