@@ -149,7 +149,7 @@ export default function SubmittingScreen() {
             >
               ← return to lobby
             </button>
-            <section className="rounded-2xl border border-border bg-card p-6">
+            <section className="rounded-2xl border border-border bg-card p-6 max-w-lg mx-auto">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-base">submit your songs here</h2>
                 <div className="group relative cursor-default rounded px-2 py-0.5 transition-colors hover:bg-border">
