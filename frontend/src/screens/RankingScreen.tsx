@@ -226,7 +226,10 @@ export default function RankingScreen() {
             </div>
 
             {/* Rating */}
-            <div className="flex flex-col items-center gap-4">
+            <div className="relative flex flex-col items-center gap-4">
+              <span className="absolute right-full mr-4 top-1/2 -translate-y-1/2 text-2xl text-white whitespace-nowrap" style={{ opacity: 0.7, letterSpacing: '0.04em' }}>
+                Your Rating :
+              </span>
               {ratingSubmitted ? (
                 <StarRating value={selectedRating} onChange={() => {}} disabled />
               ) : (
