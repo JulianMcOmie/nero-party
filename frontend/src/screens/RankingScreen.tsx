@@ -3,7 +3,6 @@ import { useParty } from "../party/NeroPartyContext";
 import { Header } from "../components/Header";
 import { StarRating } from "../components/StarRating";
 import { PlayIcon, PauseIcon, CheckIcon } from "../components/icons";
-import { BouncingCircle } from "../components/BouncingCircle";
 import { WaveParticles } from "../components/WaveParticles";
 import { AnimatedCharacterBackground } from "../components/AnimatedCharacterBackground";
 
@@ -14,6 +13,15 @@ export default function RankingScreen() {
   } = useParty();
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Animated ellipsis: 0→1→2→3, pause, repeat
+  const DOT_SEQ = [0, 1, 2, 3, 3, 3, 3, 3, 3];
+  const [dotIdx, setDotIdx] = useState(0);
+  const dots = DOT_SEQ[dotIdx]!;
+  useEffect(() => {
+    const id = setInterval(() => setDotIdx((i) => (i + 1) % DOT_SEQ.length), 120);
+    return () => clearInterval(id);
+  }, []);
 
   // Rating state
   const [selectedRating, setSelectedRating] = useState(0);
@@ -303,12 +311,14 @@ export default function RankingScreen() {
             {/* Waiting indicator for players */}
             {!isHost && (
               <div className="mt-12 text-center">
-                <div className="text-sm text-muted-foreground mb-2">
+                <div className="text-sm text-muted-foreground">
                   {allOnlineHaveRated
-                    ? "Waiting for the host to continue…"
-                    : "Waiting for votes…"}
+                    ? "Waiting for the host to continue"
+                    : "Waiting for votes"}
+                  <span style={{ display: 'inline-block', width: '3.5ch', textAlign: 'left' }}>
+                    {'.'.repeat(dots)}
+                  </span>
                 </div>
-                {allOnlineHaveRated && <BouncingCircle width={200} height={15} />}
               </div>
             )}
 
