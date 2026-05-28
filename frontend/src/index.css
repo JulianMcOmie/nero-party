@@ -19,6 +19,11 @@
   to { opacity: 1; }
 }
 
+@keyframes revealSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @keyframes checkmark-pop {
   0% {
     opacity: 0;
@@ -44,6 +49,44 @@
 @keyframes note-wiggle {
   0%, 100% { transform: rotate(-8deg); }
   50% { transform: rotate(8deg); }
+}
+
+@keyframes sparkle-burst {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes dash-rotate {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 20;
+  }
+}
+
+.animated-dash-border {
+  position: relative;
+  overflow: visible;
+}
+
+.animated-dash-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px dashed rgba(255,255,255,0.4);
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) 5px, transparent 5px, transparent 10px) repeat-x;
+  background-size: 10px 2px;
+  background-position: 0 0;
+  animation: dash-rotate 1.5s linear infinite;
 }
 
 @keyframes bpmPulse {
