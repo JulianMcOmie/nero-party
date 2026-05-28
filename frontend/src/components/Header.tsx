@@ -61,41 +61,47 @@ export function Header() {
           <span className="text-foreground">{name}</span>
         </div>
 
-        {confirming ? (
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">Sure?</span>
+        <div className="absolute left-[58%] bottom-0 h-10 overflow-hidden">
+          <img src="/dancing.gif" alt="" className="h-16 -mt-[8px]" />
+        </div>
+
+        <div className="flex items-center gap-4">
+          {confirming ? (
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-muted-foreground">Sure?</span>
+              <button
+                type="button"
+                onClick={handleConfirm}
+                className="font-medium text-muted-foreground transition-all duration-300 hover:scale-110 hover:text-foreground"
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="text-muted-foreground transition-all duration-300 hover:scale-110 hover:text-foreground"
+              >
+                No
+              </button>
+            </div>
+          ) : isHost ? (
             <button
               type="button"
-              onClick={handleConfirm}
-              className="font-medium text-muted-foreground transition-all duration-300 hover:scale-110 hover:text-foreground"
+              onClick={handleHostAction}
+              className="text-sm text-muted-foreground hover:text-destructive transition-colors duration-300"
             >
-              Yes
+              {hostLabel}
             </button>
+          ) : (
             <button
               type="button"
-              onClick={handleCancel}
-              className="text-muted-foreground transition-all duration-300 hover:scale-110 hover:text-foreground"
+              onClick={() => setConfirming(true)}
+              className="text-sm text-muted-foreground hover:text-destructive transition-colors duration-300"
             >
-              No
+              Leave Room
             </button>
-          </div>
-        ) : isHost ? (
-          <button
-            type="button"
-            onClick={handleHostAction}
-            className="text-sm text-muted-foreground hover:text-destructive transition-colors duration-300"
-          >
-            {hostLabel}
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setConfirming(true)}
-            className="text-sm text-muted-foreground hover:text-destructive transition-colors duration-300"
-          >
-            Leave Room
-          </button>
-        )}
+          )}
+        </div>
       </header>
     </div>
   );
