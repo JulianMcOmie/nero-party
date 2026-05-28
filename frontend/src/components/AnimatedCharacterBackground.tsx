@@ -92,7 +92,8 @@ export function AnimatedCharacterBackground({ isPlaying }: { isPlaying: boolean 
         overflow: "hidden",
       }}
     >
-      {characters.map((char) => (
+      {/* Characters hidden — keep logic for easy re-enable */}
+      {false && characters.map((char) => (
         <div
           key={char.id}
           style={{
