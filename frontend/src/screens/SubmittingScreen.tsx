@@ -72,6 +72,11 @@ const DOT_SEQ = [0, 1, 2, 3, 3, 3, 3, 3, 3];
 export default function SubmittingScreen() {
   const [dotIdx, setDotIdx] = useState(0);
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [showPhaseIntro, setShowPhaseIntro] = useState(true);
+  useEffect(() => {
+    const id = setTimeout(() => setShowPhaseIntro(false), 2300);
+    return () => clearTimeout(id);
+  }, []);
   const dots = DOT_SEQ[dotIdx]!;
   useEffect(() => {
     const id = setInterval(() => setDotIdx((i) => (i + 1) % DOT_SEQ.length), 120);
@@ -112,7 +117,10 @@ export default function SubmittingScreen() {
       : `Submit up to ${maxSongs} song${maxSongs === 1 ? "" : "s"}`;
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <>
+    <div
+      className="flex min-h-screen flex-col bg-background text-foreground"
+    >
       <Header />
 
       <main className="flex-1 flex flex-col">
@@ -165,7 +173,6 @@ export default function SubmittingScreen() {
             >
               ← return to lobby
             </button>
-            <h1 className="text-3xl font-semibold text-center -mt-4">Song Selection</h1>
             <section
               className="rounded-2xl border border-border bg-card p-6 max-w-lg mx-auto"
               style={{
@@ -270,22 +277,38 @@ export default function SubmittingScreen() {
         </div>
       </main>
 
-      {countdown !== null && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm">
-          <p className="text-muted-foreground text-lg mb-4 tracking-wide">Game Starts in</p>
-          <div className="h-36 flex items-center justify-center">
-            {countdown > 0 && (
-              <div
-                key={countdown}
-                className="text-9xl font-bold"
-                style={{ animation: 'countdown-pop 1s ease-out forwards' }}
-              >
-                {countdown}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
+
+    {showPhaseIntro && (
+      <div
+        className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm"
+        style={{ animation: 'fadeOut 0.5s ease-out 1.8s forwards' }}
+      >
+        <div
+          className="text-5xl font-bold"
+          style={{ animation: 'countdown-pop 1.8s ease-out forwards' }}
+        >
+          Song Selection Phase
+        </div>
+      </div>
+    )}
+
+    {countdown !== null && (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm">
+        <p className="text-muted-foreground text-lg mb-4 tracking-wide">Game Starts in</p>
+        <div className="h-36 flex items-center justify-center">
+          {countdown > 0 && (
+            <div
+              key={countdown}
+              className="text-9xl font-bold"
+              style={{ animation: 'countdown-pop 1s ease-out forwards' }}
+            >
+              {countdown}
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+    </>
   );
 }
