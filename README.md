@@ -57,10 +57,10 @@ Open `http://localhost:5173` in your browser.
 1. **Host** creates a room and shares the 3-digit code
 2. **Players** join with the code and a display name
 3. Everyone submits songs (host sets a per-player limit)
-4. **Host** starts the rounds — songs play one at a time via Deezer 30s previews
+4. **Host** starts the rounds - songs play one at a time via Deezer 30s previews
 5. Players **rate** each song (1–5 stars) while it plays
 6. Once everyone has rated, the host moves to the next song
-7. After all songs, the **final rankings** are revealed — winning song
+7. After all songs have been rated, the **final rankings** are revealed, starting with the winning song
 
 ## Scoring
 
