@@ -157,7 +157,7 @@ export default function SubmittingScreen() {
                 backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><line x1="0" y1="0" x2="60" y2="60" stroke="rgba(128,128,128,0.04)" stroke-width="0.8"/><line x1="0" y1="15" x2="60" y2="75" stroke="rgba(128,128,128,0.04)" stroke-width="0.8"/><line x1="0" y1="30" x2="60" y2="90" stroke="rgba(128,128,128,0.04)" stroke-width="0.8"/><line x1="0" y1="45" x2="60" y2="105" stroke="rgba(128,128,128,0.04)" stroke-width="0.8"/><line x1="15" y1="0" x2="75" y2="60" stroke="rgba(128,128,128,0.04)" stroke-width="0.8"/><line x1="30" y1="0" x2="90" y2="60" stroke="rgba(128,128,128,0.04)" stroke-width="0.8"/><line x1="45" y1="0" x2="105" y2="60" stroke="rgba(128,128,128,0.04)" stroke-width="0.8"/></svg>'), linear-gradient(45deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0) 100%)`,
                 boxShadow: 'inset 0 0 30px rgba(255,255,255,0.04)'
               }}
-              onMouseEnter={() => setCardHovered(true)}
+              onMouseOver={() => setCardHovered(true)}
               onMouseLeave={() => setCardHovered(false)}
             >
               <div className="mb-4 flex items-center justify-between">
