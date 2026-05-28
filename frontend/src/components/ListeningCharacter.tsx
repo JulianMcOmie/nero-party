@@ -4,8 +4,8 @@ export function ListeningCharacter({ isNodding = false }: { isNodding?: boolean 
       fill="#999999"
       version="1.1"
       viewBox="0 0 464.804 464.803"
-      width="100"
-      height="100"
+      width="35"
+      height="35"
       style={{
         display: "block",
         animation: isNodding ? `nod 1.3s linear infinite` : 'none',

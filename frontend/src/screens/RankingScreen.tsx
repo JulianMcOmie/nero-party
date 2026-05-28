@@ -5,7 +5,7 @@ import { StarRating } from "../components/StarRating";
 import { PlayIcon, PauseIcon, CheckIcon } from "../components/icons";
 import { BouncingCircle } from "../components/BouncingCircle";
 import { WaveParticles } from "../components/WaveParticles";
-import { ListeningCharacter } from "../components/ListeningCharacter";
+import { AnimatedCharacterBackground } from "../components/AnimatedCharacterBackground";
 
 export default function RankingScreen() {
   const {
@@ -130,10 +130,11 @@ export default function RankingScreen() {
   });
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <div className="flex min-h-screen flex-col bg-background text-foreground relative">
+      <AnimatedCharacterBackground isPlaying={state.playback.isPlaying} />
       <Header />
 
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col relative">
         {/* Three-column layout */}
         <div className="flex-1 flex flex-col">
           <div className="mx-auto w-[75%] px-6 py-2 flex-1 flex gap-8">
@@ -186,11 +187,6 @@ export default function RankingScreen() {
                   </div>
                 )}
               </div>
-            </div>
-
-            {/* Listening character */}
-            <div className="mb-6">
-              <ListeningCharacter isNodding={state.playback.isPlaying} />
             </div>
 
             {/* Title, artist, and play button */}
