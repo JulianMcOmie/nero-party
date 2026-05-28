@@ -65,7 +65,7 @@ export default function RevealScreen() {
               {rest.map((s, idx) => (
                 <li
                   key={s.queueItemId}
-                  className="flex items-center justify-between gap-3 px-3 py-4 border-b border-border"
+                  className="flex items-center gap-3 px-3 py-4 border-b border-border"
                   style={{ animation: `revealSlideUp 0.35s ease-out ${1.3 + idx * 0.12}s both` }}
                 >
                   <div className="flex items-center gap-3">
@@ -75,12 +75,11 @@ export default function RevealScreen() {
                     )}
                     <div>
                       <div className="text-sm">{s.title}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {s.artist} · by {s.submitterName}
-                      </div>
+                      <div className="text-xs text-muted-foreground">{s.artist}</div>
                     </div>
                   </div>
-                  <div className="text-sm">{(s.averageRating ?? 0).toFixed(1)}</div>
+                  <div className="text-[13px] text-muted-foreground">· Submitted by {s.submitterName}</div>
+                  <div className="ml-auto text-sm">{(s.averageRating ?? 0).toFixed(1)}</div>
                 </li>
               ))}
             </ul>
