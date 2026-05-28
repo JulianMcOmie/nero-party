@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParty } from "../party/NeroPartyContext";
 import { Header } from "../components/Header";
 import { useSpotifySearch } from "../lib/spotifyClient";
@@ -67,8 +67,16 @@ function SearchPanel({ onAdd }: { onAdd: (track: TrackInput) => void }) {
   );
 }
 
+const DOT_SEQ = [0, 1, 2, 3, 3, 3, 3, 3, 3];
+
 export default function SubmittingScreen() {
   const [cardHovered, setCardHovered] = useState(false);
+  const [dotIdx, setDotIdx] = useState(0);
+  const dots = DOT_SEQ[dotIdx]!;
+  useEffect(() => {
+    const id = setInterval(() => setDotIdx((i) => (i + 1) % DOT_SEQ.length), 120);
+    return () => clearInterval(id);
+  }, []);
   const { state, isHost, addSong, removeSong, startRounds, returnToLobby } = useParty();
   const party = state.party;
   if (!party) return null;
@@ -237,9 +245,9 @@ export default function SubmittingScreen() {
                   )}
                 </div>
               ) : (
-                <p className={`text-sm text-muted-foreground ${mySubmittedCount > 0 ? "animate-breathe" : ""}`}>
+                <p className="text-sm text-muted-foreground">
                   {mySubmittedCount > 0
-                    ? "Waiting for the host to start the rounds…"
+                    ? <>Waiting for the host to start the rounds<span style={{ display: 'inline-block', width: '1.5ch', textAlign: 'left' }}>{'.'.repeat(dots)}</span></>
                     : "Submit at least one song to get started."}
                 </p>
               )}
