@@ -12,6 +12,7 @@
     "canvas-confetti": "^1.9.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-rewards": "^2.1.0",
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
