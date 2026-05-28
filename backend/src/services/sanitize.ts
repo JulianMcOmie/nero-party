@@ -45,7 +45,10 @@ export function sanitizePartyState(
 
   const queue: QueueItemSnapshot[] = raw.queue.map((item) => {
     const isOwn = item.addedByUserId === viewerUserId;
-    const openMetadata = item.revealed || isOwn;
+    // Send full metadata for the currently playing track so the client can
+    // animate a reveal when the viewer votes — the audio is already playing.
+    const isCurrentTrack = phase === "RANKING" && raw.currentTrackId === item.id;
+    const openMetadata = item.revealed || isOwn || isCurrentTrack;
     const openIdentity = item.revealed || isOwn;
 
     const hideMetadata = raw.hideSong && !openMetadata;
