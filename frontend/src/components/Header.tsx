@@ -44,7 +44,7 @@ export function Header() {
   }
 
   return (
-    <div className="px-6 pt-6">
+    <div className="px-6 pt-6 relative z-[101]">
       <header className="mx-auto w-[80%] flex items-center justify-between rounded-full border border-border bg-header px-6 py-3 relative">
         <NeroLogo />
 
