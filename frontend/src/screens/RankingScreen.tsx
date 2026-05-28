@@ -40,7 +40,7 @@ export default function RankingScreen() {
   // Rating state
   const [selectedRating, setSelectedRating] = useState(0);
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
-  const [songRevealed, setSongRevealed] = useState(false);
+  const [revealedTrackId, setRevealedTrackId] = useState<string | null>(null);
 
   // Shared tooltip settings
   const TOOLTIP_DELAY_MS = 350;
@@ -102,7 +102,6 @@ export default function RankingScreen() {
     const hasRating = (vote?.rating ?? 0) > 0;
     setSelectedRating(vote?.rating ?? 0);
     setRatingSubmitted(hasRating);
-    setSongRevealed(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack?.id]);
 
@@ -164,6 +163,7 @@ export default function RankingScreen() {
 
   const activityByUser = new Map(state.roundActivity.map((a) => [a.userId, a]));
 
+  const songRevealed = currentTrack?.id != null && currentTrack.id === revealedTrackId;
   const showMetadata = !config.hideSong || songRevealed;
 
   console.log("[RankingScreen] currentTrack:", currentTrack?.title, "bpm:", currentTrack?.bpm);
@@ -237,18 +237,21 @@ export default function RankingScreen() {
             >
               <WaveParticles isPlaying={state.playback.isPlaying} />
               <div className="h-full w-full flex items-center justify-center rounded-lg bg-input/50 relative overflow-hidden">
-                {currentTrack.albumArtUrl ? (
-                  <img
-                    src={currentTrack.albumArtUrl}
-                    alt=""
-                    className={`h-full w-full rounded-lg object-cover transition-opacity duration-1000 ${showMetadata ? 'opacity-100' : 'opacity-0'}`}
-                  />
-                ) : showMetadata ? (
-                  <div className="text-6xl text-muted-foreground/50">♪</div>
-                ) : null}
-                {/* "?" fades out as art fades in */}
-                {config.hideSong && (
-                  <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 pointer-events-none ${songRevealed ? 'opacity-0' : 'opacity-100'}`}>
+                {showMetadata && (
+                  currentTrack.albumArtUrl ? (
+                    <img
+                      src={currentTrack.albumArtUrl}
+                      alt=""
+                      className="h-full w-full rounded-lg object-cover"
+                      style={{ animation: 'fadeIn 1s ease-out forwards' }}
+                    />
+                  ) : (
+                    <div className="text-6xl text-muted-foreground/50">♪</div>
+                  )
+                )}
+                {/* "?" shown until song is revealed */}
+                {config.hideSong && !songRevealed && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <span className="text-6xl text-muted-foreground/50">?</span>
                   </div>
                 )}
@@ -281,21 +284,29 @@ export default function RankingScreen() {
                   )}
                 </div>
 
-                {/* Title and artist — slides in from nothing when song reveals */}
-                <div className={`text-center overflow-hidden transition-all duration-700 ${
-                  showMetadata ? 'max-w-xs opacity-100 flex-1 ml-4' : 'max-w-0 opacity-0 ml-0'
-                }`}>
-                  <h2 className="text-lg font-semibold mb-1 whitespace-nowrap">{currentTrack.title ?? "—"}</h2>
-                  <p className="text-sm text-muted-foreground whitespace-nowrap">{currentTrack.artist ?? "—"}</p>
-                </div>
+                {/* Title and artist — fades in when song reveals */}
+                {showMetadata && (
+                  <div
+                    className="text-center flex-1 ml-4"
+                    style={{ animation: 'fadeIn 0.7s ease-out forwards' }}
+                  >
+                    <h2 className="text-lg font-semibold mb-1 whitespace-nowrap">{currentTrack.title ?? "—"}</h2>
+                    <p className="text-sm text-muted-foreground whitespace-nowrap">{currentTrack.artist ?? "—"}</p>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="mb-4">
                 {/* Title and artist — fades in when song reveals */}
-                <div className={`text-center transition-opacity duration-700 ${showMetadata ? 'opacity-100' : 'opacity-0'}`}>
-                  <h2 className="text-lg font-semibold mb-1">{currentTrack.title ?? "—"}</h2>
-                  <p className="text-sm text-muted-foreground">{currentTrack.artist ?? "—"}</p>
-                </div>
+                {showMetadata && (
+                  <div
+                    className="text-center"
+                    style={{ animation: 'fadeIn 0.7s ease-out forwards' }}
+                  >
+                    <h2 className="text-lg font-semibold mb-1">{currentTrack.title ?? "—"}</h2>
+                    <p className="text-sm text-muted-foreground">{currentTrack.artist ?? "—"}</p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -315,7 +326,7 @@ export default function RankingScreen() {
                       if (currentTrack) {
                         castVote(currentTrack.id, selectedRating);
                         setRatingSubmitted(true);
-                        if (config.hideSong) setSongRevealed(true);
+                        if (config.hideSong) setRevealedTrackId(currentTrack.id);
                       }
                     }}
                   />
