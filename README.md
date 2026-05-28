@@ -1,6 +1,6 @@
 # Nero Party
 
-A real-time music listening party game. Players join a room, submit songs, listen together, and rate each song. A winning song — and a winning submitter — is crowned at the end.
+A real-time music listening party game. Players join a room, submit songs, listen together, and rate each song. A winning song is crowned at the end.
 
 ## Video Walkthrough
 
@@ -60,20 +60,11 @@ Open `http://localhost:5173` in your browser.
 4. **Host** starts the rounds — songs play one at a time via Deezer 30s previews
 5. Players **rate** each song (1–5 stars) while it plays
 6. Once everyone has rated, the host moves to the next song
-7. After all songs, the **final rankings** are revealed — winning song and winning submitter
+7. After all songs, the **final rankings** are revealed — winning song
 
 ## Scoring
 
-Points are tracked on two axes:
-
-**Player score** (determines the winner):
-- The submitter earns the full sum of star ratings their track receives each round
-- e.g. three votes of 4, 3, 5 → +12 points
-
-**Song score** (determines the winning track):
-- The total sum of star ratings the track received across all rounds
-
-The submitter's own rating on their track is always discarded.
+Each song's score is the total sum of star ratings it received across all rounds. The submitter's own rating on their track is always discarded.
 
 ## Party Settings (host-configurable)
 
