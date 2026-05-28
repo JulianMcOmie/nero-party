@@ -13,6 +13,7 @@ export function AnimatedCharacterBackground({ isPlaying }: { isPlaying: boolean 
   const [characters, setCharacters] = useState<CharacterState[]>([]);
   const charactersRef = useRef<CharacterState[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const isPlayingRef = useRef(isPlaying);
 
   // Initialize characters
   useEffect(() => {
@@ -32,6 +33,11 @@ export function AnimatedCharacterBackground({ isPlaying }: { isPlaying: boolean 
     }
   }, []);
 
+  // Update isPlaying ref
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
+
   // Animation loop
   useEffect(() => {
     let rafId: number;
@@ -48,9 +54,10 @@ export function AnimatedCharacterBackground({ isPlaying }: { isPlaying: boolean 
       const charSize = 35;
 
       charactersRef.current.forEach((char) => {
-        // Update position
-        char.x += char.vx;
-        char.y += char.vy;
+        // Update position - move faster when playing
+        const speedMultiplier = isPlayingRef.current ? 2 : 1;
+        char.x += char.vx * speedMultiplier;
+        char.y += char.vy * speedMultiplier;
 
         // Bounce off walls
         if (char.x <= 0 || char.x + charSize >= width) {
