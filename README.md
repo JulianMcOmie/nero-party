@@ -4,7 +4,7 @@ A real-time music listening party game. Players join a room, submit songs, liste
 
 ## Video Walkthrough
 
-https://youtu.be/kQ8NvcatMFo
+https://youtu.be/18xGukn8pVw
 
 ## Setup
 
