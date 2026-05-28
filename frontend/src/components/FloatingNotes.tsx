@@ -25,7 +25,7 @@ const NOTES = [
 
 export function FloatingNotes({ isPlaying = false }: { isPlaying?: boolean }) {
   return (
-    <div className="pointer-events-none fixed inset-0 overflow-hidden" style={{ zIndex: 10 }}>
+    <div className="pointer-events-none fixed inset-0 overflow-hidden" style={{ zIndex: 110 }}>
       {NOTES.map((n, i) => (
         <span
           key={i}

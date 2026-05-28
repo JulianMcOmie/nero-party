@@ -14,6 +14,7 @@ import { AnimatedCharacterBackground } from "./components/AnimatedCharacterBackg
  */
 export default function App() {
   const { state } = useParty();
+  const isPlaying = state.playback?.isPlaying ?? false;
 
   const curtain = (key: string) => (
     <div
@@ -23,33 +24,39 @@ export default function App() {
     />
   );
 
-  if (!state.session) return <><FloatingNotes isPlaying={false} /><AnimatedCharacterBackground isPlaying={false} /><HomeScreen />{curtain('home')}</>;
+  const screen = () => {
+    if (!state.session) return <>{<HomeScreen />}{curtain('home')}</>;
 
-  // Brief flash during reconnect / session:register before party state lands.
-  if (!state.party) {
+    if (!state.party) {
+      return (
+        <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">
+          connecting…
+        </div>
+      );
+    }
+
+    const phase = state.party.gamePhase;
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">
-        connecting…
-      </div>
+      <>
+        {(() => {
+          switch (phase) {
+            case "HOSTING":    return <LobbyScreen />;
+            case "SUBMITTING": return <SubmittingScreen />;
+            case "RANKING":    return <RankingScreen />;
+            case "REVEAL":     return <RevealScreen />;
+            default:           return null;
+          }
+        })()}
+        {curtain(phase)}
+      </>
     );
-  }
-
-  const phase = state.party.gamePhase;
+  };
 
   return (
     <>
-      <FloatingNotes isPlaying={state.playback.isPlaying} />
-      <AnimatedCharacterBackground isPlaying={state.playback.isPlaying} />
-      {(() => {
-        switch (phase) {
-          case "HOSTING":    return <LobbyScreen />;
-          case "SUBMITTING": return <SubmittingScreen />;
-          case "RANKING":    return <RankingScreen />;
-          case "REVEAL":     return <RevealScreen />;
-          default:           return null;
-        }
-      })()}
-      {curtain(phase)}
+      <FloatingNotes isPlaying={isPlaying} />
+      <AnimatedCharacterBackground isPlaying={isPlaying} />
+      {screen()}
     </>
   );
 }
