@@ -84,7 +84,10 @@ export default function RevealScreen() {
           </section>
         )}
 
-        <div className="flex justify-center">
+        <div
+          className="flex justify-center"
+          style={{ animation: `fadeIn 0.4s ease-out ${1.3 + rest.length * 0.12 + 0.55}s both` }}
+        >
           {isHost ? (
             <button
               type="button"
