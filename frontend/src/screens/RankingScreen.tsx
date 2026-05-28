@@ -176,7 +176,16 @@ export default function RankingScreen() {
             <div className="mb-6 text-xs text-muted-foreground">song {queueIdx + 1} of {totalRounds}</div>
 
             {/* Song cover with wave particles */}
-            <div className="mb-6 relative h-64 w-64 flex items-center justify-center" style={{ overflow: 'visible' }}>
+            <div
+              className="mb-6 relative h-64 w-64 flex items-center justify-center"
+              style={{
+                overflow: 'visible',
+                boxShadow: state.playback.isPlaying
+                  ? '0 0 25px rgba(255, 255, 255, 0.08), 0 0 40px rgba(255, 255, 255, 0.03)'
+                  : 'none',
+                transition: 'box-shadow 0.3s ease-in-out',
+              }}
+            >
               <WaveParticles isPlaying={state.playback.isPlaying} />
               <div className="h-full w-full flex items-center justify-center rounded-lg bg-input/50 relative">
                 {showMetadata && currentTrack.albumArtUrl ? (
