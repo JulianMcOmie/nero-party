@@ -175,20 +175,21 @@ export default function SubmittingScreen() {
               </div>
 
               {myQueueItems.length > 0 && (
-                <ul className="mb-4 space-y-2">
-                  {myQueueItems.map((q) => (
+                <ul className="mb-4 space-y-1">
+                  {myQueueItems.map((q, idx) => (
                     <li
                       key={q.id}
-                      className="flex items-center gap-3 rounded-md border border-border bg-input/50 px-3 py-2"
+                      className="flex items-center gap-3 px-3 py-2 hover:bg-input/30 transition-colors duration-200 rounded"
                     >
+                      <span className="text-4xl text-muted-foreground w-12 shrink-0 tabular-nums font-semibold">{idx + 1}.</span>
                       {q.albumArtUrl ? (
                         <img
                           src={q.albumArtUrl}
                           alt=""
-                          className="h-8 w-8 rounded object-cover"
+                          className="h-6 w-6 rounded object-cover shrink-0"
                         />
                       ) : (
-                        <div className="h-8 w-8 rounded bg-muted" />
+                        <div className="h-6 w-6 rounded bg-muted shrink-0" />
                       )}
                       <div className="min-w-0 flex-1">
                         <div className="truncate text-sm">{q.title ?? "—"}</div>
@@ -200,7 +201,7 @@ export default function SubmittingScreen() {
                         type="button"
                         onClick={() => removeSong(q.id)}
                         aria-label="Remove song"
-                        className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors duration-300"
+                        className="shrink-0 flex h-8 w-8 items-center justify-center rounded border border-border text-muted-foreground hover:bg-border hover:text-destructive transition-colors duration-300 text-xl cursor-default"
                       >
                         ✕
                       </button>
