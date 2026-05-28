@@ -4,6 +4,7 @@ import { Header } from "../components/Header";
 import { StarRating } from "../components/StarRating";
 import { PlayIcon, PauseIcon, CheckIcon } from "../components/icons";
 import { BouncingCircle } from "../components/BouncingCircle";
+import { WaveParticles } from "../components/WaveParticles";
 
 export default function RankingScreen() {
   const {
@@ -172,9 +173,10 @@ export default function RankingScreen() {
             {/* Song count */}
             <div className="mb-6 text-xs text-muted-foreground">song {queueIdx + 1} of {totalRounds}</div>
 
-            {/* Song cover */}
-            <div className="mb-3 relative h-64 w-64">
-              <div className="h-full w-full flex items-center justify-center rounded-lg bg-input/50">
+            {/* Song cover with wave particles */}
+            <div className="mb-3 relative h-64 w-64 flex items-center justify-center" style={{ overflow: 'visible' }}>
+              <WaveParticles isPlaying={state.playback.isPlaying} />
+              <div className="h-full w-full flex items-center justify-center rounded-lg bg-input/50 relative">
                 {showMetadata && currentTrack.albumArtUrl ? (
                   <img src={currentTrack.albumArtUrl} alt="" className="h-full w-full rounded-lg object-cover" />
                 ) : (
