@@ -30,28 +30,31 @@ export default function RevealScreen() {
 
         {winner && (
           <section
-            className="flex flex-col items-center justify-center gap-4 py-8"
+            className="relative flex flex-col items-center justify-center gap-4 py-8"
             style={{ animation: 'revealSlideUp 0.8s ease-out 0.3s both' }}
           >
-            <div
-              className="flex items-center justify-center h-48 w-48 rounded-lg"
-              style={{
-                overflow: 'visible',
-                boxShadow: '0 0 25px rgba(255, 255, 255, 0.08), 0 0 40px rgba(255, 255, 255, 0.03)',
-              }}
-            >
-              {winner.albumArtUrl ? (
-                <img src={winner.albumArtUrl} alt="" className="h-full w-full rounded-lg object-cover" />
-              ) : (
-                <div className="text-6xl text-muted-foreground/50">♪</div>
-              )}
-            </div>
-            <div className="text-center">
-              <h3 className="text-lg font-semibold">{winner.title}</h3>
-              <p className="text-sm text-muted-foreground mb-2">
-                {winner.artist} · by {winner.submitterName}
-              </p>
-              <p className="text-2xl font-bold text-foreground">{(winner.averageRating ?? 0).toFixed(1)}</p>
+            <div className="absolute left-0 text-9xl font-bold text-foreground/70 leading-none" style={{ top: '35%', transform: 'translateY(-50%)' }}>#1</div>
+            <div className="flex flex-col items-center justify-center">
+              <div
+                className="flex items-center justify-center h-48 w-48 rounded-lg"
+                style={{
+                  overflow: 'visible',
+                  boxShadow: '0 0 25px rgba(255, 255, 255, 0.08), 0 0 40px rgba(255, 255, 255, 0.03)',
+                }}
+              >
+                {winner.albumArtUrl ? (
+                  <img src={winner.albumArtUrl} alt="" className="h-full w-full rounded-lg object-cover" />
+                ) : (
+                  <div className="text-6xl text-muted-foreground/50">♪</div>
+                )}
+              </div>
+              <div className="text-center mt-4">
+                <h3 className="text-lg font-semibold">{winner.title}</h3>
+                <p className="text-sm text-muted-foreground mb-2">
+                  {winner.artist} · by {winner.submitterName}
+                </p>
+                <p className="text-2xl font-bold text-foreground">{(winner.averageRating ?? 0).toFixed(1)}</p>
+              </div>
             </div>
           </section>
         )}
