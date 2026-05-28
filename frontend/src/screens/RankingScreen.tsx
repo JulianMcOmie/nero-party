@@ -24,7 +24,7 @@ export default function RankingScreen() {
   const TOOLTIP_FADE_DURATION = 'duration-[5000ms]';
   const BUTTON_SCALE = 'scale-105';
 
-  // Unified button hover state
+  // Play/pause button hover state
   const [buttonHovered, setButtonHovered] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const tooltipTimeoutRef = useRef<NodeJS.Timeout>();
@@ -42,6 +42,27 @@ export default function RankingScreen() {
     if (tooltipTimeoutRef.current) {
       clearTimeout(tooltipTimeoutRef.current);
     }
+  };
+
+  // Next-song button tooltip — delay so it doesn't fire immediately after click
+  const [showNextSongTooltip, setShowNextSongTooltip] = useState(false);
+  const nextSongTooltipRef = useRef<NodeJS.Timeout>();
+
+  const handleNextSongMouseEnter = () => {
+    nextSongTooltipRef.current = setTimeout(() => {
+      setShowNextSongTooltip(true);
+    }, TOOLTIP_DELAY_MS);
+  };
+
+  const handleNextSongMouseLeave = () => {
+    setShowNextSongTooltip(false);
+    if (nextSongTooltipRef.current) clearTimeout(nextSongTooltipRef.current);
+  };
+
+  const handleNextSongClick = () => {
+    setShowNextSongTooltip(false);
+    if (nextSongTooltipRef.current) clearTimeout(nextSongTooltipRef.current);
+    nextSong();
   };
 
   // Reset audio when track changes
@@ -152,7 +173,7 @@ export default function RankingScreen() {
               ← Return to lobby
             </button>
             <h3 className="mb-4 text-xs text-muted-foreground uppercase tracking-widest font-semibold">room</h3>
-            <div className="space-y-2">
+            <div className="divide-y divide-border border-y border-border">
               {state.participants.filter((p) => p.online).map((p) => {
                 const a = activityByUser.get(p.id);
                 const hasRated = a?.hasRated;
@@ -164,6 +185,9 @@ export default function RankingScreen() {
                         <CheckIcon className="h-3 w-3 text-foreground flex-shrink-0 !scale-100 !opacity-100" style={{ animation: 'none', transition: 'none' }} />
                       )}
                     </div>
+                    {p.isHost && (
+                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">host</div>
+                    )}
                   </div>
                 );
               })}
@@ -275,20 +299,32 @@ export default function RankingScreen() {
                     ? "Waiting for the host to continue…"
                     : "Waiting for votes…"}
                 </div>
-                <BouncingCircle width={200} height={15} />
+                {allOnlineHaveRated && <BouncingCircle width={200} height={15} />}
               </div>
             )}
 
             {/* Host reveal button */}
             {isHost && (
               <div className="mt-12 flex justify-center">
-                <button
-                  type="button"
-                  onClick={nextSong}
-                  className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm hover:bg-card/70 transition-colors duration-300"
+                <div
+                  className="relative"
+                  onMouseEnter={!allOnlineHaveRated ? handleNextSongMouseEnter : undefined}
+                  onMouseLeave={!allOnlineHaveRated ? handleNextSongMouseLeave : undefined}
                 >
-                  {isLast ? "Reveal final results" : "Next song →"}
-                </button>
+                  <button
+                    type="button"
+                    onClick={allOnlineHaveRated ? handleNextSongClick : undefined}
+                    disabled={!allOnlineHaveRated}
+                    className="btn-interactive rounded-full border border-border bg-card px-8 py-3 text-sm disabled:opacity-50 hover:bg-card/70 transition-colors duration-300"
+                  >
+                    {isLast ? "Reveal final results" : "Next song →"}
+                  </button>
+                  {showNextSongTooltip && (
+                    <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 z-10 mb-2 w-max rounded-lg border border-border bg-card px-3 py-2 text-xs text-muted-foreground shadow-md">
+                      Waiting for everyone to vote
+                    </span>
+                  )}
+                </div>
               </div>
             )}
             </div>
@@ -302,29 +338,21 @@ export default function RankingScreen() {
               ← return to lobby
             </button>
             <h3 className="mb-4 text-xs text-muted-foreground uppercase tracking-widest font-semibold">queue</h3>
-            <div className="space-y-2 text-xs max-h-96 overflow-y-auto">
-              {state.queue.map((item) => {
-                const isCurrent = item.id === currentTrack.id;
-                return (
-                  <div
-                    key={item.id}
-                    className={`py-2 px-2 rounded transition-colors ${
-                      isCurrent
-                        ? "bg-input/50 text-foreground font-medium"
-                        : "text-muted-foreground"
-                    }`}
-                  >
+            <div className="divide-y divide-border border-y border-border text-xs max-h-96 overflow-y-auto">
+              {state.queue
+                .filter((item) => !item.revealed && item.id !== currentTrack.id)
+                .map((item) => (
+                  <div key={item.id} className="py-2 px-2 text-muted-foreground">
                     {showMetadata || item.isOwn ? (
                       <div>
                         <div className="font-medium line-clamp-1">{item.title ?? "Untitled"}</div>
-                        <div className="text-muted-foreground line-clamp-1">{item.artist ?? "Unknown"}</div>
+                        <div className="line-clamp-1">{item.artist ?? "Unknown"}</div>
                       </div>
                     ) : (
-                      <div className="text-muted-foreground italic">Hidden song</div>
+                      <div className="italic">Hidden song</div>
                     )}
                   </div>
-                );
-              })}
+                ))}
             </div>
             </aside>
           </div>

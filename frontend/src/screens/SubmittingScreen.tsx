@@ -116,7 +116,7 @@ export default function SubmittingScreen() {
                 </button>
               )}
               <h3 className="mb-4 text-xs text-muted-foreground uppercase tracking-widest font-semibold">room</h3>
-              <div className="space-y-2">
+              <div className="divide-y divide-border border-y border-border">
                 {state.participants.filter((p) => p.online).map((p) => {
                   const count = countByUser.get(p.id) ?? 0;
                   const ready = count >= 1;

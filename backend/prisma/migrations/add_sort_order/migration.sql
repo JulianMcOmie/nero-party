@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "QueueItem" ADD COLUMN "sortOrder" INTEGER NOT NULL DEFAULT 0;

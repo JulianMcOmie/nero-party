@@ -248,17 +248,32 @@ async function startRounds(payload: ActorPayload): Promise<void> {
   await requireHost(payload.partyId, payload.userId);
   requirePhase(party, "SUBMITTING");
 
-  const firstTrack = await prisma.queueItem.findFirst({
+  const items = await prisma.queueItem.findMany({
     where: { partyId: party.id },
     orderBy: { createdAt: "asc" },
   });
-  if (!firstTrack) {
+  if (items.length === 0) {
     throw new GameError("Add at least one song before starting the rounds.");
   }
 
-  await prisma.party.update({
-    where: { id: party.id },
-    data: { gamePhase: "RANKING", currentTrackId: firstTrack.id },
+  // Fisher-Yates shuffle
+  const shuffled = [...items];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!];
+  }
+
+  await prisma.$transaction(async (tx) => {
+    for (let idx = 0; idx < shuffled.length; idx++) {
+      await tx.queueItem.update({
+        where: { id: shuffled[idx]!.id },
+        data: { sortOrder: idx },
+      });
+    }
+    await tx.party.update({
+      where: { id: party.id },
+      data: { gamePhase: "RANKING", currentTrackId: shuffled[0]!.id },
+    });
   });
 }
 
@@ -451,7 +466,7 @@ async function nextSong(
 
   const next = await prisma.queueItem.findFirst({
     where: { partyId: party.id, revealed: false },
-    orderBy: { createdAt: "asc" },
+    orderBy: { sortOrder: "asc" },
   });
 
   if (next) {
@@ -602,7 +617,7 @@ async function getRawPartyState(partyId: string): Promise<RawPartyState> {
     where: { id: partyId },
     include: {
       users: { orderBy: { createdAt: "asc" } },
-      queue: { orderBy: { createdAt: "asc" } },
+      queue: { orderBy: { sortOrder: "asc" } },
       submissions: true,
     },
   });

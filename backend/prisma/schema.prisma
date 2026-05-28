@@ -67,6 +67,7 @@ model QueueItem {
   // Running sum of all 1-5 star ratings cast for this track.
   totalRatingScore Int      @default(0)
   revealed         Boolean  @default(false)
+  sortOrder        Int      @default(0)
   createdAt        DateTime @default(now())
 
   // Relations
