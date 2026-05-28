@@ -30,7 +30,7 @@ export default function RevealScreen() {
 
         {winner && (
           <section
-            className="relative flex flex-col items-center justify-center gap-4 py-8"
+            className="relative flex flex-col items-center justify-center gap-4 pt-8"
             style={{ animation: 'revealSlideUp 0.8s ease-out 0.3s both' }}
           >
             <div className="absolute left-0 text-9xl font-bold text-foreground/70 leading-none" style={{ top: '35%', transform: 'translateY(-50%)' }}>#1</div>
