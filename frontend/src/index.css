@@ -43,17 +43,17 @@
   }
 }
 
-@keyframes note-float {
-  0%   { transform: translateY(0px);   }
-  25%  { transform: translateY(-14px); }
-  50%  { transform: translateY(-8px);  }
-  75%  { transform: translateY(-20px); }
-  100% { transform: translateY(0px);   }
+@keyframes note-drift {
+  0%   { translate: 0px 0px; }
+  20%  { translate: var(--nx1) var(--ny1); }
+  45%  { translate: var(--nx2) var(--ny2); }
+  70%  { translate: var(--nx3) var(--ny3); }
+  100% { translate: 0px 0px; }
 }
 
 @keyframes note-wiggle {
-  0%, 100% { transform: rotate(-8deg); }
-  50% { transform: rotate(8deg); }
+  0%, 100% { rotate: -8deg; }
+  50%       { rotate:  8deg; }
 }
 
 @keyframes sparkle-burst {
