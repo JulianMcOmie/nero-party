@@ -4,7 +4,7 @@ import type {
   ServerToClientEvents,
 } from "../party/types";
 
-const SOCKET_URL = "http://localhost:3000";
+const SOCKET_URL = `http://${window.location.hostname}:3000`;
 
 /** Strongly-typed Socket.IO client — events and payloads are checked end to end. */
 export type TypedSocket = Socket<ServerToClientEvents, ClientToServerEvents>;

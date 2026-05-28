@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { TrackInput } from "../party/types";
 
-const API_BASE = "http://localhost:3000";
+const API_BASE = `http://${window.location.hostname}:3000`;
 
 export async function searchSpotify(query: string): Promise<TrackInput[]> {
   const res = await fetch(
