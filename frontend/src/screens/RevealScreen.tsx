@@ -87,11 +87,11 @@ export default function RevealScreen() {
           </section>
         )}
 
-        <div
-          className="flex justify-center"
-          style={{ animation: `fadeIn 0.4s ease-out ${1.3 + rest.length * 0.12 + 0.55}s both` }}
-        >
-          {isHost ? (
+        {isHost && (
+          <div
+            className="flex justify-center"
+            style={{ animation: `fadeIn 0.4s ease-out ${1.3 + rest.length * 0.12 + 0.55}s both` }}
+          >
             <button
               type="button"
               onClick={playAgain}
@@ -99,10 +99,8 @@ export default function RevealScreen() {
             >
               play again
             </button>
-          ) : (
-            <p className="text-sm text-muted-foreground">waiting for the host…</p>
-          )}
-        </div>
+          </div>
+        )}
       </main>
     </div>
   );
