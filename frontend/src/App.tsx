@@ -5,6 +5,7 @@ import SubmittingScreen from "./screens/SubmittingScreen";
 import RankingScreen from "./screens/RankingScreen";
 import RevealScreen from "./screens/RevealScreen";
 import { FloatingNotes } from "./components/FloatingNotes";
+import { AnimatedCharacterBackground } from "./components/AnimatedCharacterBackground";
 
 /**
  * Phase router. The reducer state is the source of truth:
@@ -14,7 +15,7 @@ import { FloatingNotes } from "./components/FloatingNotes";
 export default function App() {
   const { state } = useParty();
 
-  if (!state.session) return <><FloatingNotes /><HomeScreen /></>;
+  if (!state.session) return <><FloatingNotes isPlaying={false} /><AnimatedCharacterBackground isPlaying={false} /><HomeScreen /></>;
 
   // Brief flash during reconnect / session:register before party state lands.
   if (!state.party) {
@@ -27,7 +28,8 @@ export default function App() {
 
   return (
     <>
-      <FloatingNotes />
+      <FloatingNotes isPlaying={state.playback.isPlaying} />
+      <AnimatedCharacterBackground isPlaying={state.playback.isPlaying} />
       {(() => {
         switch (state.party.gamePhase) {
           case "HOSTING":    return <LobbyScreen />;
