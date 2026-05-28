@@ -60,12 +60,12 @@ export default function RevealScreen() {
         )}
 
         {rest.length > 0 && (
-          <section className="space-y-2">
-            <ul className="space-y-2">
+          <section>
+            <ul>
               {rest.map((s, idx) => (
                 <li
                   key={s.queueItemId}
-                  className="flex items-center justify-between gap-3 rounded-md border border-border bg-input/40 px-3 py-2"
+                  className="flex items-center justify-between gap-3 px-3 py-4 border-b border-border"
                   style={{ animation: `revealSlideUp 0.35s ease-out ${1.3 + idx * 0.12}s both` }}
                 >
                   <div className="flex items-center gap-3">
