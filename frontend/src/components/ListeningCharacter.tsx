@@ -8,16 +8,30 @@ export function ListeningCharacter({ isNodding = false }: { isNodding?: boolean 
       height="100"
       style={{
         display: "block",
-        animation: isNodding ? `nod 0.6s ease-in-out infinite` : 'none',
+        animation: isNodding ? `nod 1.3s linear infinite` : 'none',
       }}
     >
       <style>
         {`
-          @keyframes nod {
-            0%, 100% { transform: rotateZ(0deg); }
-            25% { transform: rotateZ(-8deg); }
-            75% { transform: rotateZ(8deg); }
-          }
+@keyframes nod {
+  0% {
+    animation-timing-function: linear;
+    transform: rotateZ(0deg) rotateX(8deg);
+  }
+  25% {
+    animation-timing-function: ease-in-out;
+    transform: rotateZ(-30deg) rotateX(24deg);
+  }
+  50% {
+    animation-timing-function: linear;
+    transform: rotateZ(0deg) rotateX(8deg);
+  }
+  75% {
+    animation-timing-function: ease-in-out;
+    transform: rotateZ(30deg) rotateX(24deg);
+  }
+}
+
         `}
       </style>
       <g>
