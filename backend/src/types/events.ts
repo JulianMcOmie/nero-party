@@ -139,6 +139,8 @@ export interface SongRankingEntry {
   albumArtUrl: string;
   spotifyTrackId: string;
   totalRatingScore: number;
+  ratingsCount: number;
+  averageRating: number;
   submitterId: string;
   submitterName: string;
 }

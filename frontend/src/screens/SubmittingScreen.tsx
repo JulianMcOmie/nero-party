@@ -186,10 +186,10 @@ export default function SubmittingScreen() {
                         <img
                           src={q.albumArtUrl}
                           alt=""
-                          className="h-6 w-6 rounded object-cover shrink-0"
+                          className="h-10 w-10 rounded object-cover shrink-0"
                         />
                       ) : (
-                        <div className="h-6 w-6 rounded bg-muted shrink-0" />
+                        <div className="h-10 w-10 rounded bg-muted shrink-0" />
                       )}
                       <div className="min-w-0 flex-1">
                         <div className="truncate text-sm">{q.title ?? "—"}</div>

@@ -20,9 +20,9 @@ export default function RevealScreen() {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
 
-      <main className="mx-auto w-full max-w-3xl space-y-10 px-6 py-10">
-        <section className="rounded-2xl border border-border bg-card p-6">
-          <h2 className="mb-4 text-base">song rankings</h2>
+      <main className="mx-auto w-full max-w-2xl space-y-10 px-6 py-10">
+        <section className="space-y-4">
+          <h2 className="text-center text-base">Final Rankings</h2>
           <ul className="space-y-2">
             {results.songRankings.map((s) => (
               <li
@@ -41,7 +41,7 @@ export default function RevealScreen() {
                     </div>
                   </div>
                 </div>
-                <div className="text-sm">{s.totalRatingScore} pts</div>
+                <div className="text-sm">{(s.averageRating ?? 0).toFixed(1)}</div>
               </li>
             ))}
           </ul>

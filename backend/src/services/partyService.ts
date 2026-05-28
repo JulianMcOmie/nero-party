@@ -484,7 +484,7 @@ async function computeFinalResults(partyId: string): Promise<FinalResults> {
   const [queue, users] = await Promise.all([
     prisma.queueItem.findMany({
       where: { partyId },
-      include: { addedBy: true },
+      include: { addedBy: true, submissions: true },
       orderBy: [{ totalRatingScore: "desc" }, { createdAt: "asc" }],
     }),
     prisma.user.findMany({
@@ -493,17 +493,25 @@ async function computeFinalResults(partyId: string): Promise<FinalResults> {
     }),
   ]);
 
-  const songRankings: SongRankingEntry[] = queue.map((track, index) => ({
-    rank: index + 1,
-    queueItemId: track.id,
-    title: track.title,
-    artist: track.artist,
-    albumArtUrl: track.albumArtUrl,
-    spotifyTrackId: track.spotifyTrackId,
-    totalRatingScore: track.totalRatingScore,
-    submitterId: track.addedByUserId,
-    submitterName: track.addedBy.name,
-  }));
+  const songRankings: SongRankingEntry[] = queue.map((track, index) => {
+    const nonGhostRatings = track.submissions.filter((s) => s.userId !== track.addedByUserId);
+    const ratingsCount = nonGhostRatings.length;
+    const averageRating = ratingsCount > 0 ? track.totalRatingScore / ratingsCount : 0;
+
+    return {
+      rank: index + 1,
+      queueItemId: track.id,
+      title: track.title,
+      artist: track.artist,
+      albumArtUrl: track.albumArtUrl,
+      spotifyTrackId: track.spotifyTrackId,
+      totalRatingScore: track.totalRatingScore,
+      ratingsCount,
+      averageRating,
+      submitterId: track.addedByUserId,
+      submitterName: track.addedBy.name,
+    };
+  });
 
   const leaderboard: LeaderboardEntry[] = users.map((user, index) => ({
     rank: index + 1,
