@@ -260,10 +260,9 @@ export default function RankingScreen() {
 
             {/* Title, artist, and play button */}
             {isHost ? (
-              <div className="mb-4 flex justify-center">
-                <div className="relative">
-                  {/* Play/Pause button (host only) — absolutely positioned so it doesn't affect title centering */}
-                  <div className="absolute right-full top-0 mr-3">
+              (() => {
+                const playPauseControl = (
+                  <div className="relative">
                     <button
                       type="button"
                       onClick={handlePlayPauseClick}
@@ -284,31 +283,43 @@ export default function RankingScreen() {
                       </div>
                     )}
                   </div>
-
-                  {/* Title and artist — fades in when song reveals */}
+                );
+                return (
+                  <div className="mb-4 flex justify-center">
+                    {showMetadata ? (
+                      <div className="relative">
+                        <div className="absolute right-full top-0 mr-3">{playPauseControl}</div>
+                        <div
+                          className="text-center"
+                          style={{ animation: 'fadeIn 0.7s ease-out forwards' }}
+                        >
+                          <h2 className="text-lg font-semibold mb-1 whitespace-nowrap">{currentTrack.title ?? "—"}</h2>
+                          <p className="text-sm text-muted-foreground whitespace-nowrap">{currentTrack.artist ?? "—"}</p>
+                        </div>
+                      </div>
+                    ) : (
+                      playPauseControl
+                    )}
+                  </div>
+                );
+              })()
+            ) : (
+              <div
+                className="grid transition-[grid-template-rows] duration-700 ease-out"
+                style={{ gridTemplateRows: showMetadata ? '1fr' : '0fr' }}
+              >
+                <div className="overflow-hidden">
+                  {/* Title and artist — fades in when song reveals; container expands at same pace, pushing stars down */}
                   {showMetadata && (
                     <div
-                      className="text-center"
+                      className="mb-4 text-center"
                       style={{ animation: 'fadeIn 0.7s ease-out forwards' }}
                     >
-                      <h2 className="text-lg font-semibold mb-1 whitespace-nowrap">{currentTrack.title ?? "—"}</h2>
-                      <p className="text-sm text-muted-foreground whitespace-nowrap">{currentTrack.artist ?? "—"}</p>
+                      <h2 className="text-lg font-semibold mb-1">{currentTrack.title ?? "—"}</h2>
+                      <p className="text-sm text-muted-foreground">{currentTrack.artist ?? "—"}</p>
                     </div>
                   )}
                 </div>
-              </div>
-            ) : (
-              <div className="mb-4">
-                {/* Title and artist — fades in when song reveals */}
-                {showMetadata && (
-                  <div
-                    className="text-center"
-                    style={{ animation: 'fadeIn 0.7s ease-out forwards' }}
-                  >
-                    <h2 className="text-lg font-semibold mb-1">{currentTrack.title ?? "—"}</h2>
-                    <p className="text-sm text-muted-foreground">{currentTrack.artist ?? "—"}</p>
-                  </div>
-                )}
               </div>
             )}
 
