@@ -5,6 +5,7 @@ import { StarRating } from "../components/StarRating";
 import { PlayIcon, PauseIcon, CheckIcon } from "../components/icons";
 import { BouncingCircle } from "../components/BouncingCircle";
 import { WaveParticles } from "../components/WaveParticles";
+import { ListeningCharacter } from "../components/ListeningCharacter";
 
 export default function RankingScreen() {
   const {
@@ -174,7 +175,7 @@ export default function RankingScreen() {
             <div className="mb-6 text-xs text-muted-foreground">song {queueIdx + 1} of {totalRounds}</div>
 
             {/* Song cover with wave particles */}
-            <div className="mb-3 relative h-64 w-64 flex items-center justify-center" style={{ overflow: 'visible' }}>
+            <div className="mb-6 relative h-64 w-64 flex items-center justify-center" style={{ overflow: 'visible' }}>
               <WaveParticles isPlaying={state.playback.isPlaying} />
               <div className="h-full w-full flex items-center justify-center rounded-lg bg-input/50 relative">
                 {showMetadata && currentTrack.albumArtUrl ? (
@@ -185,6 +186,11 @@ export default function RankingScreen() {
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* Listening character */}
+            <div className="mb-6">
+              <ListeningCharacter isNodding={state.playback.isPlaying} />
             </div>
 
             {/* Title, artist, and play button */}
