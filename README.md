@@ -1,6 +1,6 @@
 # Nero Party
 
-A real-time music listening party game. Players join a room, submit songs, listen together, rate each round, and optionally guess who submitted each track. A winning song — and a winning submitter — is crowned at the end.
+A real-time music listening party game. Players join a room, submit songs, listen together, and rate each song. A winning song — and a winning submitter — is crowned at the end.
 
 ## Video Walkthrough
 
@@ -58,39 +58,29 @@ Open `http://localhost:5173` in your browser.
 2. **Players** join with the code and a display name
 3. Everyone submits songs (host sets a per-player limit)
 4. **Host** starts the rounds — songs play one at a time via Deezer 30s previews
-5. Players **rate** each song (1–5 stars) and optionally **guess** who submitted it
-6. Host **reveals** each round — scores are calculated and the submitter is unmasked
-7. After all songs, the **final leaderboard** is revealed with the winning song and player
+5. Players **rate** each song (1–5 stars) while it plays
+6. Once everyone has rated, the host moves to the next song
+7. After all songs, the **final rankings** are revealed — winning song and winning submitter
 
 ## Scoring
 
-Points are accumulated across rounds and tracked on two axes:
+Points are tracked on two axes:
 
 **Player score** (determines the winner):
-
-| Event | Points |
-|---|---|
-| Someone rates your song | +sum of all star ratings received (e.g. three votes of 4, 3, 5 = +12) |
-| You correctly guess the submitter | +1 |
-| Sonic Signature (see below) | +1 bonus to the submitter |
+- The submitter earns the full sum of star ratings their track receives each round
+- e.g. three votes of 4, 3, 5 → +12 points
 
 **Song score** (determines the winning track):
-- Accumulates the raw star ratings received across all rounds
-- Gets a +1 bonus if the Sonic Signature fires
+- The total sum of star ratings the track received across all rounds
 
-**Sonic Signature:** if ≥50% of eligible players (everyone except the submitter) correctly guess who submitted a song, that track earns its Sonic Signature — a signal that the song is distinctly "them." The submitter and the song both get a +1 bonus.
-
-The submitter's own ratings and guesses on their track are always discarded.
+The submitter's own rating on their track is always discarded.
 
 ## Party Settings (host-configurable)
 
 | Setting | Description |
 |---|---|
-| Max songs per player | How many songs each player can submit |
-| Hide song | Players hear but can't see the title/artist until the reveal |
-| Hide submitter identities | Players don't know who submitted each song |
-| Enable guessing game | Players guess the submitter each round — requires both hide settings (auto-enables them) |
-| Hide leaderboard until final reveal | Scores stay secret during play |
+| Max songs per player | How many songs each player can submit (1–20) |
+| Hide song | Players hear the song but can't see the title or artist while rating |
 
 ## Project Structure
 
